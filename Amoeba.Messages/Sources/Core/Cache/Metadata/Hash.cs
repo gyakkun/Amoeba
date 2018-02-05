@@ -39,7 +39,7 @@ namespace Amoeba.Messages
 
         public override int GetHashCode()
         {
-            return ((int)this.Algorithm) ^ Fnv1.ComputeHash32(this.Value);
+            return ((int)this.Algorithm) ^ ItemUtils.GetHashCode(this.Value);
         }
 
         public override bool Equals(object obj)

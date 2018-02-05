@@ -1,12 +1,14 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:avalon="http://icsharpcode.net/sharpdevelop/avalonedit"
-                    xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
-                    xmlns:po="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options">
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:avalon="http://icsharpcode.net/sharpdevelop/avalonedit"
+    xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:po="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options">
 
-    <SolidColorBrush x:Key="MaterialDesignWindowBackground"
-                     po:Freeze="True"
-                     Color="#FF1E1E1E" />
+    <SolidColorBrush
+        x:Key="MaterialDesignWindowBackground"
+        po:Freeze="True"
+        Color="#FF1E1E1E" />
 
     <Style x:Key="MaterialDesignAvalonTextEditor" TargetType="{x:Type avalon:TextEditor}">
         <Setter Property="Background" Value="Transparent" />
@@ -20,15 +22,17 @@
         <Setter Property="Height" Value="Auto" />
     </Style>
 
-    <Style x:Key="CustomMaterialDesignMenu"
-           BasedOn="{StaticResource MaterialDesignMenu}"
-           TargetType="{x:Type MenuBase}">
+    <Style
+        x:Key="CustomMaterialDesignMenu"
+        BasedOn="{StaticResource MaterialDesignMenu}"
+        TargetType="{x:Type MenuBase}">
         <Setter Property="Background" Value="{DynamicResource MaterialDesignWindowBackground}" />
     </Style>
 
-    <Style x:Key="CustomMaterialDesignListViewItem"
-           BasedOn="{StaticResource MaterialDesignGridViewItem}"
-           TargetType="{x:Type ListViewItem}">
+    <Style
+        x:Key="CustomMaterialDesignListViewItem"
+        BasedOn="{StaticResource MaterialDesignGridViewItem}"
+        TargetType="{x:Type ListViewItem}">
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
     </Style>
 

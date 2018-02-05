@@ -5,63 +5,59 @@ using Omnius.Base;
 
 namespace Amoeba.Service
 {
-    sealed class PriorityManager
+    partial class NetworkManager
     {
-        private Dictionary<DateTime, int> _table = new Dictionary<DateTime, int>();
-
-        private readonly TimeSpan _survivalTime;
-
-        private readonly object _lockObject = new object();
-
-        public PriorityManager(TimeSpan survivalTime)
+        sealed class PriorityManager
         {
-            _survivalTime = survivalTime;
-        }
+            private readonly TimeSpan _survivalTime;
 
-        public TimeSpan SurvivalTime
-        {
-            get
+            private Dictionary<DateTime, int> _table = new Dictionary<DateTime, int>();
+
+            private readonly ReaderWriterLockManager _lockManager = new ReaderWriterLockManager();
+
+            public PriorityManager(TimeSpan survivalTime)
             {
-                return _survivalTime;
+                _survivalTime = survivalTime;
             }
-        }
 
-        public void Increment()
-        {
-            lock (_lockObject)
+            public TimeSpan SurvivalTime
             {
-                var now = DateTime.UtcNow;
-                now = now.AddTicks(-(now.Ticks % TimeSpan.TicksPerSecond));
-
-                _table.AddOrUpdate(now, 1, (_, origin) => origin + 1);
-            }
-        }
-
-        public double GetPriority()
-        {
-            const int min = 8;
-            const int max = 100;
-
-            lock (_lockObject)
-            {
-                int priority = _table.Sum(n => n.Value);
-                priority = Math.Min(Math.Max(priority, min), max);
-
-                return ((double)priority) / max;
-            }
-        }
-
-        public void Update()
-        {
-            lock (_lockObject)
-            {
-                var now = DateTime.UtcNow;
-
-                foreach (var key in _table.Keys.ToArray())
+                get
                 {
-                    if ((now - key) < _survivalTime) continue;
+                    return _survivalTime;
+                }
+            }
 
-                    _table.Remove(key);
+            public void Add(int value)
+            {
+                using (_lockManager.WriteLock())
+                {
+                    var now = DateTime.UtcNow;
+
+                    _table.AddOrUpdate(now, value, (_, origin) => origin + value);
+                }
+            }
+
+            public int GetValue()
+            {
+                using (_lockManager.ReadLock())
+                {
+                    return _table.Sum(n => n.Value);
+                }
+            }
+
+            public void Update()
+            {
+                using (_lockManager.WriteLock())
+                {
+                    var now = DateTime.UtcNow;
+
+                    foreach (var updateTime in _table.Keys.ToArray())
+                    {
+                        if ((now - updateTime) < _survivalTime) continue;
+
+                        _table.Remove(updateTime);
+                    }
                 }
             }
         }

@@ -22,28 +22,21 @@ namespace Amoeba.Service
     public delegate Cap ConnectCapEventHandler(object sender, string uri);
     public delegate Cap AcceptCapEventHandler(object sender, out string uri);
 
-    class NetworkManager : StateManagerBase, ISettings
+    sealed partial class NetworkManager : StateManagerBase, ISettings
     {
         private BufferManager _bufferManager;
         private CacheManager _cacheManager;
+        private MetadataManager _metadataManager;
 
         private Settings _settings;
 
-        private Random _random = new Random();
-
         private volatile Location _myLocation;
-
-        private RouteTable<SessionInfo> _routeTable;
         private LockedHashSet<Location> _cloudLocations = new LockedHashSet<Location>();
-
-        private volatile int _connectionCountLimit;
-        private volatile int _bandwidthLimit;
-
-        private MetadataManager _metadataManager;
-
+        private volatile NetworkConfig _config;
         private LockedHashSet<Hash> _uploadBlockHashes = new LockedHashSet<Hash>();
         private LockedHashSet<Hash> _diffusionBlockHashes = new LockedHashSet<Hash>();
 
+        private volatile byte[] _baseId;
         private LockedHashDictionary<Connection, SessionInfo> _connections = new LockedHashDictionary<Connection, SessionInfo>();
 
         private List<TaskManager> _connectTaskManagers = new List<TaskManager>();
@@ -52,25 +45,21 @@ namespace Amoeba.Service
         private List<TaskManager> _sendTaskManagers = new List<TaskManager>();
         private List<TaskManager> _receiveTaskManagers = new List<TaskManager>();
 
-        private VolatileHashDictionary<Hash, DiffusionPriority> _pushBlocksRequestMap = new VolatileHashDictionary<Hash, DiffusionPriority>(new TimeSpan(0, 10, 0));
-
+        private VolatileHashSet<Hash> _pushBlocksRequestSet = new VolatileHashSet<Hash>(new TimeSpan(0, 10, 0));
         private VolatileHashSet<Signature> _pushBroadcastMetadatasRequestSet = new VolatileHashSet<Signature>(new TimeSpan(0, 10, 0));
         private VolatileHashSet<Signature> _pushUnicastMetadatasRequestSet = new VolatileHashSet<Signature>(new TimeSpan(0, 10, 0));
         private VolatileHashSet<Tag> _pushMulticastMetadatasRequestSet = new VolatileHashSet<Tag>(new TimeSpan(0, 10, 0));
 
-        private SafeInteger _receivedByteCount = new SafeInteger();
-        private SafeInteger _sentByteCount = new SafeInteger();
-
         private ManagerState _state = ManagerState.Stop;
 
         private readonly object _lockObject = new object();
-        private volatile bool _disposed;
+        private volatile bool _isDisposed;
 
-        private const int _maxLocationCount = 256;
-        private const int _maxBlockLinkCount = 2048;
-        private const int _maxBlockRequestCount = 2048;
-        private const int _maxMetadataRequestCount = 1024;
-        private const int _maxMetadataResultCount = 1024;
+        private const int _maxLocationCount = 32;
+        private const int _maxBlockLinkCount = 256;
+        private const int _maxBlockRequestCount = 256;
+        private const int _maxMetadataRequestCount = 256;
+        private const int _maxMetadataResultCount = 256;
 
         private readonly int _threadCount = 4;
 
@@ -78,14 +67,10 @@ namespace Amoeba.Service
         {
             _bufferManager = bufferManager;
             _cacheManager = cacheManager;
-            _cacheManager.ImportedBlockEvents += (importedBlockHashes) => _uploadBlockHashes.UnionWith(importedBlockHashes);
-
-            _settings = new Settings(configPath);
-
-            _routeTable = new RouteTable<SessionInfo>(256, 32);
-
             _metadataManager = new MetadataManager();
             _metadataManager.GetLockSignaturesEvent += (_) => this.OnGetLockSignatures();
+
+            _settings = new Settings(configPath);
 
             for (int i = 0; i < 3; i++)
             {
@@ -100,152 +85,124 @@ namespace Amoeba.Service
                 _sendTaskManagers.Add(new TaskManager((token) => this.SendThread(i, token)));
                 _receiveTaskManagers.Add(new TaskManager((token) => this.ReceiveThread(i, token)));
             }
+
+            this.UpdateBaseId();
         }
 
-        private volatile Info _info = new Info();
+        private volatile NetworkStatus _status = new NetworkStatus();
 
-        public class Info
+        public class NetworkStatus
         {
-            public SafeInteger ConnectCount { get; } = new SafeInteger();
-            public SafeInteger AcceptCount { get; } = new SafeInteger();
+            public AtomicInteger ConnectCount { get; } = new AtomicInteger();
+            public AtomicInteger AcceptCount { get; } = new AtomicInteger();
 
-            public SafeInteger PushLocationCount { get; } = new SafeInteger();
-            public SafeInteger PushBlockLinkCount { get; } = new SafeInteger();
-            public SafeInteger PushBlockRequestCount { get; } = new SafeInteger();
-            public SafeInteger PushBlockResultCount { get; } = new SafeInteger();
-            public SafeInteger PushMessageRequestCount { get; } = new SafeInteger();
-            public SafeInteger PushMessageResultCount { get; } = new SafeInteger();
+            public AtomicInteger ReceivedByteCount { get; } = new AtomicInteger();
+            public AtomicInteger SentByteCount { get; } = new AtomicInteger();
 
-            public SafeInteger PullLocationCount { get; } = new SafeInteger();
-            public SafeInteger PullBlockLinkCount { get; } = new SafeInteger();
-            public SafeInteger PullBlockRequestCount { get; } = new SafeInteger();
-            public SafeInteger PullBlockResultCount { get; } = new SafeInteger();
-            public SafeInteger PullMessageRequestCount { get; } = new SafeInteger();
-            public SafeInteger PullMessageResultCount { get; } = new SafeInteger();
+            public AtomicInteger PushLocationCount { get; } = new AtomicInteger();
+            public AtomicInteger PushBlockLinkCount { get; } = new AtomicInteger();
+            public AtomicInteger PushBlockRequestCount { get; } = new AtomicInteger();
+            public AtomicInteger PushBlockResultCount { get; } = new AtomicInteger();
+            public AtomicInteger PushMessageRequestCount { get; } = new AtomicInteger();
+            public AtomicInteger PushMessageResultCount { get; } = new AtomicInteger();
+
+            public AtomicInteger PullLocationCount { get; } = new AtomicInteger();
+            public AtomicInteger PullBlockLinkCount { get; } = new AtomicInteger();
+            public AtomicInteger PullBlockRequestCount { get; } = new AtomicInteger();
+            public AtomicInteger PullBlockResultCount { get; } = new AtomicInteger();
+            public AtomicInteger PullMessageRequestCount { get; } = new AtomicInteger();
+            public AtomicInteger PullMessageResultCount { get; } = new AtomicInteger();
         }
 
         public NetworkReport Report
         {
             get
             {
-                if (_disposed) throw new ObjectDisposedException(this.GetType().FullName);
+                if (_isDisposed) throw new ObjectDisposedException(this.GetType().FullName);
 
-                lock (_lockObject)
-                {
-                    return new NetworkReport(
-                        _myLocation,
-                        _info.ConnectCount,
-                        _info.AcceptCount,
-                        _routeTable.Count,
-                        _metadataManager.Count,
-                        _uploadBlockHashes.Count,
-                        _diffusionBlockHashes.Count,
-                        _receivedByteCount,
-                        _sentByteCount,
-                        _info.PushLocationCount,
-                        _info.PushBlockLinkCount,
-                        _info.PushBlockRequestCount,
-                        _info.PushBlockResultCount,
-                        _info.PushMessageRequestCount,
-                        _info.PushMessageResultCount,
-                        _info.PullLocationCount,
-                        _info.PullBlockLinkCount,
-                        _info.PullBlockRequestCount,
-                        _info.PullBlockResultCount,
-                        _info.PullMessageRequestCount,
-                        _info.PullMessageResultCount);
-                }
+                return new NetworkReport(
+                    _myLocation,
+                    _status.ConnectCount,
+                    _status.AcceptCount,
+                    _connections.Count,
+                    _metadataManager.Count,
+                    _uploadBlockHashes.Count,
+                    _diffusionBlockHashes.Count,
+                    _status.ReceivedByteCount,
+                    _status.SentByteCount,
+                    _status.PushLocationCount,
+                    _status.PushBlockLinkCount,
+                    _status.PushBlockRequestCount,
+                    _status.PushBlockResultCount,
+                    _status.PushMessageRequestCount,
+                    _status.PushMessageResultCount,
+                    _status.PullLocationCount,
+                    _status.PullBlockLinkCount,
+                    _status.PullBlockRequestCount,
+                    _status.PullBlockResultCount,
+                    _status.PullMessageRequestCount,
+                    _status.PullMessageResultCount);
             }
         }
 
         public IEnumerable<NetworkConnectionReport> GetNetworkConnectionReports()
         {
-            lock (_lockObject)
+            var list = new List<NetworkConnectionReport>();
+
+            foreach (var (connection, sessionInfo) in _connections.ToArray())
             {
-                var list = new List<NetworkConnectionReport>();
+                if (sessionInfo.Id == null) continue;
 
-                foreach (var sessionInfo in _routeTable.ToArray().Select(n => n.Value))
-                {
-                    list.Add(new NetworkConnectionReport(
-                        sessionInfo.Id,
-                        sessionInfo.Type,
-                        sessionInfo.Uri,
-                        sessionInfo.Location,
-                        Math.Round(sessionInfo.PriorityManager.GetPriority() * 100, 2),
-                        sessionInfo.Connection.ReceivedByteCount,
-                        sessionInfo.Connection.SentByteCount));
-                }
-
-                return list;
+                list.Add(new NetworkConnectionReport(
+                    sessionInfo.Id,
+                    sessionInfo.Type,
+                    sessionInfo.Uri,
+                    sessionInfo.Location,
+                    sessionInfo.Priority.GetValue(),
+                    connection.ReceivedByteCount,
+                    connection.SentByteCount));
             }
+
+            return list;
         }
 
         public NetworkConfig Config
         {
             get
             {
-                lock (_lockObject)
-                {
-                    return new NetworkConfig(_connectionCountLimit, _bandwidthLimit);
-                }
+                return _config;
             }
         }
 
         public void SetConfig(NetworkConfig config)
         {
-            lock (_lockObject)
-            {
-                _connectionCountLimit = config.ConnectionCountLimit;
-                _bandwidthLimit = config.BandwidthLimit;
-            }
+            _config = config;
         }
 
         public Location MyLocation
         {
             get
             {
-                lock (_lockObject)
-                {
-                    return _myLocation;
-                }
+                return _myLocation;
             }
         }
 
         public void SetMyLocation(Location myLocation)
         {
-            lock (_lockObject)
-            {
-                if (_myLocation != myLocation)
-                {
-                    foreach (var connection in _connections.Keys.ToArray())
-                    {
-                        this.RemoveConnection(connection);
-                    }
-
-                    this.UpdateMyId();
-                }
-
-                _myLocation = myLocation;
-            }
+            _myLocation = myLocation;
         }
 
         public IEnumerable<Location> CloudLocations
         {
             get
             {
-                lock (_lockObject)
-                {
-                    return _cloudLocations;
-                }
+                return _cloudLocations.ToArray();
             }
         }
 
         public void SetCloudLocations(IEnumerable<Location> locations)
         {
-            lock (_lockObject)
-            {
-                _cloudLocations.UnionWith(locations);
-            }
+            _cloudLocations.UnionWith(locations);
         }
 
         public ConnectCapEventHandler ConnectCapEvent { get; set; }
@@ -269,86 +226,82 @@ namespace Amoeba.Service
             return this.GetLockSignaturesEvent?.Invoke(this) ?? new Signature[0];
         }
 
-        private void UpdateMyId()
+        private void UpdateBaseId()
         {
-            lock (_lockObject)
+            var baseId = new byte[32];
+
+            using (var random = RandomNumberGenerator.Create())
             {
-                var baseId = new byte[32];
-
-                using (var random = RandomNumberGenerator.Create())
-                {
-                    random.GetBytes(baseId);
-                }
-
-                _routeTable.BaseId = baseId;
+                random.GetBytes(baseId);
             }
+
+            _baseId = baseId;
         }
 
-        private VolatileHashSet<Location> _connectingLocations = new VolatileHashSet<Location>(new TimeSpan(0, 1, 0));
+        private VolatileHashSet<string> _connectedUris = new VolatileHashSet<string>(new TimeSpan(0, 3, 0));
 
         private void ConnectThread(CancellationToken token)
         {
             try
             {
+                var random = new Random();
+
                 for (; ; )
                 {
                     if (token.WaitHandle.WaitOne(1000)) return;
 
                     // 接続数を制限する。
                     {
-                        int connectionCount = _routeTable.ToArray().Select(n => n.Value).Count(n => n.Type == SessionType.Connect);
-                        if (connectionCount >= (_connectionCountLimit / 2)) continue;
+                        int connectionCount = _connections.ToArray().Count(n => n.Value.Type == SessionType.Connect);
+                        if (connectionCount >= (_config.ConnectionCountLimit / 2)) continue;
                     }
 
-                    Location location = null;
+                    string uri = null;
 
-                    lock (_lockObject)
+                    lock (_connectedUris.LockObject)
                     {
-                        _connectingLocations.Update();
+                        _connectedUris.Update();
 
-                        switch (_random.Next(0, 2))
+                        switch (random.Next(0, 2))
                         {
                             case 0:
-                                location = _cloudLocations.Randomize()
-                                    .Where(n => !_connectingLocations.Contains(n))
+                                uri = _cloudLocations.Randomize()
+                                    .SelectMany(n => n.Uris)
+                                    .Where(n => !_connectedUris.Contains(n))
                                     .FirstOrDefault();
                                 break;
                             case 1:
-                                var sessionInfo = _routeTable.ToArray().Randomize().Select(n => n.Value).FirstOrDefault();
+                                var sessionInfo = _connections.Randomize().Select(n => n.Value).FirstOrDefault();
                                 if (sessionInfo == null) break;
 
-                                location = sessionInfo.ReceiveInfo.PullLocationSet.Randomize()
-                                    .Where(n => !_connectingLocations.Contains(n))
+                                uri = sessionInfo.Receive.PulledLocationSet.Randomize()
+                                    .SelectMany(n => n.Uris)
+                                    .Where(n => !_connectedUris.Contains(n))
                                     .FirstOrDefault();
                                 break;
                         }
 
-                        if (location == null || _myLocation.Uris.Any(n => location.Uris.Contains(n))
-                            || _routeTable.ToArray().SelectMany(n => n.Value.Location.Uris).Any(m => location.Uris.Contains(m))) continue;
+                        if (uri == null || _myLocation.Uris.Contains(uri) || _connections.Any(n => n.Value.Location?.Uris?.Contains(uri) ?? false)) continue;
 
-                        _connectingLocations.Add(location);
+                        _connectedUris.Add(uri);
                     }
 
-                    Cap cap = null;
-                    string uri = null;
-
-                    foreach (string tempUri in new HashSet<string>(location.Uris))
-                    {
-                        var tempCap = this.OnConnectCap(tempUri);
-                        if (tempCap == null) continue;
-
-                        cap = tempCap;
-                        uri = tempUri;
-                    }
+                    Cap cap = this.OnConnectCap(uri);
 
                     if (cap == null)
                     {
-                        if (_cloudLocations.Count > 1024) _cloudLocations.Remove(location);
+                        lock (_cloudLocations.LockObject)
+                        {
+                            if (_cloudLocations.Count > 1024)
+                            {
+                                _cloudLocations.ExceptWith(_cloudLocations.Where(n => n.Uris.Contains(uri)).ToArray());
+                            }
+                        }
 
                         continue;
                     }
 
-                    _info.ConnectCount.Increment();
+                    _status.ConnectCount.Increment();
 
                     this.CreateConnection(cap, SessionType.Connect, uri);
                 }
@@ -369,14 +322,14 @@ namespace Amoeba.Service
 
                     // 接続数を制限する。
                     {
-                        int connectionCount = _routeTable.ToArray().Select(n => n.Value).Count(n => n.Type == SessionType.Accept);
-                        if (connectionCount >= (_connectionCountLimit / 2)) continue;
+                        int connectionCount = _connections.ToArray().Count(n => n.Value.Type == SessionType.Accept);
+                        if (connectionCount >= (_config.ConnectionCountLimit / 2)) continue;
                     }
 
                     var cap = this.OnAcceptCap(out string uri);
                     if (cap == null) continue;
 
-                    _info.AcceptCount.Increment();
+                    _status.AcceptCount.Increment();
 
                     this.CreateConnection(cap, SessionType.Accept, uri);
                 }
@@ -389,13 +342,14 @@ namespace Amoeba.Service
 
         private void CreateConnection(Cap cap, SessionType type, string uri)
         {
-            lock (_lockObject)
+            lock (_connections.LockObject)
             {
-                var connection = new Connection(1024 * 1024 * 2, _bufferManager);
+                if (_connections.Count >= _config.ConnectionCountLimit) return;
+
+                var connection = new Connection(1024 * 1024 * 4, _bufferManager);
                 connection.Connect(cap);
 
                 var sessionInfo = new SessionInfo();
-                sessionInfo.Connection = connection;
                 sessionInfo.Type = type;
                 sessionInfo.Uri = uri;
                 sessionInfo.ThreadId = GetThreadId();
@@ -410,9 +364,12 @@ namespace Amoeba.Service
             {
                 var dic = new Dictionary<int, int>();
 
-                for (int i = 0; i < _threadCount; i++)
+                lock (_connections.LockObject)
                 {
-                    dic.Add(i, _connections.Values.Count(n => n.ThreadId == i));
+                    for (int i = 0; i < _threadCount; i++)
+                    {
+                        dic.Add(i, _connections.Values.Count(n => n.ThreadId == i));
+                    }
                 }
 
                 var sortedList = dic.Randomize().ToList();
@@ -424,26 +381,23 @@ namespace Amoeba.Service
 
         private void RemoveConnection(Connection connection)
         {
-            lock (_lockObject)
+            lock (_connections.LockObject)
             {
                 if (_connections.TryGetValue(connection, out var sessionInfo))
                 {
                     _connections.Remove(connection);
-
                     connection.Dispose();
 
-                    if (sessionInfo.Id != null)
-                    {
-                        _routeTable.Remove(sessionInfo.Id);
-                    }
-
-                    if (sessionInfo.Location != null) _cloudLocations.Add(sessionInfo.Location);
+                    var location = sessionInfo.Location;
+                    if (location != null) _cloudLocations.Add(location);
                 }
             }
         }
 
         private void ComputeThread(CancellationToken token)
         {
+            var random = new Random();
+
             var refreshStopwatch = Stopwatch.StartNew();
             var reduceStopwatch = Stopwatch.StartNew();
 
@@ -463,59 +417,55 @@ namespace Amoeba.Service
                     {
                         refreshStopwatch.Restart();
 
-                        // 古いPushリクエスト情報を削除する。
-                        {
-                            _pushBlocksRequestMap.Update();
-
-                            _pushBroadcastMetadatasRequestSet.Update();
-                            _pushUnicastMetadatasRequestSet.Update();
-                            _pushMulticastMetadatasRequestSet.Update();
-                        }
-
                         // 不要なMetadataを削除する。
                         {
                             _metadataManager.Refresh();
                         }
 
-                        // 古いセッション情報を破棄する。
+                        // 古いPushリクエスト情報を削除する。
                         {
-                            foreach (var sessionInfo in _routeTable.ToArray().Select(n => n.Value))
-                            {
-                                sessionInfo.Update();
-                            }
+                            _pushBlocksRequestSet.Update();
+                            _pushBroadcastMetadatasRequestSet.Update();
+                            _pushUnicastMetadatasRequestSet.Update();
+                            _pushMulticastMetadatasRequestSet.Update();
+                        }
+
+                        // 古いセッション情報を破棄する。
+                        foreach (var sessionInfo in _connections.Values)
+                        {
+                            sessionInfo.Update();
                         }
 
                         // 長い間通信の無い接続を切断する。
+                        foreach (var (connection, sessionInfo) in _connections.ToArray())
                         {
-                            foreach (var sessionInfo in _routeTable.ToArray().Select(n => n.Value))
-                            {
-                                if (sessionInfo.ReceiveInfo.Stopwatch.Elapsed.TotalMinutes > 10)
-                                {
-                                    this.RemoveConnection(sessionInfo.Connection);
-                                }
-                            }
+                            if (sessionInfo.Receive.Stopwatch.Elapsed.TotalMinutes < 3) continue;
+
+                            this.RemoveConnection(connection);
                         }
                     }
 
-                    if (reduceStopwatch.Elapsed.TotalMinutes >= 10)
+                    if (reduceStopwatch.Elapsed.TotalMinutes >= 3)
                     {
                         reduceStopwatch.Restart();
 
                         // 優先度の低い通信を切断する。
                         {
-                            var list = _routeTable.ToArray().Select(n => n.Value).ToList();
-                            _random.Shuffle(list);
-                            list.Sort((x, y) => x.PriorityManager.GetPriority().CompareTo(y.PriorityManager.GetPriority()));
+                            var now = DateTime.UtcNow;
 
-                            foreach (var sessionInfo in list.Take(1))
+                            var tempList = _connections.ToArray().Where(n => (now - n.Value.CreationTime).TotalMinutes > 30).ToList();
+                            random.Shuffle(tempList);
+                            tempList.Sort((x, y) => x.Value.Priority.GetValue().CompareTo(y.Value.Priority.GetValue()));
+
+                            foreach (var (connection, sessionInfo) in tempList.Take(3))
                             {
-                                this.RemoveConnection(sessionInfo.Connection);
+                                this.RemoveConnection(connection);
                             }
                         }
 
                         // 拡散アップロードするブロック数が多すぎる場合、maxCount以下まで削除する。
                         {
-                            const int maxCount = 1024 * 32;
+                            const int maxCount = 1024 * 256;
 
                             if (_diffusionBlockHashes.Count > maxCount)
                             {
@@ -538,20 +488,29 @@ namespace Amoeba.Service
                         }
                     }
 
+                    var cloudNodes = new List<Node<SessionInfo>>();
+                    {
+                        foreach (var sessionInfo in _connections.Values.ToArray())
+                        {
+                            if (sessionInfo.Id == null) continue;
+
+                            cloudNodes.Add(new Node<SessionInfo>(sessionInfo.Id, sessionInfo));
+                        }
+
+                        if (cloudNodes.Count < 3) continue;
+                    }
+
                     // アップロード
-                    if (_routeTable.Count >= 3
-                        && pushBlockUploadStopwatch.Elapsed.TotalSeconds >= 5)
+                    if (pushBlockUploadStopwatch.Elapsed.TotalSeconds >= 5)
                     {
                         pushBlockUploadStopwatch.Restart();
-
-                        var cloudNodes = _routeTable.ToArray();
 
                         var diffusionMap = new Dictionary<Node<SessionInfo>, List<Hash>>();
                         var uploadMap = new Dictionary<Node<SessionInfo>, List<Hash>>();
 
                         foreach (var hash in CollectionUtils.Unite(_diffusionBlockHashes.ToArray(), _uploadBlockHashes.ToArray()).Randomize())
                         {
-                            foreach (var node in GetTargetNodes(_routeTable.BaseId, hash.Value, cloudNodes, 3, 1, 2))
+                            foreach (var node in RouteTableMethods.Search(_baseId, hash.Value, cloudNodes, 2))
                             {
                                 var tempList = diffusionMap.GetOrAdd(node, (_) => new List<Hash>());
                                 if (tempList.Count > 128) continue;
@@ -563,7 +522,7 @@ namespace Amoeba.Service
                         foreach (var node in cloudNodes)
                         {
                             uploadMap.GetOrAdd(node, (_) => new List<Hash>())
-                                .AddRange(_cacheManager.IntersectFrom(node.Value.ReceiveInfo.PullBlockRequestSet.Randomize()).Take(256));
+                                .AddRange(_cacheManager.IntersectFrom(node.Value.Receive.PulledBlockRequestSet.Randomize()).Take(256));
                         }
 
                         foreach (var node in cloudNodes)
@@ -580,28 +539,25 @@ namespace Amoeba.Service
                                     tempList.AddRange(uploadList);
                                 }
 
-                                _random.Shuffle(tempList);
+                                random.Shuffle(tempList);
                             }
 
-                            lock (node.Value.SendInfo.PushBlockResultQueue.LockObject)
+                            lock (node.Value.Send.PushBlockResultQueue.LockObject)
                             {
-                                node.Value.SendInfo.PushBlockResultQueue.Clear();
+                                node.Value.Send.PushBlockResultQueue.Clear();
 
                                 foreach (var item in tempList)
                                 {
-                                    node.Value.SendInfo.PushBlockResultQueue.Enqueue(item);
+                                    node.Value.Send.PushBlockResultQueue.Enqueue(item);
                                 }
                             }
                         }
                     }
 
                     // ダウンロード
-                    if (_routeTable.Count >= 3
-                        && pushBlockDownloadStopwatch.Elapsed.TotalSeconds >= 30)
+                    if (pushBlockDownloadStopwatch.Elapsed.TotalSeconds >= 30)
                     {
                         pushBlockDownloadStopwatch.Restart();
-
-                        var cloudNodes = _routeTable.ToArray();
 
                         var pushBlockLinkSet = new HashSet<Hash>();
                         var pushBlockRequestSet = new HashSet<Hash>();
@@ -611,7 +567,7 @@ namespace Amoeba.Service
                             {
                                 {
                                     var tempList = _cacheManager.ToArray();
-                                    _random.Shuffle(tempList);
+                                    random.Shuffle(tempList);
 
                                     pushBlockLinkSet.UnionWith(tempList.Take(_maxBlockLinkCount));
                                 }
@@ -621,10 +577,10 @@ namespace Amoeba.Service
 
                                     foreach (var node in cloudNodes)
                                     {
-                                        var list = node.Value.ReceiveInfo.PullBlockLinkSet.ToArray(new TimeSpan(0, 10, 0));
-                                        _random.Shuffle(list);
+                                        var tempList = node.Value.Receive.PulledBlockLinkSet.ToArray(new TimeSpan(0, 20, 0));
+                                        random.Shuffle(tempList);
 
-                                        tempSet.UnionWith(list.Take((int)(_maxBlockLinkCount * node.Value.PriorityManager.GetPriority())));
+                                        tempSet.UnionWith(tempList.Take(_maxBlockLinkCount * node.Value.Priority.GetValue()));
                                     }
 
                                     pushBlockLinkSet.UnionWith(tempSet.Take(_maxBlockLinkCount * 8));
@@ -634,16 +590,14 @@ namespace Amoeba.Service
                             // Request
                             {
                                 {
-                                    Hash[] tempList;
-                                    {
-                                        var sortedList = _pushBlocksRequestMap.ToArray().ToList();
-                                        _random.Shuffle(sortedList);
-                                        sortedList.Sort((x, y) => x.Value.CompareTo(y.Value));
+                                    var tempSet = new HashSet<Hash>(_cacheManager.ExceptFrom(_pushBlocksRequestSet.ToArray()).ToArray());
 
-                                        tempList = _cacheManager.ExceptFrom(sortedList.Select(n => n.Key).ToArray()).ToArray();
+                                    foreach (var node in cloudNodes)
+                                    {
+                                        tempSet.ExceptWith(node.Value.Send.PushedBlockRequestSet);
                                     }
 
-                                    pushBlockRequestSet.UnionWith(tempList.Take(_maxBlockRequestCount));
+                                    pushBlockRequestSet.UnionWith(tempSet.Randomize().Take(_maxBlockRequestCount));
                                 }
 
                                 {
@@ -651,10 +605,10 @@ namespace Amoeba.Service
 
                                     foreach (var node in cloudNodes)
                                     {
-                                        var list = _cacheManager.ExceptFrom(node.Value.ReceiveInfo.PullBlockRequestSet.ToArray(new TimeSpan(0, 10, 0))).ToArray();
-                                        _random.Shuffle(list);
+                                        var tempList = _cacheManager.ExceptFrom(node.Value.Receive.PulledBlockRequestSet.ToArray(new TimeSpan(0, 20, 0))).ToArray();
+                                        random.Shuffle(tempList);
 
-                                        tempSet.UnionWith(list.Take((int)(_maxBlockRequestCount * node.Value.PriorityManager.GetPriority())));
+                                        tempSet.UnionWith(tempList.Take(_maxBlockRequestCount));
                                     }
 
                                     pushBlockRequestSet.UnionWith(tempSet.Take(_maxBlockRequestCount * 8));
@@ -669,20 +623,28 @@ namespace Amoeba.Service
 
                                 foreach (var hash in pushBlockLinkSet.Randomize())
                                 {
-                                    foreach (var node in GetTargetNodes(_routeTable.BaseId, hash.Value, cloudNodes, 3, 1, 2))
+                                    foreach (var node in RouteTableMethods.Search(_baseId, hash.Value, cloudNodes, 16))
                                     {
+                                        if (node.Value.Send.PushedBlockLinkFilter.Contains(hash)) continue;
+
                                         tempMap.GetOrAdd(node, (_) => new List<Hash>()).Add(hash);
+
+                                        break;
                                     }
                                 }
 
                                 foreach (var (node, targets) in tempMap)
                                 {
-                                    _random.Shuffle(targets);
+                                    random.Shuffle(targets);
 
-                                    lock (node.Value.SendInfo.PushBlockLinkQueue.LockObject)
+                                    lock (node.Value.Send.PushBlockLinkQueue.LockObject)
                                     {
-                                        node.Value.SendInfo.PushBlockLinkQueue.Clear();
-                                        node.Value.SendInfo.PushBlockLinkQueue.AddRange(targets.Take(_maxBlockLinkCount));
+                                        node.Value.Send.PushBlockLinkQueue.Clear();
+
+                                        foreach (var hash in targets.Take(_maxBlockLinkCount))
+                                        {
+                                            node.Value.Send.PushBlockLinkQueue.Enqueue(hash);
+                                        }
                                     }
                                 }
                             }
@@ -693,23 +655,39 @@ namespace Amoeba.Service
 
                                 foreach (var hash in pushBlockRequestSet.Randomize())
                                 {
-                                    foreach (var node in GetTargetNodes(_routeTable.BaseId, hash.Value, cloudNodes, 3, 1, 2))
+                                    foreach (var node in RouteTableMethods.Search(_baseId, hash.Value, cloudNodes, 16))
                                     {
+                                        if (node.Value.Send.PushedBlockRequestSet.Contains(hash)) continue;
+
                                         tempMap.GetOrAdd(node, (_) => new List<Hash>()).Add(hash);
+
+                                        break;
                                     }
 
-                                    foreach (var node in cloudNodes.Where(n => n.Value.ReceiveInfo.PullBlockLinkSet.Contains(hash)))
+                                    foreach (var node in cloudNodes)
                                     {
+                                        //if (node.Value.Send.PushBlockRequestFilter.Contains(hash)
+                                        //    || !node.Value.Receive.PulledBlockLinkSet.Contains(hash)) continue;
+                                        if (!node.Value.Receive.PulledBlockLinkSet.Contains(hash)) continue;
+
                                         tempMap.GetOrAdd(node, (_) => new List<Hash>()).Add(hash);
+
+                                        break;
                                     }
                                 }
 
                                 foreach (var (node, targets) in tempMap)
                                 {
-                                    lock (node.Value.SendInfo.PushBlockRequestQueue.LockObject)
+                                    random.Shuffle(targets);
+
+                                    lock (node.Value.Send.PushBlockRequestQueue.LockObject)
                                     {
-                                        node.Value.SendInfo.PushBlockRequestQueue.Clear();
-                                        node.Value.SendInfo.PushBlockRequestQueue.AddRange(targets.Take(_maxBlockRequestCount));
+                                        node.Value.Send.PushBlockRequestQueue.Clear();
+
+                                        foreach (var hash in targets.Take(_maxBlockRequestCount))
+                                        {
+                                            node.Value.Send.PushBlockRequestQueue.Enqueue(hash);
+                                        }
                                     }
                                 }
                             }
@@ -717,48 +695,42 @@ namespace Amoeba.Service
                     }
 
                     // アップロード
-                    if (_routeTable.Count >= 3
-                        && pushMetadataUploadStopwatch.Elapsed.TotalSeconds >= 30)
+                    if (pushMetadataUploadStopwatch.Elapsed.TotalSeconds >= 30)
                     {
                         pushMetadataUploadStopwatch.Restart();
-
-                        var cloudNodes = _routeTable.ToArray();
 
                         // BroadcastMetadata
                         foreach (var signature in _metadataManager.GetBroadcastSignatures())
                         {
-                            foreach (var node in GetTargetNodes(_routeTable.BaseId, signature.Id, cloudNodes, 3, 1, 1))
+                            foreach (var node in RouteTableMethods.Search(_baseId, signature.Id, cloudNodes, 1))
                             {
-                                node.Value.ReceiveInfo.PullBroadcastMetadataRequestSet.Add(signature);
+                                node.Value.Receive.PulledBroadcastMetadataRequestSet.Add(signature);
                             }
                         }
 
                         // UnicastMetadata
                         foreach (var signature in _metadataManager.GetUnicastSignatures())
                         {
-                            foreach (var node in GetTargetNodes(_routeTable.BaseId, signature.Id, cloudNodes, 3, 1, 1))
+                            foreach (var node in RouteTableMethods.Search(_baseId, signature.Id, cloudNodes, 1))
                             {
-                                node.Value.ReceiveInfo.PullUnicastMetadataRequestSet.Add(signature);
+                                node.Value.Receive.PulledUnicastMetadataRequestSet.Add(signature);
                             }
                         }
 
                         // MulticastMetadata
                         foreach (var tag in _metadataManager.GetMulticastTags())
                         {
-                            foreach (var node in GetTargetNodes(_routeTable.BaseId, tag.Id, cloudNodes, 3, 1, 1))
+                            foreach (var node in RouteTableMethods.Search(_baseId, tag.Id, cloudNodes, 1))
                             {
-                                node.Value.ReceiveInfo.PullMulticastMetadataRequestSet.Add(tag);
+                                node.Value.Receive.PulledMulticastMetadataRequestSet.Add(tag);
                             }
                         }
                     }
 
                     // ダウンロード
-                    if (_routeTable.Count >= 3
-                        && pushMetadataDownloadStopwatch.Elapsed.TotalSeconds >= 30)
+                    if (pushMetadataDownloadStopwatch.Elapsed.TotalSeconds >= 30)
                     {
                         pushMetadataDownloadStopwatch.Restart();
-
-                        var cloudNodes = _routeTable.ToArray();
 
                         var pushBroadcastMetadatasRequestSet = new HashSet<Signature>();
                         var pushUnicastMetadatasRequestSet = new HashSet<Signature>();
@@ -769,15 +741,15 @@ namespace Amoeba.Service
                             {
                                 {
                                     var list = _pushBroadcastMetadatasRequestSet.ToArray();
-                                    _random.Shuffle(list);
+                                    random.Shuffle(list);
 
                                     pushBroadcastMetadatasRequestSet.UnionWith(list.Take(_maxMetadataRequestCount));
                                 }
 
                                 foreach (var node in cloudNodes)
                                 {
-                                    var list = node.Value.ReceiveInfo.PullBroadcastMetadataRequestSet.ToArray(new TimeSpan(0, 10, 0));
-                                    _random.Shuffle(list);
+                                    var list = node.Value.Receive.PulledBroadcastMetadataRequestSet.ToArray();
+                                    random.Shuffle(list);
 
                                     pushBroadcastMetadatasRequestSet.UnionWith(list.Take(_maxMetadataRequestCount));
                                 }
@@ -787,15 +759,15 @@ namespace Amoeba.Service
                             {
                                 {
                                     var list = _pushUnicastMetadatasRequestSet.ToArray();
-                                    _random.Shuffle(list);
+                                    random.Shuffle(list);
 
                                     pushUnicastMetadatasRequestSet.UnionWith(list.Take(_maxMetadataRequestCount));
                                 }
 
                                 foreach (var node in cloudNodes)
                                 {
-                                    var list = node.Value.ReceiveInfo.PullUnicastMetadataRequestSet.ToArray(new TimeSpan(0, 10, 0));
-                                    _random.Shuffle(list);
+                                    var list = node.Value.Receive.PulledUnicastMetadataRequestSet.ToArray();
+                                    random.Shuffle(list);
 
                                     pushUnicastMetadatasRequestSet.UnionWith(list.Take(_maxMetadataRequestCount));
                                 }
@@ -805,15 +777,15 @@ namespace Amoeba.Service
                             {
                                 {
                                     var list = _pushMulticastMetadatasRequestSet.ToArray();
-                                    _random.Shuffle(list);
+                                    random.Shuffle(list);
 
                                     pushMulticastMetadatasRequestSet.UnionWith(list.Take(_maxMetadataRequestCount));
                                 }
 
                                 foreach (var node in cloudNodes)
                                 {
-                                    var list = node.Value.ReceiveInfo.PullMulticastMetadataRequestSet.ToArray(new TimeSpan(0, 10, 0));
-                                    _random.Shuffle(list);
+                                    var list = node.Value.Receive.PulledMulticastMetadataRequestSet.ToArray();
+                                    random.Shuffle(list);
 
                                     pushMulticastMetadatasRequestSet.UnionWith(list.Take(_maxMetadataRequestCount));
                                 }
@@ -827,7 +799,7 @@ namespace Amoeba.Service
 
                                 foreach (var signature in pushBroadcastMetadatasRequestSet.Randomize())
                                 {
-                                    foreach (var node in GetTargetNodes(_routeTable.BaseId, signature.Id, cloudNodes, 3, 1, 2))
+                                    foreach (var node in RouteTableMethods.Search(_baseId, signature.Id, cloudNodes, 3))
                                     {
                                         tempMap.GetOrAdd(node, (_) => new List<Signature>()).Add(signature);
                                     }
@@ -835,12 +807,16 @@ namespace Amoeba.Service
 
                                 foreach (var (node, targets) in tempMap)
                                 {
-                                    _random.Shuffle(targets);
+                                    random.Shuffle(targets);
 
-                                    lock (node.Value.SendInfo.PushBroadcastMetadataRequestQueue.LockObject)
+                                    lock (node.Value.Send.PushBroadcastMetadataRequestQueue.LockObject)
                                     {
-                                        node.Value.SendInfo.PushBroadcastMetadataRequestQueue.Clear();
-                                        node.Value.SendInfo.PushBroadcastMetadataRequestQueue.AddRange(targets.Take(_maxMetadataRequestCount));
+                                        node.Value.Send.PushBroadcastMetadataRequestQueue.Clear();
+
+                                        foreach (var signature in targets.Take(_maxMetadataRequestCount))
+                                        {
+                                            node.Value.Send.PushBroadcastMetadataRequestQueue.Enqueue(signature);
+                                        }
                                     }
                                 }
                             }
@@ -851,7 +827,7 @@ namespace Amoeba.Service
 
                                 foreach (var signature in pushUnicastMetadatasRequestSet.Randomize())
                                 {
-                                    foreach (var node in GetTargetNodes(_routeTable.BaseId, signature.Id, cloudNodes, 3, 1, 2))
+                                    foreach (var node in RouteTableMethods.Search(_baseId, signature.Id, cloudNodes, 3))
                                     {
                                         tempMap.GetOrAdd(node, (_) => new List<Signature>()).Add(signature);
                                     }
@@ -859,12 +835,16 @@ namespace Amoeba.Service
 
                                 foreach (var (node, targets) in tempMap)
                                 {
-                                    _random.Shuffle(targets);
+                                    random.Shuffle(targets);
 
-                                    lock (node.Value.SendInfo.PushUnicastMetadataRequestQueue.LockObject)
+                                    lock (node.Value.Send.PushUnicastMetadataRequestQueue.LockObject)
                                     {
-                                        node.Value.SendInfo.PushUnicastMetadataRequestQueue.Clear();
-                                        node.Value.SendInfo.PushUnicastMetadataRequestQueue.AddRange(targets.Take(_maxMetadataRequestCount));
+                                        node.Value.Send.PushUnicastMetadataRequestQueue.Clear();
+
+                                        foreach (var signature in targets.Take(_maxMetadataRequestCount))
+                                        {
+                                            node.Value.Send.PushUnicastMetadataRequestQueue.Enqueue(signature);
+                                        }
                                     }
                                 }
                             }
@@ -875,7 +855,7 @@ namespace Amoeba.Service
 
                                 foreach (var tag in pushMulticastMetadatasRequestSet.Randomize())
                                 {
-                                    foreach (var node in GetTargetNodes(_routeTable.BaseId, tag.Id, cloudNodes, 3, 1, 2))
+                                    foreach (var node in RouteTableMethods.Search(_baseId, tag.Id, cloudNodes, 3))
                                     {
                                         tempMap.GetOrAdd(node, (_) => new List<Tag>()).Add(tag);
                                     }
@@ -883,12 +863,16 @@ namespace Amoeba.Service
 
                                 foreach (var (node, targets) in tempMap)
                                 {
-                                    _random.Shuffle(targets);
+                                    random.Shuffle(targets);
 
-                                    lock (node.Value.SendInfo.PushMulticastMetadataRequestQueue.LockObject)
+                                    lock (node.Value.Send.PushMulticastMetadataRequestQueue.LockObject)
                                     {
-                                        node.Value.SendInfo.PushMulticastMetadataRequestQueue.Clear();
-                                        node.Value.SendInfo.PushMulticastMetadataRequestQueue.AddRange(targets.Take(_maxMetadataRequestCount));
+                                        node.Value.Send.PushMulticastMetadataRequestQueue.Clear();
+
+                                        foreach (var tag in targets.Take(_maxMetadataRequestCount))
+                                        {
+                                            node.Value.Send.PushMulticastMetadataRequestQueue.Enqueue(tag);
+                                        }
                                     }
                                 }
                             }
@@ -899,16 +883,6 @@ namespace Amoeba.Service
             catch (Exception e)
             {
                 Log.Error(e);
-            }
-
-            IEnumerable<Node<T>> GetTargetNodes<T>(byte[] baseId, byte[] targetId, IEnumerable<Node<T>> cloudNodes, int searchCount, int randomCount, int getCount)
-            {
-                var tempList = new List<Node<T>>();
-                tempList.AddRange(RouteTable<T>.Search(baseId, targetId, cloudNodes, searchCount));
-                tempList.AddRange(cloudNodes.Randomize().Take(randomCount));
-                _random.Shuffle(tempList);
-
-                return tempList.Take(getCount);
             }
         }
 
@@ -930,17 +904,17 @@ namespace Amoeba.Service
 
                     // Send
                     {
-                        int remain = (_bandwidthLimit != 0) ? _bandwidthLimit / _threadCount : int.MaxValue;
+                        int remain = (_config.BandwidthLimit != 0) ? _config.BandwidthLimit / _threadCount : int.MaxValue;
 
                         foreach (var connection in _connections.Where(n => n.Value.ThreadId == threadId).Select(n => n.Key).Randomize())
                         {
                             try
                             {
-                                int count = connection.Send(Math.Min(remain, 1024 * 1024 * 2));
-                                _sentByteCount.Add(count);
+                                int count = connection.Send(Math.Min(remain, 1024 * 1024 * 4));
+                                _status.SentByteCount.Add(count);
 
                                 remain -= count;
-                                if (remain == 0) break;
+                                if (remain <= 0) break;
                             }
                             catch (Exception e)
                             {
@@ -978,17 +952,17 @@ namespace Amoeba.Service
 
                     // Receive
                     {
-                        int remain = (_bandwidthLimit != 0) ? _bandwidthLimit / _threadCount : int.MaxValue;
+                        int remain = (_config.BandwidthLimit != 0) ? _config.BandwidthLimit / _threadCount : int.MaxValue;
 
                         foreach (var connection in _connections.Where(n => n.Value.ThreadId == threadId).Select(n => n.Key).Randomize())
                         {
                             try
                             {
-                                int count = connection.Receive(Math.Min(remain, 1024 * 1024 * 2));
-                                _receivedByteCount.Add(count);
+                                int count = connection.Receive(Math.Min(remain, 1024 * 1024 * 4));
+                                _status.ReceivedByteCount.Add(count);
 
                                 remain -= count;
-                                if (remain == 0) break;
+                                if (remain <= 0) break;
                             }
                             catch (Exception e)
                             {
@@ -1004,12 +978,6 @@ namespace Amoeba.Service
             {
                 Log.Error(e);
             }
-        }
-
-        private enum ProtocolVersion : uint
-        {
-            Version0 = 0,
-            Version1 = 1,
         }
 
         private enum SerializeId
@@ -1032,189 +1000,179 @@ namespace Amoeba.Service
 
         private Stream Send(SessionInfo sessionInfo)
         {
-            // Init
-            if (!sessionInfo.SendInfo.IsInitialized)
+            if (!sessionInfo.Send.IsInitialized)
             {
-                sessionInfo.SendInfo.IsInitialized = true;
+                sessionInfo.Send.IsInitialized = true;
 
                 Stream versionStream = new BufferStream(_bufferManager);
                 Varint.SetUInt64(versionStream, (uint)ProtocolVersion.Version1);
 
-                var dataStream = (new ProfilePacket(_routeTable.BaseId, _myLocation)).Export(_bufferManager);
+                var packet = new ProfilePacket(_baseId, _myLocation);
 
-                Debug.WriteLine("NetworkManager: Send Init");
+                var dataStream = packet.Export(_bufferManager);
+
+                Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " NetworkManager: Send Profile");
 
                 return new UniteStream(versionStream, dataStream);
             }
-
-            if (!sessionInfo.ReceiveInfo.IsInitialized) return null;
-
-            // Locations
-            if (sessionInfo.SendInfo.LocationResultStopwatch.Elapsed.TotalSeconds > 30)
+            else
             {
-                sessionInfo.SendInfo.LocationResultStopwatch.Restart();
-
-                var tempLocations = new List<Location>();
-                tempLocations.Add(this.MyLocation);
-                tempLocations.AddRange(_cloudLocations);
-                _random.Shuffle(tempLocations);
-
-                var packet = new LocationsPacket(tempLocations.Take(_maxLocationCount));
-
-                Stream typeStream = new BufferStream(_bufferManager);
-                Varint.SetUInt64(typeStream, (uint)SerializeId.Locations);
-
-                _info.PushLocationCount.Add(packet.Locations.Count());
-
-                Debug.WriteLine("NetworkManager: Send LocationResult");
-
-                return new UniteStream(typeStream, packet.Export(_bufferManager));
-            }
-
-            // BlocksLink
-            if (sessionInfo.SendInfo.PushBlockLinkQueue.Count > 0)
-            {
-                BlocksLinkPacket packet;
-
-                lock (sessionInfo.SendInfo.PushBlockLinkQueue.LockObject)
+                if (sessionInfo.Send.LocationResultStopwatch.Elapsed.TotalMinutes > 3)
                 {
-                    packet = new BlocksLinkPacket(sessionInfo.SendInfo.PushBlockLinkQueue);
-                    sessionInfo.SendInfo.PushBlockLinkQueue.Clear();
+                    sessionInfo.Send.LocationResultStopwatch.Restart();
+
+                    var random = RandomProvider.GetThreadRandom();
+
+                    var tempLocations = new List<Location>();
+                    tempLocations.Add(_myLocation);
+                    tempLocations.AddRange(_cloudLocations);
+
+                    random.Shuffle(tempLocations);
+
+                    var packet = new LocationsPacket(tempLocations.Take(_maxLocationCount));
+
+                    Stream typeStream = new BufferStream(_bufferManager);
+                    Varint.SetUInt64(typeStream, (uint)SerializeId.Locations);
+
+                    _status.PushLocationCount.Add(packet.Locations.Count());
+
+                    Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " NetworkManager: Send LocationResult");
+
+                    return new UniteStream(typeStream, packet.Export(_bufferManager));
                 }
-
-                Stream typeStream = new BufferStream(_bufferManager);
-                Varint.SetUInt64(typeStream, (uint)SerializeId.BlocksLink);
-
-                _info.PushBlockLinkCount.Add(packet.Hashes.Count());
-
-                sessionInfo.SendInfo.PushBlockLinkSet.AddRange(packet.Hashes);
-
-                Debug.WriteLine("NetworkManager: Send BlockLink");
-
-                return new UniteStream(typeStream, packet.Export(_bufferManager));
-            }
-
-            // BlocksRequest
-            if (sessionInfo.SendInfo.PushBlockRequestQueue.Count > 0)
-            {
-                BlocksRequestPacket packet;
-
-                lock (sessionInfo.SendInfo.PushBlockRequestQueue.LockObject)
+                else if (sessionInfo.Send.PushBlockLinkQueue.Count > 0)
                 {
-                    packet = new BlocksRequestPacket(sessionInfo.SendInfo.PushBlockRequestQueue);
-                    sessionInfo.SendInfo.PushBlockRequestQueue.Clear();
-                }
+                    BlocksLinkPacket packet;
 
-                Stream typeStream = new BufferStream(_bufferManager);
-                Varint.SetUInt64(typeStream, (uint)SerializeId.BlocksRequest);
-
-                _info.PushBlockRequestCount.Add(packet.Hashes.Count());
-
-                sessionInfo.SendInfo.PushBlockRequestSet.AddRange(packet.Hashes);
-
-                Debug.WriteLine("NetworkManager: Send BlockRequest");
-
-                return new UniteStream(typeStream, packet.Export(_bufferManager));
-            }
-
-            // BlockResult
-            if (sessionInfo.SendInfo.BlockResultStopwatch.Elapsed.TotalSeconds > 1)
-            {
-                sessionInfo.SendInfo.BlockResultStopwatch.Restart();
-
-                if (_random.Next(0, 100) < (sessionInfo.PriorityManager.GetPriority() * 100))
-                {
-                    Hash hash;
-
-                    lock (sessionInfo.SendInfo.PushBlockResultQueue.LockObject)
+                    lock (sessionInfo.Send.PushBlockLinkQueue.LockObject)
                     {
-                        if (sessionInfo.SendInfo.PushBlockResultQueue.Count > 0)
+                        sessionInfo.Send.PushedBlockLinkFilter.AddRange(sessionInfo.Send.PushBlockLinkQueue);
+
+                        packet = new BlocksLinkPacket(sessionInfo.Send.PushBlockLinkQueue);
+                        sessionInfo.Send.PushBlockLinkQueue.Clear();
+                    }
+
+                    Stream typeStream = new BufferStream(_bufferManager);
+                    Varint.SetUInt64(typeStream, (uint)SerializeId.BlocksLink);
+
+                    _status.PushBlockLinkCount.Add(packet.Hashes.Count());
+
+                    Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " NetworkManager: Send BlockLink");
+
+                    return new UniteStream(typeStream, packet.Export(_bufferManager));
+                }
+                else if (sessionInfo.Send.PushBlockRequestQueue.Count > 0)
+                {
+                    BlocksRequestPacket packet;
+
+                    lock (sessionInfo.Send.PushBlockRequestQueue.LockObject)
+                    {
+                        sessionInfo.Send.PushedBlockRequestSet.UnionWith(sessionInfo.Send.PushBlockRequestQueue);
+
+                        packet = new BlocksRequestPacket(sessionInfo.Send.PushBlockRequestQueue);
+                        sessionInfo.Send.PushBlockRequestQueue.Clear();
+                    }
+
+                    Stream typeStream = new BufferStream(_bufferManager);
+                    Varint.SetUInt64(typeStream, (uint)SerializeId.BlocksRequest);
+
+                    _status.PushBlockRequestCount.Add(packet.Hashes.Count());
+
+                    Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " NetworkManager: Send BlockRequest");
+
+                    return new UniteStream(typeStream, packet.Export(_bufferManager));
+                }
+                else if (sessionInfo.Send.BlockResultStopwatch.Elapsed.TotalSeconds > 0.5 && sessionInfo.Send.PushBlockResultQueue.Count > 0)
+                {
+                    sessionInfo.Send.BlockResultStopwatch.Restart();
+
+                    Hash? hash = null;
+
+                    lock (sessionInfo.Send.PushBlockResultQueue.LockObject)
+                    {
+                        if (sessionInfo.Send.PushBlockResultQueue.Count > 0)
                         {
-                            hash = sessionInfo.SendInfo.PushBlockResultQueue.Dequeue();
-                        }
-                        else
-                        {
-                            goto End;
+                            hash = sessionInfo.Send.PushBlockResultQueue.Dequeue();
+                            sessionInfo.Receive.PulledBlockRequestSet.Remove(hash.Value);
                         }
                     }
 
-                    Stream dataStream = null;
+                    if (hash != null)
                     {
-                        var buffer = new ArraySegment<byte>();
-
-                        try
+                        Stream dataStream = null;
                         {
-                            buffer = _cacheManager[hash];
+                            var buffer = new ArraySegment<byte>();
 
-                            dataStream = (new BlockResultPacket(hash, buffer)).Export(_bufferManager);
-                        }
-                        catch (Exception)
-                        {
-
-                        }
-                        finally
-                        {
-                            if (buffer.Array != null)
+                            try
                             {
-                                _bufferManager.ReturnBuffer(buffer.Array);
+                                buffer = _cacheManager.GetBlock(hash.Value);
+
+                                dataStream = (new BlockResultPacket(hash.Value, buffer)).Export(_bufferManager);
+                            }
+                            catch (Exception)
+                            {
+
+                            }
+                            finally
+                            {
+                                if (buffer.Array != null)
+                                {
+                                    _bufferManager.ReturnBuffer(buffer.Array);
+                                }
                             }
                         }
-                    }
 
-                    if (dataStream != null)
-                    {
-                        Stream typeStream = new BufferStream(_bufferManager);
-                        Varint.SetUInt64(typeStream, (uint)SerializeId.BlockResult);
+                        if (dataStream != null)
+                        {
+                            Stream typeStream = new BufferStream(_bufferManager);
+                            Varint.SetUInt64(typeStream, (uint)SerializeId.BlockResult);
 
-                        _info.PushBlockResultCount.Increment();
+                            _status.PushBlockResultCount.Increment();
 
-                        sessionInfo.SendInfo.PushBlockResultSet.Add(hash);
-                        sessionInfo.ReceiveInfo.PullBlockRequestSet.Remove(hash);
+                            _diffusionBlockHashes.Remove(hash.Value);
+                            _uploadBlockHashes.Remove(hash.Value);
 
-                        _diffusionBlockHashes.Remove(hash);
-                        _uploadBlockHashes.Remove(hash);
+                            Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " NetworkManager: Send BlockResult " + NetworkConverter.ToBase64UrlString(hash.Value.Value));
 
-                        Debug.WriteLine("NetworkManager: Send BlockResult");
-
-                        return new UniteStream(typeStream, dataStream);
+                            return new UniteStream(typeStream, dataStream);
+                        }
                     }
                 }
-
-                End:;
-            }
-
-            if (ProtocolVersion.Version1 <= sessionInfo.Version)
-            {
-                // BroadcastMetadatasRequest
-                if (sessionInfo.SendInfo.PushBroadcastMetadataRequestQueue.Count > 0)
+                else if (sessionInfo.Send.PushBroadcastMetadataRequestQueue.Count > 0)
                 {
                     BroadcastMetadatasRequestPacket packet;
 
-                    lock (sessionInfo.SendInfo.PushBroadcastMetadataRequestQueue.LockObject)
+                    lock (sessionInfo.Send.PushBroadcastMetadataRequestQueue.LockObject)
                     {
-                        packet = new BroadcastMetadatasRequestPacket(sessionInfo.SendInfo.PushBroadcastMetadataRequestQueue);
-                        sessionInfo.SendInfo.PushBroadcastMetadataRequestQueue.Clear();
+                        packet = new BroadcastMetadatasRequestPacket(sessionInfo.Send.PushBroadcastMetadataRequestQueue);
+                        sessionInfo.Send.PushBroadcastMetadataRequestQueue.Clear();
                     }
 
                     Stream typeStream = new BufferStream(_bufferManager);
                     Varint.SetUInt64(typeStream, (uint)SerializeId.BroadcastMetadatasRequest);
 
-                    _info.PushMessageRequestCount.Add(packet.Signatures.Count());
+                    _status.PushMessageRequestCount.Add(packet.Signatures.Count());
 
-                    Debug.WriteLine("NetworkManager: Send BroadcastMetadataRequest");
+                    Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " NetworkManager: Send BroadcastMetadataRequest");
 
                     return new UniteStream(typeStream, packet.Export(_bufferManager));
                 }
-
-                // BroadcastMetadatasResult
-                if (sessionInfo.SendInfo.BroadcastMetadataResultStopwatch.Elapsed.TotalSeconds > 30)
+                else if (sessionInfo.Send.BroadcastMetadataResultStopwatch.Elapsed.TotalSeconds > 30)
                 {
-                    sessionInfo.SendInfo.BroadcastMetadataResultStopwatch.Restart();
+                    sessionInfo.Send.BroadcastMetadataResultStopwatch.Restart();
+
+                    var random = RandomProvider.GetThreadRandom();
 
                     var broadcastMetadatas = new List<BroadcastMetadata>();
 
-                    var signatures = sessionInfo.ReceiveInfo.PullBroadcastMetadataRequestSet.ToArray().ToList();
-                    _random.Shuffle(signatures);
+                    var signatures = new List<Signature>();
+
+                    lock (sessionInfo.Receive.PulledBroadcastMetadataRequestSet.LockObject)
+                    {
+                        signatures.AddRange(sessionInfo.Receive.PulledBroadcastMetadataRequestSet);
+                    }
+
+                    random.Shuffle(signatures);
 
                     foreach (var signature in signatures)
                     {
@@ -1236,127 +1194,135 @@ namespace Amoeba.Service
                         Stream typeStream = new BufferStream(_bufferManager);
                         Varint.SetUInt64(typeStream, (uint)SerializeId.BroadcastMetadatasResult);
 
-                        _info.PushMessageResultCount.Add(packet.BroadcastMetadatas.Count());
+                        _status.PushMessageResultCount.Add(packet.BroadcastMetadatas.Count());
 
-                        Debug.WriteLine("NetworkManager: Send MetadataResult");
+                        Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " NetworkManager: Send MetadataResult");
 
                         return new UniteStream(typeStream, packet.Export(_bufferManager));
                     }
                 }
-
-                // UnicastMetadatasRequest
-                if (sessionInfo.SendInfo.PushUnicastMetadataRequestQueue.Count > 0)
+                else if (sessionInfo.Send.PushUnicastMetadataRequestQueue.Count > 0)
                 {
                     UnicastMetadatasRequestPacket packet;
 
-                    lock (sessionInfo.SendInfo.PushUnicastMetadataRequestQueue.LockObject)
+                    lock (sessionInfo.Send.PushUnicastMetadataRequestQueue.LockObject)
                     {
-                        packet = new UnicastMetadatasRequestPacket(sessionInfo.SendInfo.PushUnicastMetadataRequestQueue);
-                        sessionInfo.SendInfo.PushUnicastMetadataRequestQueue.Clear();
+                        packet = new UnicastMetadatasRequestPacket(sessionInfo.Send.PushUnicastMetadataRequestQueue);
+                        sessionInfo.Send.PushUnicastMetadataRequestQueue.Clear();
                     }
 
                     Stream typeStream = new BufferStream(_bufferManager);
                     Varint.SetUInt64(typeStream, (uint)SerializeId.UnicastMetadatasRequest);
 
-                    _info.PushMessageRequestCount.Add(packet.Signatures.Count());
+                    _status.PushMessageRequestCount.Add(packet.Signatures.Count());
 
-                    Debug.WriteLine("NetworkManager: Send UnicastMetadataRequest");
+                    Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " NetworkManager: Send UnicastMetadataRequest");
 
                     return new UniteStream(typeStream, packet.Export(_bufferManager));
                 }
-
-                // UnicastMetadatasResult
-                if (sessionInfo.SendInfo.UnicastMetadataResultStopwatch.Elapsed.TotalSeconds > 30)
+                else if (sessionInfo.Send.UnicastMetadataResultStopwatch.Elapsed.TotalSeconds > 30)
                 {
-                    sessionInfo.SendInfo.UnicastMetadataResultStopwatch.Restart();
+                    sessionInfo.Send.UnicastMetadataResultStopwatch.Restart();
 
-                    var unicastMetadatas = new List<UnicastMetadata>();
+                    var random = RandomProvider.GetThreadRandom();
 
-                    var signatures = sessionInfo.ReceiveInfo.PullUnicastMetadataRequestSet.ToArray().ToList();
-                    _random.Shuffle(signatures);
+                    var UnicastMetadatas = new List<UnicastMetadata>();
+
+                    var signatures = new List<Signature>();
+
+                    lock (sessionInfo.Receive.PulledUnicastMetadataRequestSet.LockObject)
+                    {
+                        signatures.AddRange(sessionInfo.Receive.PulledUnicastMetadataRequestSet);
+                    }
+
+                    random.Shuffle(signatures);
 
                     foreach (var signature in signatures)
                     {
                         foreach (var metadata in _metadataManager.GetUnicastMetadatas(signature).Randomize())
                         {
-                            unicastMetadatas.Add(metadata);
+                            UnicastMetadatas.Add(metadata);
 
-                            if (unicastMetadatas.Count >= _maxMetadataResultCount) goto End;
+                            if (UnicastMetadatas.Count >= _maxMetadataResultCount) goto End;
                         }
                     }
 
                     End:;
 
-                    if (unicastMetadatas.Count > 0)
+                    if (UnicastMetadatas.Count > 0)
                     {
-                        var packet = new UnicastMetadatasResultPacket(unicastMetadatas);
-                        unicastMetadatas.Clear();
+                        var packet = new UnicastMetadatasResultPacket(UnicastMetadatas);
+                        UnicastMetadatas.Clear();
 
                         Stream typeStream = new BufferStream(_bufferManager);
                         Varint.SetUInt64(typeStream, (uint)SerializeId.UnicastMetadatasResult);
 
-                        _info.PushMessageResultCount.Add(packet.UnicastMetadatas.Count());
+                        _status.PushMessageResultCount.Add(packet.UnicastMetadatas.Count());
 
-                        Debug.WriteLine("NetworkManager: Send UnicastMetadataResult");
+                        Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " NetworkManager: Send MetadataResult");
 
                         return new UniteStream(typeStream, packet.Export(_bufferManager));
                     }
                 }
-
-                // MulticastMetadatasRequest
-                if (sessionInfo.SendInfo.PushMulticastMetadataRequestQueue.Count > 0)
+                else if (sessionInfo.Send.PushMulticastMetadataRequestQueue.Count > 0)
                 {
                     MulticastMetadatasRequestPacket packet;
 
-                    lock (sessionInfo.SendInfo.PushMulticastMetadataRequestQueue.LockObject)
+                    lock (sessionInfo.Send.PushMulticastMetadataRequestQueue.LockObject)
                     {
-                        packet = new MulticastMetadatasRequestPacket(sessionInfo.SendInfo.PushMulticastMetadataRequestQueue);
-                        sessionInfo.SendInfo.PushMulticastMetadataRequestQueue.Clear();
+                        packet = new MulticastMetadatasRequestPacket(sessionInfo.Send.PushMulticastMetadataRequestQueue);
+                        sessionInfo.Send.PushMulticastMetadataRequestQueue.Clear();
                     }
 
                     Stream typeStream = new BufferStream(_bufferManager);
                     Varint.SetUInt64(typeStream, (uint)SerializeId.MulticastMetadatasRequest);
 
-                    _info.PushMessageRequestCount.Add(packet.Tags.Count());
+                    _status.PushMessageRequestCount.Add(packet.Tags.Count());
 
-                    Debug.WriteLine("NetworkManager: Send MulticastMetadataRequest");
+                    Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " NetworkManager: Send MulticastMetadataRequest");
 
                     return new UniteStream(typeStream, packet.Export(_bufferManager));
                 }
-
-                // MulticastMetadatasResult
-                if (sessionInfo.SendInfo.MulticastMetadataResultStopwatch.Elapsed.TotalSeconds > 30)
+                else if (sessionInfo.Send.MulticastMetadataResultStopwatch.Elapsed.TotalSeconds > 30)
                 {
-                    sessionInfo.SendInfo.MulticastMetadataResultStopwatch.Restart();
+                    sessionInfo.Send.MulticastMetadataResultStopwatch.Restart();
 
-                    var multicastMetadatas = new List<MulticastMetadata>();
+                    var random = RandomProvider.GetThreadRandom();
 
-                    var tags = sessionInfo.ReceiveInfo.PullMulticastMetadataRequestSet.ToArray().ToList();
-                    _random.Shuffle(tags);
+                    var MulticastMetadatas = new List<MulticastMetadata>();
+
+                    var tags = new List<Tag>();
+
+                    lock (sessionInfo.Receive.PulledMulticastMetadataRequestSet.LockObject)
+                    {
+                        tags.AddRange(sessionInfo.Receive.PulledMulticastMetadataRequestSet);
+                    }
+
+                    random.Shuffle(tags);
 
                     foreach (var tag in tags)
                     {
                         foreach (var metadata in _metadataManager.GetMulticastMetadatas(tag).Randomize())
                         {
-                            multicastMetadatas.Add(metadata);
+                            MulticastMetadatas.Add(metadata);
 
-                            if (multicastMetadatas.Count >= _maxMetadataResultCount) goto End;
+                            if (MulticastMetadatas.Count >= _maxMetadataResultCount) goto End;
                         }
                     }
 
                     End:;
 
-                    if (multicastMetadatas.Count > 0)
+                    if (MulticastMetadatas.Count > 0)
                     {
-                        var packet = new MulticastMetadatasResultPacket(multicastMetadatas);
-                        multicastMetadatas.Clear();
+                        var packet = new MulticastMetadatasResultPacket(MulticastMetadatas);
+                        MulticastMetadatas.Clear();
 
                         Stream typeStream = new BufferStream(_bufferManager);
                         Varint.SetUInt64(typeStream, (uint)SerializeId.MulticastMetadatasResult);
 
-                        _info.PushMessageResultCount.Add(packet.MulticastMetadatas.Count());
+                        _status.PushMessageResultCount.Add(packet.MulticastMetadatas.Count());
 
-                        Debug.WriteLine("NetworkManager: Send MulticastMetadataResult");
+                        Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " NetworkManager: Send MetadataResult");
 
                         return new UniteStream(typeStream, packet.Export(_bufferManager));
                     }
@@ -1370,35 +1336,39 @@ namespace Amoeba.Service
         {
             try
             {
-                sessionInfo.ReceiveInfo.Stopwatch.Restart();
+                sessionInfo.Receive.Stopwatch.Restart();
 
-                if (!sessionInfo.ReceiveInfo.IsInitialized)
+                if (!sessionInfo.Receive.IsInitialized)
                 {
                     var targetVersion = (ProtocolVersion)Varint.GetUInt64(stream);
+
                     sessionInfo.Version = (ProtocolVersion)Math.Min((uint)targetVersion, (uint)ProtocolVersion.Version1);
 
                     using (var dataStream = new RangeStream(stream))
                     {
                         var profile = ProfilePacket.Import(dataStream, _bufferManager);
-                        if (profile.Id == null || profile.Location == null) throw new ArgumentException("Broken Profile");
+                        if (profile.Id == null || profile.Location == null) throw new ArgumentException("NetworkManager: Broken Profile");
 
-                        lock (_lockObject)
+                        if (Unsafe.Equals(_baseId, profile.Id)) throw new ArgumentException("NetworkManager: Circular Connect");
+
+                        lock (_connections.LockObject)
                         {
-                            if (Unsafe.Equals(profile.Id, _routeTable.BaseId)) throw new ArgumentException("Conflict");
+                            var connectionIds = _connections.Select(n => n.Value.Id).Where(n => n != null).ToArray();
+                            if (connectionIds.Any(n => Unsafe.Equals(n, profile.Id))) throw new ArgumentException("NetworkManager: Conflict");
 
-                            if (_connections.ContainsKey(sessionInfo.Connection))
-                            {
-                                sessionInfo.Id = profile.Id;
-                                sessionInfo.Location = profile.Location;
+                            var distance = RouteTableMethods.Distance(_baseId, profile.Id);
+                            var count = connectionIds.Select(id => RouteTableMethods.Distance(_baseId, id)).Count(n => n == distance);
 
-                                if (!_routeTable.Add(profile.Id, sessionInfo)) throw new ArgumentException("RouteTable Overflow");
-                            }
+                            if (count > 32) throw new ArgumentException("NetworkManager: RouteTable Overflow");
                         }
+
+                        sessionInfo.Id = profile.Id;
+                        sessionInfo.Location = profile.Location;
+
+                        sessionInfo.Receive.IsInitialized = true;
                     }
 
-                    Debug.WriteLine("NetworkManager: Receive Init");
-
-                    sessionInfo.ReceiveInfo.IsInitialized = true;
+                    Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " NetworkManager: Receive Profile");
                 }
                 else
                 {
@@ -1412,56 +1382,55 @@ namespace Amoeba.Service
                             {
                                 var packet = LocationsPacket.Import(dataStream, _bufferManager);
 
-                                if (sessionInfo.ReceiveInfo.PullLocationSet.Count + packet.Locations.Count()
-                                    > _maxLocationCount * sessionInfo.ReceiveInfo.PullLocationSet.SurvivalTime.TotalMinutes * 2) return;
+                                if (sessionInfo.Receive.PulledLocationSet.Count + packet.Locations.Count()
+                                    > _maxLocationCount * sessionInfo.Receive.PulledLocationSet.SurvivalTime.TotalMinutes / 3) return;
 
-                                _info.PullLocationCount.Add(packet.Locations.Count());
+                                sessionInfo.Receive.PulledLocationSet.UnionWith(packet.Locations);
 
-                                sessionInfo.ReceiveInfo.PullLocationSet.AddRange(packet.Locations);
+                                _status.PullLocationCount.Add(packet.Locations.Count());
 
-                                Debug.WriteLine("NetworkManager: Receive Locations");
+                                Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " NetworkManager: Receive LocationResult");
                             }
                             else if (id == (int)SerializeId.BlocksLink)
                             {
                                 var packet = BlocksLinkPacket.Import(dataStream, _bufferManager);
 
-                                if (sessionInfo.ReceiveInfo.PullBlockLinkSet.Count + packet.Hashes.Count()
-                                    > _maxBlockLinkCount * sessionInfo.ReceiveInfo.PullBlockLinkSet.SurvivalTime.TotalMinutes * 2) return;
+                                if (sessionInfo.Receive.PulledBlockLinkSet.Count + packet.Hashes.Count()
+                                    > _maxBlockLinkCount * sessionInfo.Receive.PulledBlockLinkSet.SurvivalTime.TotalMinutes * 2) return;
 
-                                _info.PullBlockLinkCount.Add(packet.Hashes.Count());
+                                sessionInfo.Receive.PulledBlockLinkSet.UnionWith(packet.Hashes);
 
-                                sessionInfo.ReceiveInfo.PullBlockLinkSet.AddRange(packet.Hashes);
+                                _status.PullBlockLinkCount.Add(packet.Hashes.Count());
 
-                                Debug.WriteLine("NetworkManager: Receive BlocksLink");
+                                Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " NetworkManager: Receive BlocksLink");
                             }
                             else if (id == (int)SerializeId.BlocksRequest)
                             {
                                 var packet = BlocksRequestPacket.Import(dataStream, _bufferManager);
 
-                                if (sessionInfo.ReceiveInfo.PullBlockRequestSet.Count + packet.Hashes.Count()
-                                    > _maxBlockRequestCount * sessionInfo.ReceiveInfo.PullBlockRequestSet.SurvivalTime.TotalMinutes * 2) return;
+                                if (sessionInfo.Receive.PulledBlockRequestSet.Count + packet.Hashes.Count()
+                                    > _maxBlockRequestCount * sessionInfo.Receive.PulledBlockRequestSet.SurvivalTime.TotalMinutes * 2) return;
 
-                                _info.PullBlockRequestCount.Add(packet.Hashes.Count());
+                                sessionInfo.Receive.PulledBlockRequestSet.UnionWith(packet.Hashes);
 
-                                sessionInfo.ReceiveInfo.PullBlockRequestSet.AddRange(packet.Hashes);
+                                _status.PullBlockRequestCount.Add(packet.Hashes.Count());
 
-                                Debug.WriteLine("NetworkManager: Receive BlocksRequest");
+                                Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " NetworkManager: Receive BlocksRequest");
                             }
                             else if (id == (int)SerializeId.BlockResult)
                             {
                                 var packet = BlockResultPacket.Import(dataStream, _bufferManager);
 
-                                _info.PullBlockResultCount.Increment();
+                                _status.PullBlockResultCount.Increment();
 
                                 try
                                 {
-                                    _cacheManager[packet.Hash] = packet.Value;
+                                    _cacheManager.Set(packet.Hash, packet.Value);
 
-                                    sessionInfo.SendInfo.PushBlockResultSet.Add(packet.Hash);
-
-                                    if (sessionInfo.SendInfo.PushBlockRequestSet.Contains(packet.Hash))
+                                    if (sessionInfo.Send.PushedBlockRequestSet.Contains(packet.Hash))
                                     {
-                                        sessionInfo.PriorityManager.Increment();
+                                        var priority = (int)(sessionInfo.Send.PushedBlockRequestSet.SurvivalTime.TotalMinutes - sessionInfo.Send.PushedBlockRequestSet.GetElapsedTime(packet.Hash).TotalMinutes);
+                                        sessionInfo.Priority.Add(priority);
                                     }
                                     else
                                     {
@@ -1476,20 +1445,20 @@ namespace Amoeba.Service
                                     }
                                 }
 
-                                Debug.WriteLine("NetworkManager: Receive BlockResult");
+                                Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " NetworkManager: Receive BlockResult " + NetworkConverter.ToBase64UrlString(packet.Hash.Value));
                             }
                             else if (id == (int)SerializeId.BroadcastMetadatasRequest)
                             {
                                 var packet = BroadcastMetadatasRequestPacket.Import(dataStream, _bufferManager);
 
-                                if (sessionInfo.ReceiveInfo.PullBroadcastMetadataRequestSet.Count + packet.Signatures.Count()
-                                    > _maxMetadataRequestCount * sessionInfo.ReceiveInfo.PullBroadcastMetadataRequestSet.SurvivalTime.TotalMinutes * 2) return;
+                                if (sessionInfo.Receive.PulledBroadcastMetadataRequestSet.Count + packet.Signatures.Count()
+                                    > _maxMetadataRequestCount * sessionInfo.Receive.PulledBroadcastMetadataRequestSet.SurvivalTime.TotalMinutes * 2) return;
 
-                                _info.PullMessageRequestCount.Add(packet.Signatures.Count());
+                                sessionInfo.Receive.PulledBroadcastMetadataRequestSet.UnionWith(packet.Signatures);
 
-                                sessionInfo.ReceiveInfo.PullBroadcastMetadataRequestSet.AddRange(packet.Signatures);
+                                _status.PullMessageRequestCount.Add(packet.Signatures.Count());
 
-                                Debug.WriteLine("NetworkManager: Receive BroadcastMetadatasRequest");
+                                Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " NetworkManager: Receive BroadcastMetadatasRequest");
                             }
                             else if (id == (int)SerializeId.BroadcastMetadatasResult)
                             {
@@ -1497,27 +1466,27 @@ namespace Amoeba.Service
 
                                 if (packet.BroadcastMetadatas.Count() > _maxMetadataResultCount) return;
 
-                                _info.PullMessageResultCount.Add(packet.BroadcastMetadatas.Count());
+                                _status.PullMessageResultCount.Add(packet.BroadcastMetadatas.Count());
 
                                 foreach (var metadata in packet.BroadcastMetadatas)
                                 {
                                     _metadataManager.SetMetadata(metadata);
                                 }
 
-                                Debug.WriteLine("NetworkManager: Receive BroadcastMetadatasResult");
+                                Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " NetworkManager: Receive BroadcastMetadatasResult");
                             }
                             else if (id == (int)SerializeId.UnicastMetadatasRequest)
                             {
                                 var packet = UnicastMetadatasRequestPacket.Import(dataStream, _bufferManager);
 
-                                if (sessionInfo.ReceiveInfo.PullUnicastMetadataRequestSet.Count + packet.Signatures.Count()
-                                    > _maxMetadataRequestCount * sessionInfo.ReceiveInfo.PullUnicastMetadataRequestSet.SurvivalTime.TotalMinutes * 2) return;
+                                if (sessionInfo.Receive.PulledUnicastMetadataRequestSet.Count + packet.Signatures.Count()
+                                    > _maxMetadataRequestCount * sessionInfo.Receive.PulledUnicastMetadataRequestSet.SurvivalTime.TotalMinutes * 2) return;
 
-                                _info.PullMessageRequestCount.Add(packet.Signatures.Count());
+                                sessionInfo.Receive.PulledUnicastMetadataRequestSet.UnionWith(packet.Signatures);
 
-                                sessionInfo.ReceiveInfo.PullUnicastMetadataRequestSet.AddRange(packet.Signatures);
+                                _status.PullMessageRequestCount.Add(packet.Signatures.Count());
 
-                                Debug.WriteLine("NetworkManager: Receive UnicastMetadatasRequest");
+                                Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " NetworkManager: Receive UnicastMetadatasRequest");
                             }
                             else if (id == (int)SerializeId.UnicastMetadatasResult)
                             {
@@ -1525,27 +1494,27 @@ namespace Amoeba.Service
 
                                 if (packet.UnicastMetadatas.Count() > _maxMetadataResultCount) return;
 
-                                _info.PullMessageResultCount.Add(packet.UnicastMetadatas.Count());
+                                _status.PullMessageResultCount.Add(packet.UnicastMetadatas.Count());
 
                                 foreach (var metadata in packet.UnicastMetadatas)
                                 {
                                     _metadataManager.SetMetadata(metadata);
                                 }
 
-                                Debug.WriteLine("NetworkManager: Receive UnicastMetadatasResult");
+                                Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " NetworkManager: Receive UnicastMetadatasResult");
                             }
                             else if (id == (int)SerializeId.MulticastMetadatasRequest)
                             {
                                 var packet = MulticastMetadatasRequestPacket.Import(dataStream, _bufferManager);
 
-                                if (sessionInfo.ReceiveInfo.PullMulticastMetadataRequestSet.Count + packet.Tags.Count()
-                                    > _maxMetadataRequestCount * sessionInfo.ReceiveInfo.PullMulticastMetadataRequestSet.SurvivalTime.TotalMinutes * 2) return;
+                                if (sessionInfo.Receive.PulledMulticastMetadataRequestSet.Count + packet.Tags.Count()
+                                    > _maxMetadataRequestCount * sessionInfo.Receive.PulledMulticastMetadataRequestSet.SurvivalTime.TotalMinutes * 2) return;
 
-                                _info.PullMessageRequestCount.Add(packet.Tags.Count());
+                                sessionInfo.Receive.PulledMulticastMetadataRequestSet.UnionWith(packet.Tags);
 
-                                sessionInfo.ReceiveInfo.PullMulticastMetadataRequestSet.AddRange(packet.Tags);
+                                _status.PullMessageRequestCount.Add(packet.Tags.Count());
 
-                                Debug.WriteLine("NetworkManager: Receive MulticastMetadatasRequest");
+                                Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " NetworkManager: Receive MulticastMetadatasRequest");
                             }
                             else if (id == (int)SerializeId.MulticastMetadatasResult)
                             {
@@ -1553,20 +1522,20 @@ namespace Amoeba.Service
 
                                 if (packet.MulticastMetadatas.Count() > _maxMetadataResultCount) return;
 
-                                _info.PullMessageResultCount.Add(packet.MulticastMetadatas.Count());
+                                _status.PullMessageResultCount.Add(packet.MulticastMetadatas.Count());
 
                                 foreach (var metadata in packet.MulticastMetadatas)
                                 {
                                     _metadataManager.SetMetadata(metadata);
                                 }
 
-                                Debug.WriteLine("NetworkManager: Receive MulticastMetadatasResult");
+                                Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " NetworkManager: Receive MulticastMetadatasResult");
                             }
                         }
                     }
-                    catch (Exception)
+                    catch (Exception e)
                     {
-
+                        Log.Debug(e);
                     }
                 }
             }
@@ -1577,165 +1546,58 @@ namespace Amoeba.Service
             }
         }
 
-        private class SessionInfo
+        public void Download(Hash hash)
         {
-
-            public Connection Connection { get; set; }
-            public SessionType Type { get; set; }
-            public string Uri { get; set; }
-            public int ThreadId { get; set; }
-
-            public ProtocolVersion Version { get; set; }
-            public byte[] Id { get; set; }
-            public Location Location { get; set; }
-
-            public PriorityManager PriorityManager { get; private set; } = new PriorityManager(new TimeSpan(0, 10, 0));
-
-            public SendInfo SendInfo { get; private set; } = new SendInfo();
-            public ReceiveInfo ReceiveInfo { get; private set; } = new ReceiveInfo();
-
-            public void Update()
-            {
-                this.PriorityManager.Update();
-                this.SendInfo.Update();
-                this.ReceiveInfo.Update();
-            }
-        }
-
-        private class SendInfo
-        {
-            public bool IsInitialized { get; set; }
-
-            public VolatileHashSet<Hash> PushBlockLinkSet { get; private set; } = new VolatileHashSet<Hash>(new TimeSpan(0, 10, 0));
-            public VolatileHashSet<Hash> PushBlockRequestSet { get; private set; } = new VolatileHashSet<Hash>(new TimeSpan(0, 10, 0));
-            public VolatileHashSet<Hash> PushBlockResultSet { get; private set; } = new VolatileHashSet<Hash>(new TimeSpan(1, 0, 0));
-
-            public Stopwatch LocationResultStopwatch { get; private set; } = Stopwatch.StartNew();
-            public Stopwatch BlockResultStopwatch { get; private set; } = Stopwatch.StartNew();
-            public Stopwatch BroadcastMetadataResultStopwatch { get; private set; } = Stopwatch.StartNew();
-            public Stopwatch UnicastMetadataResultStopwatch { get; private set; } = Stopwatch.StartNew();
-            public Stopwatch MulticastMetadataResultStopwatch { get; private set; } = Stopwatch.StartNew();
-
-            public LockedList<Hash> PushBlockLinkQueue { get; private set; } = new LockedList<Hash>();
-            public LockedList<Hash> PushBlockRequestQueue { get; private set; } = new LockedList<Hash>();
-            public LockedQueue<Hash> PushBlockResultQueue { get; private set; } = new LockedQueue<Hash>();
-
-            public LockedList<Signature> PushBroadcastMetadataRequestQueue { get; private set; } = new LockedList<Signature>();
-            public LockedList<Signature> PushUnicastMetadataRequestQueue { get; private set; } = new LockedList<Signature>();
-            public LockedList<Tag> PushMulticastMetadataRequestQueue { get; private set; } = new LockedList<Tag>();
-
-            public void Update()
-            {
-                this.PushBlockLinkSet.Update();
-                this.PushBlockRequestSet.Update();
-                this.PushBlockResultSet.Update();
-            }
-        }
-
-        private class ReceiveInfo
-        {
-            public bool IsInitialized { get; set; }
-
-            public Stopwatch Stopwatch { get; private set; } = Stopwatch.StartNew();
-
-            public VolatileHashSet<Location> PullLocationSet { get; private set; } = new VolatileHashSet<Location>(new TimeSpan(0, 10, 0));
-
-            public VolatileHashSet<Hash> PullBlockLinkSet { get; private set; } = new VolatileHashSet<Hash>(new TimeSpan(0, 20, 0));
-            public VolatileHashSet<Hash> PullBlockRequestSet { get; private set; } = new VolatileHashSet<Hash>(new TimeSpan(0, 20, 0));
-
-            public VolatileHashSet<Signature> PullBroadcastMetadataRequestSet { get; private set; } = new VolatileHashSet<Signature>(new TimeSpan(0, 20, 0));
-            public VolatileHashSet<Signature> PullUnicastMetadataRequestSet { get; private set; } = new VolatileHashSet<Signature>(new TimeSpan(0, 20, 0));
-            public VolatileHashSet<Tag> PullMulticastMetadataRequestSet { get; private set; } = new VolatileHashSet<Tag>(new TimeSpan(0, 20, 0));
-
-            public void Update()
-            {
-                this.PullLocationSet.Update();
-
-                this.PullBlockLinkSet.Update();
-                this.PullBlockRequestSet.Update();
-
-                this.PullBroadcastMetadataRequestSet.Update();
-                this.PullUnicastMetadataRequestSet.Update();
-                this.PullMulticastMetadataRequestSet.Update();
-            }
-        }
-
-        public void Download(Hash hash, DiffusionPriority diffusionPriority)
-        {
-            lock (_lockObject)
-            {
-                _pushBlocksRequestMap.Add(hash, diffusionPriority);
-            }
+            _pushBlocksRequestSet.Add(hash);
         }
 
         public void Upload(BroadcastMetadata metadata)
         {
-            lock (_lockObject)
-            {
-                _metadataManager.SetMetadata(metadata);
-            }
+            _metadataManager.SetMetadata(metadata);
         }
 
         public void Upload(UnicastMetadata metadata)
         {
-            lock (_lockObject)
-            {
-                _metadataManager.SetMetadata(metadata);
-            }
+            _metadataManager.SetMetadata(metadata);
         }
 
         public void Upload(MulticastMetadata metadata)
         {
-            lock (_lockObject)
-            {
-                _metadataManager.SetMetadata(metadata);
-            }
+            _metadataManager.SetMetadata(metadata);
         }
 
         public BroadcastMetadata GetBroadcastMetadata(Signature signature, string type)
         {
-            lock (_lockObject)
-            {
-                _pushBroadcastMetadatasRequestSet.Add(signature);
+            _pushBroadcastMetadatasRequestSet.Add(signature);
 
-                return _metadataManager.GetBroadcastMetadata(signature, type);
-            }
+            return _metadataManager.GetBroadcastMetadata(signature, type);
         }
 
         public IEnumerable<UnicastMetadata> GetUnicastMetadatas(Signature signature, string type)
         {
-            lock (_lockObject)
-            {
-                _pushUnicastMetadatasRequestSet.Add(signature);
+            _pushUnicastMetadatasRequestSet.Add(signature);
 
-                return _metadataManager.GetUnicastMetadatas(signature, type);
-            }
+            return _metadataManager.GetUnicastMetadatas(signature, type);
         }
 
         public IEnumerable<MulticastMetadata> GetMulticastMetadatas(Tag tag, string type)
         {
-            lock (_lockObject)
-            {
-                _pushMulticastMetadatasRequestSet.Add(tag);
+            _pushMulticastMetadatasRequestSet.Add(tag);
 
-                return _metadataManager.GetMulticastMetadatas(tag, type);
-            }
+            return _metadataManager.GetMulticastMetadatas(tag, type);
         }
 
         public void Diffuse(string path)
         {
-            lock (_lockObject)
-            {
-                var hashes = _cacheManager.GetContentHashes(path);
-                _uploadBlockHashes.UnionWith(hashes);
-            }
+            var hashes = _cacheManager.GetContentHashes(path);
+            _uploadBlockHashes.UnionWith(hashes);
         }
 
         public override ManagerState State
         {
             get
             {
-                if (_disposed) throw new ObjectDisposedException(this.GetType().FullName);
+                if (_isDisposed) throw new ObjectDisposedException(this.GetType().FullName);
 
                 return _state;
             }
@@ -1745,7 +1607,7 @@ namespace Amoeba.Service
 
         public override void Start()
         {
-            if (_disposed) throw new ObjectDisposedException(this.GetType().FullName);
+            if (_isDisposed) throw new ObjectDisposedException(this.GetType().FullName);
 
             lock (_stateLockObject)
             {
@@ -1781,7 +1643,7 @@ namespace Amoeba.Service
 
         public override void Stop()
         {
-            if (_disposed) throw new ObjectDisposedException(this.GetType().FullName);
+            if (_isDisposed) throw new ObjectDisposedException(this.GetType().FullName);
 
             lock (_stateLockObject)
             {
@@ -1885,12 +1747,95 @@ namespace Amoeba.Service
 
         #endregion
 
-        protected override void Dispose(bool disposing)
+        private enum ProtocolVersion : uint
         {
-            if (_disposed) return;
-            _disposed = true;
+            Version0 = 0,
+            Version1 = 1,
+        }
 
-            if (disposing)
+        sealed class SessionInfo
+        {
+            public SessionType Type { get; set; }
+            public string Uri { get; set; }
+            public int ThreadId { get; set; }
+
+            public ProtocolVersion Version { get; set; }
+            public byte[] Id { get; set; }
+            public Location Location { get; set; }
+
+            public PriorityManager Priority { get; private set; } = new PriorityManager(new TimeSpan(0, 10, 0));
+
+            public SendInfo Send { get; private set; } = new SendInfo();
+            public ReceiveInfo Receive { get; private set; } = new ReceiveInfo();
+
+            public DateTime CreationTime { get; private set; } = DateTime.UtcNow;
+
+            public void Update()
+            {
+                this.Priority.Update();
+                this.Send.Update();
+                this.Receive.Update();
+            }
+
+            public sealed class SendInfo
+            {
+                public bool IsInitialized { get; set; }
+
+                public VolatileHashSet<Hash> PushedBlockRequestSet { get; private set; } = new VolatileHashSet<Hash>(new TimeSpan(0, 30, 0));
+                public VolatileBloomFilter<Hash> PushedBlockLinkFilter { get; private set; } = new VolatileBloomFilter<Hash>(_maxBlockLinkCount * 2, 0.001, (n) => n.GetHashCode(), new TimeSpan(0, 1, 0), new TimeSpan(3, 0, 0));
+
+                public Stopwatch LocationResultStopwatch { get; private set; } = Stopwatch.StartNew();
+                public Stopwatch BlockResultStopwatch { get; private set; } = Stopwatch.StartNew();
+                public Stopwatch BroadcastMetadataResultStopwatch { get; private set; } = Stopwatch.StartNew();
+                public Stopwatch UnicastMetadataResultStopwatch { get; private set; } = Stopwatch.StartNew();
+                public Stopwatch MulticastMetadataResultStopwatch { get; private set; } = Stopwatch.StartNew();
+
+                public LockedQueue<Hash> PushBlockResultQueue { get; private set; } = new LockedQueue<Hash>();
+                public LockedQueue<Hash> PushBlockLinkQueue { get; private set; } = new LockedQueue<Hash>();
+                public LockedQueue<Hash> PushBlockRequestQueue { get; private set; } = new LockedQueue<Hash>();
+                public LockedQueue<Signature> PushBroadcastMetadataRequestQueue { get; private set; } = new LockedQueue<Signature>();
+                public LockedQueue<Signature> PushUnicastMetadataRequestQueue { get; private set; } = new LockedQueue<Signature>();
+                public LockedQueue<Tag> PushMulticastMetadataRequestQueue { get; private set; } = new LockedQueue<Tag>();
+
+                public void Update()
+                {
+                    this.PushedBlockRequestSet.Update();
+
+                    this.PushedBlockLinkFilter.Update();
+                }
+            }
+
+            public sealed class ReceiveInfo
+            {
+                public bool IsInitialized { get; set; }
+
+                public Stopwatch Stopwatch { get; private set; } = new Stopwatch();
+
+                public VolatileHashSet<Location> PulledLocationSet { get; private set; } = new VolatileHashSet<Location>(new TimeSpan(0, 10, 0));
+                public VolatileHashSet<Hash> PulledBlockLinkSet { get; private set; } = new VolatileHashSet<Hash>(new TimeSpan(0, 30, 0));
+                public VolatileHashSet<Hash> PulledBlockRequestSet { get; private set; } = new VolatileHashSet<Hash>(new TimeSpan(0, 30, 0));
+                public VolatileHashSet<Signature> PulledBroadcastMetadataRequestSet { get; private set; } = new VolatileHashSet<Signature>(new TimeSpan(0, 3, 0));
+                public VolatileHashSet<Signature> PulledUnicastMetadataRequestSet { get; private set; } = new VolatileHashSet<Signature>(new TimeSpan(0, 3, 0));
+                public VolatileHashSet<Tag> PulledMulticastMetadataRequestSet { get; private set; } = new VolatileHashSet<Tag>(new TimeSpan(0, 3, 0));
+
+                public void Update()
+                {
+                    this.PulledLocationSet.Update();
+                    this.PulledBlockLinkSet.Update();
+                    this.PulledBlockRequestSet.Update();
+                    this.PulledBroadcastMetadataRequestSet.Update();
+                    this.PulledUnicastMetadataRequestSet.Update();
+                    this.PulledMulticastMetadataRequestSet.Update();
+                }
+            }
+        }
+
+        protected override void Dispose(bool isDisposing)
+        {
+            if (_isDisposed) return;
+            _isDisposed = true;
+
+            if (isDisposing)
             {
                 foreach (var taskManager in _connectTaskManagers)
                 {

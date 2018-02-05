@@ -15,7 +15,7 @@ using Omnius.Utilities;
 
 namespace Amoeba.Service
 {
-    class DownloadManager : StateManagerBase, ISettings
+    sealed partial class DownloadManager : StateManagerBase, ISettings
     {
         private NetworkManager _networkManager;
         private CacheManager _cacheManager;
@@ -40,7 +40,7 @@ namespace Amoeba.Service
         private volatile ManagerState _state = ManagerState.Stop;
 
         private readonly object _lockObject = new object();
-        private volatile bool _disposed;
+        private volatile bool _isDisposed;
 
         private readonly int _threadCount = Math.Max(2, Math.Min(System.Environment.ProcessorCount, 32) / 2);
 
@@ -247,7 +247,7 @@ namespace Amoeba.Service
                             {
                                 item.State = DownloadState.Downloading;
 
-                                _networkManager.Download(item.Metadata.Hash, DiffusionPriority.High);
+                                _networkManager.Download(item.Metadata.Hash);
                             }
                             else
                             {
@@ -266,7 +266,7 @@ namespace Amoeba.Service
 
                                     foreach (var hash in _existManager.GetHashes(group, false))
                                     {
-                                        _networkManager.Download(hash, DiffusionPriority.Normal);
+                                        _networkManager.Download(hash);
                                     }
                                 }
                             }
@@ -1053,7 +1053,7 @@ namespace Amoeba.Service
 
             private WatchTimer _watchTimer;
 
-            private volatile bool _disposed;
+            private volatile bool _isDisposed;
 
             public ProtectedCacheInfoManager(CacheManager cacheManager)
             {
@@ -1133,12 +1133,12 @@ namespace Amoeba.Service
                 return this.GetEnumerator();
             }
 
-            protected override void Dispose(bool disposing)
+            protected override void Dispose(bool isDisposing)
             {
-                if (_disposed) return;
-                _disposed = true;
+                if (_isDisposed) return;
+                _isDisposed = true;
 
-                if (disposing)
+                if (isDisposing)
                 {
                     if (_watchTimer != null)
                     {
@@ -1211,12 +1211,12 @@ namespace Amoeba.Service
             }
         }
 
-        protected override void Dispose(bool disposing)
+        protected override void Dispose(bool isDisposing)
         {
-            if (_disposed) return;
-            _disposed = true;
+            if (_isDisposed) return;
+            _isDisposed = true;
 
-            if (disposing)
+            if (isDisposing)
             {
                 if (_watchTimer != null)
                 {

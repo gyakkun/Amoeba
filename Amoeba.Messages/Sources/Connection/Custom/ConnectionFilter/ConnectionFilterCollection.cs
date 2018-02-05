@@ -3,7 +3,7 @@ using Omnius.Collections;
 
 namespace Amoeba.Messages
 {
-    public sealed class ConnectionFilterCollection : LockedList<ConnectionFilter>
+    public sealed class ConnectionFilterCollection : FilteredList<ConnectionFilter>
     {
         public ConnectionFilterCollection() : base() { }
         public ConnectionFilterCollection(int capacity) : base(capacity) { }

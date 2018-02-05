@@ -7,172 +7,175 @@ using Omnius.Base;
 
 namespace Amoeba.Service
 {
-    class CacheStreamReader : Stream
+    partial class CacheManager
     {
-        private List<Hash> _hashes = new List<Hash>();
-        private int _hashesIndex;
-
-        private CacheManager _cacheManager;
-        private BufferManager _bufferManager;
-
-        private ArraySegment<byte> _blockBuffer;
-        private int _blockBufferPosition = -1;
-
-        private long _position;
-        private long _length;
-
-        private volatile bool _disposed;
-
-        public CacheStreamReader(IEnumerable<Hash> hashes, CacheManager cacheManager, BufferManager bufferManager)
+        sealed class CacheStreamReader : Stream
         {
-            _hashes.AddRange(hashes);
-            _cacheManager = cacheManager;
-            _bufferManager = bufferManager;
+            private List<Hash> _hashes = new List<Hash>();
+            private int _hashesIndex;
 
-            _length = _hashes.Sum(n => (long)cacheManager.GetLength(n));
-        }
+            private CacheManager _cacheManager;
+            private BufferManager _bufferManager;
 
-        public override bool CanRead
-        {
-            get
+            private ArraySegment<byte> _blockBuffer;
+            private int _blockBufferPosition = -1;
+
+            private long _position;
+            private long _length;
+
+            private volatile bool _isDisposed;
+
+            public CacheStreamReader(IEnumerable<Hash> hashes, CacheManager cacheManager, BufferManager bufferManager)
             {
-                if (_disposed) throw new ObjectDisposedException(this.GetType().FullName);
+                _hashes.AddRange(hashes);
+                _cacheManager = cacheManager;
+                _bufferManager = bufferManager;
 
-                return true;
+                _length = _hashes.Sum(n => (long)cacheManager.GetLength(n));
             }
-        }
 
-        public override bool CanWrite
-        {
-            get
+            public override bool CanRead
             {
-                if (_disposed) throw new ObjectDisposedException(this.GetType().FullName);
-
-                return false;
-            }
-        }
-
-        public override bool CanSeek
-        {
-            get
-            {
-                if (_disposed) throw new ObjectDisposedException(this.GetType().FullName);
-
-                return true;
-            }
-        }
-
-        public override long Position
-        {
-            get
-            {
-                if (_disposed) throw new ObjectDisposedException(this.GetType().FullName);
-
-                return _position;
-            }
-            set
-            {
-                if (_disposed) throw new ObjectDisposedException(this.GetType().FullName);
-
-                if (_position != value) throw new NotSupportedException();
-            }
-        }
-
-        public override long Length
-        {
-            get
-            {
-                if (_disposed) throw new ObjectDisposedException(this.GetType().FullName);
-
-                return _length;
-            }
-        }
-
-        public override long Seek(long offset, System.IO.SeekOrigin origin)
-        {
-            if (_disposed) throw new ObjectDisposedException(this.GetType().FullName);
-
-            throw new NotSupportedException();
-        }
-
-        public override void SetLength(long value)
-        {
-            if (_disposed) throw new ObjectDisposedException(this.GetType().FullName);
-
-            throw new NotSupportedException();
-        }
-
-        public override int Read(byte[] buffer, int offset, int count)
-        {
-            if (_disposed) throw new ObjectDisposedException(this.GetType().FullName);
-            if (offset < 0 || buffer.Length < offset) throw new ArgumentOutOfRangeException(nameof(offset));
-            if (count < 0 || (buffer.Length - offset) < count) throw new ArgumentOutOfRangeException(nameof(count));
-
-            count = (int)Math.Min(count, this.Length - this.Position);
-
-            int readLength = 0;
-
-            while (count > 0)
-            {
-                if (_blockBufferPosition == -1)
+                get
                 {
-                    _blockBuffer = _cacheManager[_hashes[_hashesIndex++]];
-                    _blockBufferPosition = 0;
+                    if (_isDisposed) throw new ObjectDisposedException(this.GetType().FullName);
+
+                    return true;
                 }
+            }
 
-                int length = Math.Min(count, _blockBuffer.Count - _blockBufferPosition);
-                Unsafe.Copy(_blockBuffer.Array, _blockBuffer.Offset + _blockBufferPosition, buffer, offset, length);
-                _blockBufferPosition += length;
-                count -= length;
-                offset += length;
-                readLength += length;
-
-                if (_blockBuffer.Count == _blockBufferPosition)
+            public override bool CanWrite
+            {
+                get
                 {
-                    if (_blockBuffer.Array != null)
+                    if (_isDisposed) throw new ObjectDisposedException(this.GetType().FullName);
+
+                    return false;
+                }
+            }
+
+            public override bool CanSeek
+            {
+                get
+                {
+                    if (_isDisposed) throw new ObjectDisposedException(this.GetType().FullName);
+
+                    return true;
+                }
+            }
+
+            public override long Position
+            {
+                get
+                {
+                    if (_isDisposed) throw new ObjectDisposedException(this.GetType().FullName);
+
+                    return _position;
+                }
+                set
+                {
+                    if (_isDisposed) throw new ObjectDisposedException(this.GetType().FullName);
+
+                    if (_position != value) throw new NotSupportedException();
+                }
+            }
+
+            public override long Length
+            {
+                get
+                {
+                    if (_isDisposed) throw new ObjectDisposedException(this.GetType().FullName);
+
+                    return _length;
+                }
+            }
+
+            public override long Seek(long offset, System.IO.SeekOrigin origin)
+            {
+                if (_isDisposed) throw new ObjectDisposedException(this.GetType().FullName);
+
+                throw new NotSupportedException();
+            }
+
+            public override void SetLength(long value)
+            {
+                if (_isDisposed) throw new ObjectDisposedException(this.GetType().FullName);
+
+                throw new NotSupportedException();
+            }
+
+            public override int Read(byte[] buffer, int offset, int count)
+            {
+                if (_isDisposed) throw new ObjectDisposedException(this.GetType().FullName);
+                if (offset < 0 || buffer.Length < offset) throw new ArgumentOutOfRangeException(nameof(offset));
+                if (count < 0 || (buffer.Length - offset) < count) throw new ArgumentOutOfRangeException(nameof(count));
+
+                count = (int)Math.Min(count, this.Length - this.Position);
+
+                int readLength = 0;
+
+                while (count > 0)
+                {
+                    if (_blockBufferPosition == -1)
                     {
-                        _bufferManager.ReturnBuffer(_blockBuffer.Array);
-                        _blockBuffer = default(ArraySegment<byte>);
+                        _blockBuffer = _cacheManager.GetBlock(_hashes[_hashesIndex++]);
+                        _blockBufferPosition = 0;
                     }
-                    _blockBufferPosition = -1;
-                }
-            }
 
-            _position += readLength;
-            return readLength;
-        }
+                    int length = Math.Min(count, _blockBuffer.Count - _blockBufferPosition);
+                    Unsafe.Copy(_blockBuffer.Array, _blockBuffer.Offset + _blockBufferPosition, buffer, offset, length);
+                    _blockBufferPosition += length;
+                    count -= length;
+                    offset += length;
+                    readLength += length;
 
-        public override void Write(byte[] buffer, int offset, int count)
-        {
-            if (_disposed) throw new ObjectDisposedException(this.GetType().FullName);
-
-            throw new NotSupportedException();
-        }
-
-        public override void Flush()
-        {
-            if (_disposed) throw new ObjectDisposedException(this.GetType().FullName);
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            try
-            {
-                if (_disposed) return;
-                _disposed = true;
-
-                if (disposing)
-                {
-                    if (_blockBuffer.Array != null)
+                    if (_blockBuffer.Count == _blockBufferPosition)
                     {
-                        _bufferManager.ReturnBuffer(_blockBuffer.Array);
-                        _blockBuffer = default(ArraySegment<byte>);
+                        if (_blockBuffer.Array != null)
+                        {
+                            _bufferManager.ReturnBuffer(_blockBuffer.Array);
+                            _blockBuffer = default;
+                        }
+                        _blockBufferPosition = -1;
                     }
                 }
+
+                _position += readLength;
+                return readLength;
             }
-            finally
+
+            public override void Write(byte[] buffer, int offset, int count)
             {
-                base.Dispose(disposing);
+                if (_isDisposed) throw new ObjectDisposedException(this.GetType().FullName);
+
+                throw new NotSupportedException();
+            }
+
+            public override void Flush()
+            {
+                if (_isDisposed) throw new ObjectDisposedException(this.GetType().FullName);
+            }
+
+            protected override void Dispose(bool isDisposing)
+            {
+                try
+                {
+                    if (_isDisposed) return;
+                    _isDisposed = true;
+
+                    if (isDisposing)
+                    {
+                        if (_blockBuffer.Array != null)
+                        {
+                            _bufferManager.ReturnBuffer(_blockBuffer.Array);
+                            _blockBuffer = default;
+                        }
+                    }
+                }
+                finally
+                {
+                    base.Dispose(isDisposing);
+                }
             }
         }
     }

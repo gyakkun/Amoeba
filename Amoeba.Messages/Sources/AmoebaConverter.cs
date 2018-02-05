@@ -94,7 +94,7 @@ namespace Amoeba.Messages
 
                 var dataStream = new UniteStream(headerStream, list[0].Value);
 
-                var crcStream = new MemoryStream(Crc32_Castagnoli.ComputeHash(new WrapperStream(dataStream, true)));
+                var crcStream = new MemoryStream(Crc32_Castagnoli.Compute(new WrapperStream(dataStream)));
                 return new UniteStream(dataStream, crcStream);
             }
             catch (Exception ex)
@@ -117,7 +117,7 @@ namespace Amoeba.Messages
 
                 // Check
                 {
-                    var verifyCrc = Crc32_Castagnoli.ComputeHash(new RangeStream(stream, 0, stream.Length - 4, true));
+                    var verifyCrc = Crc32_Castagnoli.Compute(new RangeStream(stream, 0, stream.Length - 4, true));
                     var orignalCrc = new byte[4];
 
                     using (var crcStream = new RangeStream(stream, stream.Length - 4, 4, true))

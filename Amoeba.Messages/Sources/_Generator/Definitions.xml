@@ -38,7 +38,7 @@
 
         <ItemProperty Type="int" Name="CloudNodeCount" />
         <ItemProperty Type="int" Name="MessageCount" />
-        
+
         <ItemProperty Type="int" Name="UploadBlockCount" />
         <ItemProperty Type="int" Name="DiffusionBlockCount" />
 
@@ -78,7 +78,7 @@
         <ItemProperty Type="SessionType" Name="Type" />
         <ItemProperty Type="string" Name="Uri" />
         <ItemProperty Type="Location" Name="Location" />
-        <ItemProperty Type="double" Name="Priority" />
+        <ItemProperty Type="long" Name="Priority" />
         <ItemProperty Type="long" Name="ReceivedByteCount" />
         <ItemProperty Type="long" Name="SentByteCount" />
     </Class>

@@ -67,9 +67,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Sources\IntegrationTests\Core\CoreManagerTests.cs" />
-    <Compile Include="Sources\Utilities\DisposableContainer.cs" />
-    <Compile Include="Sources\Utilities\RandomProvider.cs" />
+    <Compile Include="Sources\IntegrationTests\SimulationManager.cs" />
     <Compile Include="Sources\Windows\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

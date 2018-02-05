@@ -19,7 +19,9 @@ namespace Amoeba.Messages
 
         public override int GetHashCode()
         {
-            return this.Scheme?.GetHashCode() ?? 0 ^ this.Type.GetHashCode() ^ this.ProxyUri?.GetHashCode() ?? 0;
+            return (this.Scheme?.GetHashCode() ?? 0)
+                ^ this.Type.GetHashCode()
+                ^ (this.ProxyUri?.GetHashCode() ?? 0);
         }
 
         public override bool Equals(object obj)

@@ -1,0 +1,418 @@
+﻿<UserControl
+    x:Class="Amoeba.Interface.AccountOptionsControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+    xmlns:local="clr-namespace:Amoeba.Interface"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:omnius="clr-namespace:Omnius.Wpf;assembly=Omnius.Wpf"
+    d:DesignHeight="600"
+    d:DesignWidth="600"
+    mc:Ignorable="d">
+    <Grid>
+        <ContentControl Visibility="{Binding Path=SelectedItem.Value, Converter={StaticResource ConditionalVisibilityConverter}, ConverterParameter=Account.Signature}">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="16,16,16,0">
+                    <GroupBox
+                        VerticalAlignment="Stretch"
+                        HorizontalContentAlignment="Stretch"
+                        VerticalContentAlignment="Stretch"
+                        Header="{Binding Path=AccountOptionsControl_SignatureSettings, Source={StaticResource Languages}}"
+                        Style="{DynamicResource MaterialDesignCardGroupBox}">
+                        <GroupBox.HeaderTemplate>
+                            <DataTemplate>
+                                <TextBlock Margin="8,0" Text="{Binding}" />
+                            </DataTemplate>
+                        </GroupBox.HeaderTemplate>
+                        <Grid Margin="7">
+                            <Label
+                                Height="32"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                HorizontalContentAlignment="Stretch"
+                                VerticalContentAlignment="Center"
+                                Content="{Binding Path=AccountOptionsControl_YourSignature, Source={StaticResource Languages}}" />
+                            <TextBox
+                                Height="32"
+                                Margin="240,0,0,0"
+                                VerticalAlignment="Top"
+                                IsReadOnly="True"
+                                Text="{Binding Path=AccountOptions.DigitalSignature, Mode=OneWay}" />
+                            <Button
+                                Width="120"
+                                Height="32"
+                                Margin="0,48,272,0"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Top"
+                                Command="{Binding Path=SignatureImportCommand}"
+                                Content="{Binding Path=AccountOptionsControl_Import, Source={StaticResource Languages}}" />
+                            <Button
+                                Width="120"
+                                Height="32"
+                                Margin="0,48,136,0"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Top"
+                                Command="{Binding Path=SignatureExportCommand}"
+                                Content="{Binding Path=AccountOptionsControl_Export, Source={StaticResource Languages}}" />
+                            <Button
+                                Width="120"
+                                Height="32"
+                                Margin="0,48,0,0"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Top"
+                                Command="{Binding Path=SignatureNewCommand}"
+                                Content="{Binding Path=AccountOptionsControl_New, Source={StaticResource Languages}}" />
+
+                        </Grid>
+                    </GroupBox>
+                </StackPanel>
+            </ScrollViewer>
+        </ContentControl>
+
+        <ContentControl Visibility="{Binding Path=SelectedItem.Value, Converter={StaticResource ConditionalVisibilityConverter}, ConverterParameter=Account.TrustSignatures}">
+            <Grid Margin="16,16,16,0">
+                <GroupBox
+                    VerticalAlignment="Stretch"
+                    HorizontalContentAlignment="Stretch"
+                    VerticalContentAlignment="Stretch"
+                    Header="{Binding Path=AccountOptionsControl_TrustSignaturesSettings, Source={StaticResource Languages}}"
+                    Style="{DynamicResource MaterialDesignCardGroupBox}">
+                    <GroupBox.HeaderTemplate>
+                        <DataTemplate>
+                            <TextBlock Margin="8,0" Text="{Binding}" />
+                        </DataTemplate>
+                    </GroupBox.HeaderTemplate>
+                    <Grid Margin="7">
+                        <ListView
+                            HorizontalContentAlignment="Stretch"
+                            VerticalContentAlignment="Stretch"
+                            omnius:GridViewSortHelper.Command="{Binding Path=TrustSignaturesSortCommand}"
+                            omnius:ListBoxHelper.SelectedItems="{Binding Path=SelectedTrustSignatureItems}"
+                            IsSynchronizedWithCurrentItem="True"
+                            ItemContainerStyle="{StaticResource CustomMaterialDesignListViewItem}"
+                            ItemsSource="{Binding Path=TrustSignaturesView}"
+                            VirtualizingPanel.IsVirtualizing="True"
+                            VirtualizingPanel.VirtualizationMode="Recycling">
+                            <i:Interaction.Behaviors>
+                                <omnius:ListBoxUnselectBehavior />
+                            </i:Interaction.Behaviors>
+                            <ListView.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem
+                                        Command="{Binding Path=TrustSignaturesDeleteCommand}"
+                                        Header="{Binding Path=AccountOptionsControl_Delete, Source={StaticResource Languages}}"
+                                        InputGestureText="Ctrl+D">
+                                        <MenuItem.Icon>
+                                            <md:PackIcon Kind="Delete" />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <Separator />
+                                    <MenuItem
+                                        Command="{Binding Path=TrustSignaturesCopyCommand}"
+                                        Header="{Binding Path=AccountOptionsControl_Copy, Source={StaticResource Languages}}"
+                                        InputGestureText="Ctrl+C">
+                                        <MenuItem.Icon>
+                                            <md:PackIcon Kind="ContentCopy" />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <MenuItem
+                                        Command="{Binding Path=TrustSignaturesPasteCommand}"
+                                        Header="{Binding Path=AccountOptionsControl_Paste, Source={StaticResource Languages}}"
+                                        InputGestureText="Ctrl+V">
+                                        <MenuItem.Icon>
+                                            <md:PackIcon Kind="ContentPaste" />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                </ContextMenu>
+                            </ListView.ContextMenu>
+                            <ListView.View>
+                                <GridView AllowsColumnReorder="False">
+                                    <GridViewColumn
+                                        Width="{Binding Path=DynamicOptions.TrustSignaturesListView_Signature_Width, FallbackValue=300, Mode=TwoWay}"
+                                        omnius:GridViewSortHelper.PropertyName="Signature"
+                                        Header="{Binding Path=AccountOptionsControl_TrustSignature, Source={StaticResource Languages}}">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Mode=OneWay}" />
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+
+                        <md:PopupBox
+                            Width="48"
+                            Height="48"
+                            Margin="0,0,16,16"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Bottom"
+                            PlacementMode="TopAndAlignCentres"
+                            PopupMode="Click"
+                            Style="{DynamicResource MaterialDesignMultiFloatingActionPopupBox}"
+                            ToolTipService.Placement="Left">
+                            <StackPanel>
+                                <Button Command="{Binding Path=TrustSignaturesDeleteCommand}" ToolTip="{Binding Path=AccountOptionsControl_Delete, Source={StaticResource Languages}}">
+                                    <md:PackIcon Kind="Delete" />
+                                </Button>
+                                <Button Command="{Binding Path=TrustSignaturesCopyCommand}" ToolTip="{Binding Path=AccountOptionsControl_Copy, Source={StaticResource Languages}}">
+                                    <md:PackIcon Kind="ContentCopy" />
+                                </Button>
+                                <Button Command="{Binding Path=TrustSignaturesPasteCommand}" ToolTip="{Binding Path=AccountOptionsControl_Paste, Source={StaticResource Languages}}">
+                                    <md:PackIcon Kind="ContentPaste" />
+                                </Button>
+                            </StackPanel>
+                        </md:PopupBox>
+                    </Grid>
+                </GroupBox>
+            </Grid>
+        </ContentControl>
+
+        <ContentControl Visibility="{Binding Path=SelectedItem.Value, Converter={StaticResource ConditionalVisibilityConverter}, ConverterParameter=Account.UntrustSignatures}">
+            <Grid Margin="16,16,16,0">
+                <GroupBox
+                    VerticalAlignment="Stretch"
+                    HorizontalContentAlignment="Stretch"
+                    VerticalContentAlignment="Stretch"
+                    Header="{Binding Path=AccountOptionsControl_UntrustSignaturesSettings, Source={StaticResource Languages}}"
+                    Style="{DynamicResource MaterialDesignCardGroupBox}">
+                    <GroupBox.HeaderTemplate>
+                        <DataTemplate>
+                            <TextBlock Margin="8,0" Text="{Binding}" />
+                        </DataTemplate>
+                    </GroupBox.HeaderTemplate>
+                    <Grid Margin="7">
+                        <ListView
+                            HorizontalContentAlignment="Stretch"
+                            VerticalContentAlignment="Stretch"
+                            omnius:GridViewSortHelper.Command="{Binding Path=UntrustSignaturesSortCommand}"
+                            omnius:ListBoxHelper.SelectedItems="{Binding Path=SelectedUntrustSignatureItems}"
+                            IsSynchronizedWithCurrentItem="True"
+                            ItemContainerStyle="{StaticResource CustomMaterialDesignListViewItem}"
+                            ItemsSource="{Binding Path=UntrustSignaturesView}"
+                            VirtualizingPanel.IsVirtualizing="True"
+                            VirtualizingPanel.VirtualizationMode="Recycling">
+                            <i:Interaction.Behaviors>
+                                <omnius:ListBoxUnselectBehavior />
+                            </i:Interaction.Behaviors>
+                            <ListView.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem
+                                        Command="{Binding Path=UntrustSignaturesDeleteCommand}"
+                                        Header="{Binding Path=AccountOptionsControl_Delete, Source={StaticResource Languages}}"
+                                        InputGestureText="Ctrl+D">
+                                        <MenuItem.Icon>
+                                            <md:PackIcon Kind="Delete" />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <Separator />
+                                    <MenuItem
+                                        Command="{Binding Path=UntrustSignaturesCopyCommand}"
+                                        Header="{Binding Path=AccountOptionsControl_Copy, Source={StaticResource Languages}}"
+                                        InputGestureText="Ctrl+C">
+                                        <MenuItem.Icon>
+                                            <md:PackIcon Kind="ContentCopy" />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <MenuItem
+                                        Command="{Binding Path=UntrustSignaturesPasteCommand}"
+                                        Header="{Binding Path=AccountOptionsControl_Paste, Source={StaticResource Languages}}"
+                                        InputGestureText="Ctrl+V">
+                                        <MenuItem.Icon>
+                                            <md:PackIcon Kind="ContentPaste" />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                </ContextMenu>
+                            </ListView.ContextMenu>
+                            <ListView.View>
+                                <GridView AllowsColumnReorder="False">
+                                    <GridViewColumn
+                                        Width="{Binding Path=DynamicOptions.UntrustSignaturesListView_Signature_Width, FallbackValue=300, Mode=TwoWay}"
+                                        omnius:GridViewSortHelper.PropertyName="Signature"
+                                        Header="{Binding Path=AccountOptionsControl_UntrustSignature, Source={StaticResource Languages}}">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Mode=OneWay}" />
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+
+                        <md:PopupBox
+                            Width="48"
+                            Height="48"
+                            Margin="0,0,16,16"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Bottom"
+                            PlacementMode="TopAndAlignCentres"
+                            PopupMode="Click"
+                            Style="{DynamicResource MaterialDesignMultiFloatingActionPopupBox}"
+                            ToolTipService.Placement="Left">
+                            <StackPanel>
+                                <Button Command="{Binding Path=UntrustSignaturesDeleteCommand}" ToolTip="{Binding Path=AccountOptionsControl_Delete, Source={StaticResource Languages}}">
+                                    <md:PackIcon Kind="Delete" />
+                                </Button>
+                                <Button Command="{Binding Path=UntrustSignaturesCopyCommand}" ToolTip="{Binding Path=AccountOptionsControl_Copy, Source={StaticResource Languages}}">
+                                    <md:PackIcon Kind="ContentCopy" />
+                                </Button>
+                                <Button Command="{Binding Path=UntrustSignaturesPasteCommand}" ToolTip="{Binding Path=AccountOptionsControl_Paste, Source={StaticResource Languages}}">
+                                    <md:PackIcon Kind="ContentPaste" />
+                                </Button>
+                            </StackPanel>
+                        </md:PopupBox>
+                    </Grid>
+                </GroupBox>
+            </Grid>
+        </ContentControl>
+
+        <ContentControl Visibility="{Binding Path=SelectedItem.Value, Converter={StaticResource ConditionalVisibilityConverter}, ConverterParameter=Account.Tags}">
+            <Grid Margin="16,16,16,0">
+                <GroupBox
+                    VerticalAlignment="Stretch"
+                    HorizontalContentAlignment="Stretch"
+                    VerticalContentAlignment="Stretch"
+                    Header="{Binding Path=AccountOptionsControl_TagsSettings, Source={StaticResource Languages}}"
+                    Style="{DynamicResource MaterialDesignCardGroupBox}">
+                    <GroupBox.HeaderTemplate>
+                        <DataTemplate>
+                            <TextBlock Margin="8,0" Text="{Binding}" />
+                        </DataTemplate>
+                    </GroupBox.HeaderTemplate>
+                    <Grid Margin="7">
+                        <ListView
+                            HorizontalContentAlignment="Stretch"
+                            VerticalContentAlignment="Stretch"
+                            omnius:GridViewSortHelper.Command="{Binding Path=TagsSortCommand}"
+                            omnius:ListBoxHelper.SelectedItems="{Binding Path=SelectedTagItems}"
+                            IsSynchronizedWithCurrentItem="True"
+                            ItemContainerStyle="{StaticResource CustomMaterialDesignListViewItem}"
+                            ItemsSource="{Binding Path=TagsView}"
+                            VirtualizingPanel.IsVirtualizing="True"
+                            VirtualizingPanel.VirtualizationMode="Recycling">
+                            <i:Interaction.Behaviors>
+                                <omnius:ListBoxUnselectBehavior />
+                            </i:Interaction.Behaviors>
+                            <ListView.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem
+                                        Command="{Binding Path=TagNewCommand}"
+                                        Header="{Binding Path=AccountOptionsControl_New, Source={StaticResource Languages}}"
+                                        InputGestureText="Ctrl+N">
+                                        <MenuItem.Icon>
+                                            <md:PackIcon Kind="Plus" />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <MenuItem
+                                        Command="{Binding Path=TagsDeleteCommand}"
+                                        Header="{Binding Path=AccountOptionsControl_Delete, Source={StaticResource Languages}}"
+                                        InputGestureText="Ctrl+D">
+                                        <MenuItem.Icon>
+                                            <md:PackIcon Kind="Delete" />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <Separator />
+                                    <MenuItem
+                                        Command="{Binding Path=TagsCopyCommand}"
+                                        Header="{Binding Path=AccountOptionsControl_Copy, Source={StaticResource Languages}}"
+                                        InputGestureText="Ctrl+C">
+                                        <MenuItem.Icon>
+                                            <md:PackIcon Kind="ContentCopy" />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <MenuItem
+                                        Command="{Binding Path=TagsPasteCommand}"
+                                        Header="{Binding Path=AccountOptionsControl_Paste, Source={StaticResource Languages}}"
+                                        InputGestureText="Ctrl+V">
+                                        <MenuItem.Icon>
+                                            <md:PackIcon Kind="ContentPaste" />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                </ContextMenu>
+                            </ListView.ContextMenu>
+                            <ListView.View>
+                                <GridView AllowsColumnReorder="False">
+                                    <GridViewColumn
+                                        Width="{Binding Path=DynamicOptions.TagsListView_Name_Width, FallbackValue=300, Mode=TwoWay}"
+                                        omnius:GridViewSortHelper.PropertyName="Name"
+                                        Header="{Binding Path=AccountOptionsControl_Name, Source={StaticResource Languages}}">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Path=Name, Mode=OneWay}" />
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                    <GridViewColumn
+                                        Width="{Binding Path=DynamicOptions.TagsListView_Id_Width, FallbackValue=300, Mode=TwoWay}"
+                                        omnius:GridViewSortHelper.PropertyName="Id"
+                                        Header="{Binding Path=AccountOptionsControl_Id, Source={StaticResource Languages}}">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Path=Id, Converter={StaticResource BytesToBase64StringConverter}, Mode=OneWay}" />
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+
+                        <md:PopupBox
+                            Width="48"
+                            Height="48"
+                            Margin="0,0,16,16"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Bottom"
+                            PlacementMode="TopAndAlignCentres"
+                            PopupMode="Click"
+                            Style="{DynamicResource MaterialDesignMultiFloatingActionPopupBox}"
+                            ToolTipService.Placement="Left">
+                            <StackPanel>
+                                <Button Command="{Binding Path=TagNewCommand}" ToolTip="{Binding Path=AccountOptionsControl_New, Source={StaticResource Languages}}">
+                                    <md:PackIcon Kind="Plus" />
+                                </Button>
+                                <Button Command="{Binding Path=TagsDeleteCommand}" ToolTip="{Binding Path=AccountOptionsControl_Delete, Source={StaticResource Languages}}">
+                                    <md:PackIcon Kind="Delete" />
+                                </Button>
+                                <Button Command="{Binding Path=TagsCopyCommand}" ToolTip="{Binding Path=AccountOptionsControl_Copy, Source={StaticResource Languages}}">
+                                    <md:PackIcon Kind="ContentCopy" />
+                                </Button>
+                                <Button Command="{Binding Path=TagsPasteCommand}" ToolTip="{Binding Path=AccountOptionsControl_Paste, Source={StaticResource Languages}}">
+                                    <md:PackIcon Kind="ContentPaste" />
+                                </Button>
+                            </StackPanel>
+                        </md:PopupBox>
+                    </Grid>
+                </GroupBox>
+            </Grid>
+        </ContentControl>
+
+        <ContentControl Visibility="{Binding Path=SelectedItem.Value, Converter={StaticResource ConditionalVisibilityConverter}, ConverterParameter=Account.Comment}">
+            <Grid Margin="16,16,16,0">
+                <GroupBox
+                    VerticalAlignment="Stretch"
+                    HorizontalContentAlignment="Stretch"
+                    VerticalContentAlignment="Stretch"
+                    Header="{Binding Path=AccountOptionsControl_CommentSettings, Source={StaticResource Languages}}"
+                    Style="{DynamicResource MaterialDesignCardGroupBox}">
+                    <GroupBox.HeaderTemplate>
+                        <DataTemplate>
+                            <TextBlock Margin="8,0" Text="{Binding}" />
+                        </DataTemplate>
+                    </GroupBox.HeaderTemplate>
+                    <Grid Margin="7">
+                        <TextBox
+                            VerticalContentAlignment="Stretch"
+                            AcceptsReturn="True"
+                            AcceptsTab="True"
+                            BorderThickness="0"
+                            Text="{Binding Path=AccountOptions.Comment}"
+                            TextWrapping="Wrap" />
+                    </Grid>
+                </GroupBox>
+            </Grid>
+        </ContentControl>
+    </Grid>
+</UserControl>

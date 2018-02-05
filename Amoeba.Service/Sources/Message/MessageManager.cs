@@ -12,7 +12,7 @@ using Omnius.Utilities;
 
 namespace Amoeba.Service
 {
-    class MessageManager : ManagerBase, ISettings
+    sealed partial class MessageManager : ManagerBase, ISettings
     {
         private BufferManager _bufferManager;
         private CoreManager _coreManager;
@@ -350,7 +350,7 @@ namespace Amoeba.Service
                 int version = _settings.Load("Version", () => 0);
 
                 {
-                    var searchSignatures = _settings.Load("SearchSignatures", () => new Signature[0]);
+                    var searchSignatures = _settings.Load("SearchSignatures", () => Array.Empty<Signature>());
 
                     this.SetConfig(new MessageConfig(searchSignatures));
                 }

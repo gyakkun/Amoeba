@@ -35,7 +35,7 @@ namespace Amoeba.Messages
 
         protected override void Initialize()
         {
-            _hashCode = (this.Id != null) ? Fnv1.ComputeHash32(this.Id) : 0;
+            _hashCode = (this.Id != null) ? ItemUtils.GetHashCode(this.Id) : 0;
         }
 
         protected override void ProtectedImport(Stream stream, BufferManager bufferManager, int depth)

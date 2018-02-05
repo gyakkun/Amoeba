@@ -1,4 +1,6 @@
 ﻿using System.Windows;
+using System.Linq;
+using System;
 
 namespace Amoeba.Simulation
 {

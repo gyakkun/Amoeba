@@ -29,7 +29,7 @@ namespace Amoeba.Interface
         {
             try
             {
-                using (var streamReader = new StreamReader(new WrapperStream(stream, true), new UTF8Encoding(false)))
+                using (var streamReader = new StreamReader(new WrapperStream(stream), new UTF8Encoding(false)))
                 using (var jsonTextReader = new JsonTextReader(streamReader))
                 {
                     var serializer = new JsonSerializer();
@@ -49,14 +49,14 @@ namespace Amoeba.Interface
                 Log.Warning(e);
             }
 
-            return default(T);
+            return default;
         }
 
         public static void Save<T>(Stream stream, T value)
         {
             try
             {
-                using (var streamWriter = new StreamWriter(new WrapperStream(stream, true), new UTF8Encoding(false)))
+                using (var streamWriter = new StreamWriter(new WrapperStream(stream), new UTF8Encoding(false)))
                 using (var jsonTextWriter = new JsonTextWriter(streamWriter))
                 {
                     var serializer = new JsonSerializer();

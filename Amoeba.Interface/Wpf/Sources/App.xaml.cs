@@ -80,11 +80,11 @@ namespace Amoeba.Interface
 
             if (logPath == null) return;
 
-            Log.LogEvent += (object sender, LogEventArgs e) =>
+            Log.MessageEvent += (sender, e) =>
             {
+                if (e.Level == LogMessageLevel.Information) return;
 #if !DEBUG
-                if (e.MessageLevel == LogMessageLevel.Information) return;
-                if (e.MessageLevel == LogMessageLevel.Debug) return;
+                if (e.Level == LogMessageLevel.Debug) return;
 #endif
 
                 lock (logPath)
@@ -99,12 +99,7 @@ namespace Amoeba.Interface
                                 isHeaderWrite = false;
                             }
 
-                            writer.WriteLine(string.Format(
-                                "\r\n--------------------------------------------------------------------------------\r\n\r\n" +
-                                "Time:\t\t{0}\r\n" +
-                                "Level:\t\t{1}\r\n" +
-                                "{2}",
-                                DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"), e.MessageLevel, e.Message));
+                            writer.WriteLine(MessageToString(e));
                             writer.Flush();
                         }
                     }
@@ -115,22 +110,76 @@ namespace Amoeba.Interface
                 }
             };
 
-            Log.LogEvent += (object sender, LogEventArgs e) =>
+            Log.ExceptionEvent += (sender, e) =>
             {
-                try
-                {
-                    Debug.WriteLine(string.Format(
-                        "\r\n--------------------------------------------------------------------------------\r\n\r\n" +
-                        "Time:\t\t{0}\r\n" +
-                        "Level:\t\t{1}\r\n" +
-                        "{2}",
-                        DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"), e.MessageLevel, e.Message));
-                }
-                catch (Exception)
-                {
+                if (e.Level == LogMessageLevel.Information) return;
+#if !DEBUG
+                if (e.Level == LogMessageLevel.Debug) return;
+#endif
 
+                lock (logPath)
+                {
+                    try
+                    {
+                        using (var writer = new StreamWriter(logPath, true, new UTF8Encoding(false)))
+                        {
+                            if (isHeaderWrite)
+                            {
+                                writer.WriteLine(this.GetMachineInfomation());
+                                isHeaderWrite = false;
+                            }
+
+                            writer.WriteLine(ExceptionToString(e));
+                            writer.Flush();
+                        }
+                    }
+                    catch (Exception)
+                    {
+
+                    }
                 }
             };
+
+            string MessageToString(LogMessageEventArgs e)
+            {
+                var sb = new StringBuilder();
+                sb.AppendLine();
+                sb.AppendLine("--------------------------------------------------------------------------------");
+                sb.AppendLine();
+                sb.AppendLine(string.Format("Time:\t\t{0}", DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")));
+                sb.AppendLine(string.Format("Level:\t\t{0}", e.Level));
+                sb.AppendLine(string.Format("Message:\t\t{0}", e.Message));
+
+                return sb.ToString();
+            }
+
+            string ExceptionToString(LogExceptionEventArgs e)
+            {
+                var sb = new StringBuilder();
+                sb.AppendLine();
+                sb.AppendLine("--------------------------------------------------------------------------------");
+                sb.AppendLine();
+                sb.AppendLine(string.Format("Time:\t\t{0}", DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")));
+                sb.AppendLine(string.Format("Level:\t\t{0}", e.Level));
+
+                Exception exception = e.Exception;
+
+                while (exception != null)
+                {
+                    sb.AppendLine(string.Format("Exception:\t\t{0}", exception.GetType().ToString()));
+                    if (!string.IsNullOrWhiteSpace(exception.Message)) sb.AppendLine(string.Format("Message:\t\t{0}", exception.Message));
+                    if (!string.IsNullOrWhiteSpace(exception.StackTrace)) sb.AppendLine(string.Format("StackTrace:\t\t{0}", exception.StackTrace));
+
+                    exception = exception.InnerException;
+
+                    if (exception != null)
+                    {
+                        sb.AppendLine();
+                    }
+                }
+
+                return sb.ToString();
+            }
         }
 
         private string GetMachineInfomation()
@@ -210,7 +259,7 @@ namespace Amoeba.Interface
         {
             try
             {
-                string sessionId = NetworkConverter.ToHexString(Sha256.ComputeHash(Path.GetFullPath(Assembly.GetEntryAssembly().Location)));
+                string sessionId = NetworkConverter.ToHexString(Sha256.Compute(Path.GetFullPath(Assembly.GetEntryAssembly().Location)));
 
                 // 多重起動防止
                 {
@@ -223,8 +272,6 @@ namespace Amoeba.Interface
                         return;
                     }
                 }
-
-                this.KillProcesses();
 
                 // アップデート
                 {
@@ -342,23 +389,26 @@ namespace Amoeba.Interface
                     Environment.SetEnvironmentVariable("TEMP", Path.GetFullPath(AmoebaEnvironment.Paths.TempPath), EnvironmentVariableTarget.Process);
                 }
 
-                // Tor起動。
-                if (AmoebaEnvironment.Config.Tor != null)
+                // アップグレード処理。
                 {
-                    var config = AmoebaEnvironment.Config.Tor;
+                    if (AmoebaEnvironment.Config.Version <= new Version(5, 0, 60))
+                    {
+                        var basePath = Path.Combine(AmoebaEnvironment.Paths.ConfigPath, @"Service\Core\Cache");
+                        Directory.CreateDirectory(Path.Combine(basePath, "Blocks"));
 
-                    var process = new Process();
-                    process.StartInfo.FileName = Path.GetFullPath(config.Path);
-                    process.StartInfo.Arguments = config.Arguments;
-                    process.StartInfo.WorkingDirectory = Path.GetFullPath(config.WorkingDirectory);
-                    process.StartInfo.CreateNoWindow = true;
-                    process.StartInfo.UseShellExecute = false;
-                    process.Start();
+                        var renameList = new List<(string oldPath, string newPath)>();
+                        renameList.Add((@"CacheInfos.json.gz", @"ContentInfos.json.gz"));
+                        renameList.Add((@"Size.json.gz", @"Blocks\Size.json.gz"));
+                        renameList.Add((@"ClusterIndex.json.gz", @"Blocks\ClusterIndex.json.gz"));
 
-                    _processList.Add(process);
+                        foreach (var (oldPath, newPath) in renameList)
+                        {
+                            File.Copy(Path.Combine(basePath, oldPath), Path.Combine(basePath, newPath));
+                        }
+                    }
                 }
 
-                this.StartupUri = new Uri("Windows/Main/MainWindow.xaml", UriKind.Relative);
+                this.StartupUri = new Uri("Mvvm/Windows/Main/MainWindow.xaml", UriKind.Relative);
             }
             catch (Exception ex)
             {
@@ -384,38 +434,6 @@ namespace Amoeba.Interface
 
                 }
             });
-        }
-
-        private void KillProcesses()
-        {
-            var list = new List<string>();
-            if (AmoebaEnvironment.Config.Tor != null) list.Add(AmoebaEnvironment.Config.Tor.Path);
-
-            foreach (string path in list)
-            {
-                foreach (var process in Process.GetProcessesByName(Path.GetFileNameWithoutExtension(path)))
-                {
-                    try
-                    {
-                        if (process.MainModule.FileName == Path.GetFullPath(path))
-                        {
-                            try
-                            {
-                                process.Kill();
-                                process.WaitForExit();
-                            }
-                            catch (Exception)
-                            {
-
-                            }
-                        }
-                    }
-                    catch (Exception)
-                    {
-
-                    }
-                }
-            }
         }
 
         static class NativeMethods

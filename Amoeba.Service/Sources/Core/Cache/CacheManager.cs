@@ -20,143 +20,56 @@ using Omnius.Utilities;
 
 namespace Amoeba.Service
 {
-    interface ISetOperators<T>
+    sealed partial class CacheManager : ManagerBase, ISettings, ISetOperators<Hash>, IEnumerable<Hash>
     {
-        IEnumerable<T> IntersectFrom(IEnumerable<T> collection);
-        IEnumerable<T> ExceptFrom(IEnumerable<T> collection);
-    }
-
-    class CacheManager : ManagerBase, ISettings, ISetOperators<Hash>, IEnumerable<Hash>
-    {
-        private Stream _fileStream;
-
-        private BitmapManager _bitmapManager;
         private BufferManager _bufferManager;
+        private BlocksManager _blocksManager;
+        private ContentInfosManager _contentInfoManager;
 
         private Settings _settings;
 
-        private long _size;
-        private Dictionary<Hash, ClusterInfo> _clusterIndex;
+        private WatchTimer _checkTimer;
 
-        private bool _spaceSectors_Initialized;
-        private HashSet<long> _spaceSectors = new HashSet<long>();
+        private readonly ReaderWriterLockManager _lockManager = new ReaderWriterLockManager();
 
-        private Dictionary<Hash, int> _lockedHashes = new Dictionary<Hash, int>();
-
-        private CacheInfoManager _cacheInfoManager;
-
-        private EventQueue<Hash> _addedBlockEventQueue = new EventQueue<Hash>(new TimeSpan(0, 0, 3));
         private EventQueue<Hash> _removedBlockEventQueue = new EventQueue<Hash>(new TimeSpan(0, 0, 3));
-        private EventQueue<Hash> _importedBlockEventQueue = new EventQueue<Hash>(new TimeSpan(0, 0, 3));
 
-        private WatchTimer _watchTimer;
-        private WatchTimer _updateTimer;
-
-        private readonly object _lockObject = new object();
-        private volatile bool _disposed;
-
-        public static readonly int SectorSize = 1024 * 256;
-        public static readonly int SpaceSectorCount = 4 * 1024; // SectorSize * 4 * 256 = 256MB
+        private volatile bool _isDisposed;
 
         private readonly int _threadCount = 4;
 
         public CacheManager(string configPath, string blocksPath, BufferManager bufferManager)
         {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                const FileOptions FileFlagNoBuffering = (FileOptions)0x20000000;
-                _fileStream = new FileStream(blocksPath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None, CacheManager.SectorSize, FileFlagNoBuffering);
-            }
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-            {
-                _fileStream = new FileStream(blocksPath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None, CacheManager.SectorSize);
-            }
-
-            _bitmapManager = new BitmapManager(bufferManager);
             _bufferManager = bufferManager;
+            _blocksManager = new BlocksManager(Path.Combine(configPath, "Blocks"), blocksPath, _bufferManager);
+            _contentInfoManager = new ContentInfosManager();
 
             _settings = new Settings(configPath);
 
-            _cacheInfoManager = new CacheInfoManager();
-
-            _watchTimer = new WatchTimer(this.WatchTimer);
-            _updateTimer = new WatchTimer(this.UpdateTimer);
+            _checkTimer = new WatchTimer(this.CheckTimer);
         }
 
-        private static long Roundup(long value, long unit)
-        {
-            if (value % unit == 0) return value;
-            else return ((value / unit) + 1) * unit;
-        }
-
-        private void WatchTimer()
+        private void CheckTimer()
         {
             this.CheckMessages();
             this.CheckContents();
-        }
-
-        private void UpdateTimer()
-        {
-            this.CheckInformation();
-        }
-
-        private volatile Info _info = new Info();
-
-        public class Info
-        {
-            public long BlockCount { get; set; }
-            public long UsingSpace { get; set; }
-            public long LockSpace { get; set; }
-            public long FreeSpace { get; set; }
-        }
-
-        private void CheckInformation()
-        {
-            lock (_lockObject)
-            {
-                _info.BlockCount = this.Count;
-                _info.UsingSpace = _fileStream.Length;
-
-                {
-                    var usingHashes = new HashSet<Hash>();
-                    usingHashes.UnionWith(_lockedHashes.Keys);
-                    usingHashes.UnionWith(_cacheInfoManager.Select(n => n.LockedHashes).Extract());
-
-                    long size = 0;
-
-                    foreach (var hash in usingHashes)
-                    {
-                        if (_clusterIndex.TryGetValue(hash, out var clusterInfo))
-                        {
-                            size += clusterInfo.Indexes.Length * CacheManager.SectorSize;
-                        }
-                    }
-
-                    _info.LockSpace = size;
-                }
-
-                _info.FreeSpace = this.Size - _info.LockSpace;
-            }
         }
 
         public CacheReport Report
         {
             get
             {
-                lock (_lockObject)
-                {
-                    return new CacheReport(_info.BlockCount, _info.UsingSpace, _info.LockSpace, _info.FreeSpace);
-                }
+                return _blocksManager.Report;
             }
         }
 
         public IEnumerable<CacheContentReport> GetCacheContentReports()
         {
-            lock (_lockObject)
+            using (_lockManager.ReadLock())
             {
                 var list = new List<CacheContentReport>();
 
-                foreach (var info in _cacheInfoManager.GetContentCacheInfos())
+                foreach (var info in _contentInfoManager.GetFileContentInfos())
                 {
                     list.Add(new CacheContentReport(info.CreationTime, info.ShareInfo.FileLength, info.Metadata, info.ShareInfo.Path));
                 }
@@ -169,21 +82,7 @@ namespace Amoeba.Service
         {
             get
             {
-                lock (_lockObject)
-                {
-                    return _size;
-                }
-            }
-        }
-
-        public long Count
-        {
-            get
-            {
-                lock (_lockObject)
-                {
-                    return _clusterIndex.Count;
-                }
+                return _blocksManager.Size;
             }
         }
 
@@ -191,11 +90,11 @@ namespace Amoeba.Service
         {
             add
             {
-                _addedBlockEventQueue.Events += value;
+                _blocksManager.AddedBlockEvents += value;
             }
             remove
             {
-                _addedBlockEventQueue.Events -= value;
+                _blocksManager.AddedBlockEvents -= value;
             }
         }
 
@@ -203,529 +102,188 @@ namespace Amoeba.Service
         {
             add
             {
+                _blocksManager.RemovedBlockEvents += value;
                 _removedBlockEventQueue.Events += value;
             }
             remove
             {
+                _blocksManager.RemovedBlockEvents -= value;
                 _removedBlockEventQueue.Events -= value;
-            }
-        }
-
-        public event Action<IEnumerable<Hash>> ImportedBlockEvents
-        {
-            add
-            {
-                _importedBlockEventQueue.Events += value;
-            }
-            remove
-            {
-                _importedBlockEventQueue.Events -= value;
-            }
-        }
-
-        private void CheckSpace(int sectorCount)
-        {
-            lock (_lockObject)
-            {
-                if (!_spaceSectors_Initialized)
-                {
-                    _bitmapManager.SetLength(this.Size / CacheManager.SectorSize);
-
-                    foreach (var clusterInfo in _clusterIndex.Values)
-                    {
-                        foreach (long sector in clusterInfo.Indexes)
-                        {
-                            _bitmapManager.Set(sector, true);
-                        }
-                    }
-
-                    _spaceSectors_Initialized = true;
-                }
-
-                if (_spaceSectors.Count < sectorCount)
-                {
-                    for (long i = 0; i < _bitmapManager.Length; i++)
-                    {
-                        if (!_bitmapManager.Get(i))
-                        {
-                            _spaceSectors.Add(i);
-                            if (_spaceSectors.Count >= sectorCount) break;
-                        }
-                    }
-                }
-            }
-        }
-
-        private void CreatingSpace()
-        {
-            lock (_lockObject)
-            {
-                this.CheckSpace(CacheManager.SpaceSectorCount);
-                if (CacheManager.SpaceSectorCount <= _spaceSectors.Count) return;
-
-                var usingHashes = new HashSet<Hash>();
-                usingHashes.UnionWith(_lockedHashes.Keys);
-                usingHashes.UnionWith(_cacheInfoManager.Select(n => n.LockedHashes).Extract());
-
-                var removePairs = _clusterIndex
-                    .Where(n => !usingHashes.Contains(n.Key))
-                    .ToList();
-
-                removePairs.Sort((x, y) =>
-                {
-                    return x.Value.UpdateTime.CompareTo(y.Value.UpdateTime);
-                });
-
-                foreach (var hash in removePairs.Select(n => n.Key))
-                {
-                    if (CacheManager.SpaceSectorCount <= _spaceSectors.Count) break;
-
-                    this.Remove(hash);
-                }
             }
         }
 
         public void Lock(Hash hash)
         {
-            lock (_lockObject)
-            {
-                int count;
-                _lockedHashes.TryGetValue(hash, out count);
-
-                count++;
-
-                _lockedHashes[hash] = count;
-            }
+            _blocksManager.Lock(hash);
         }
 
         public void Unlock(Hash hash)
         {
-            lock (_lockObject)
-            {
-                int count;
-                if (!_lockedHashes.TryGetValue(hash, out count)) throw new KeyNotFoundException();
-
-                count--;
-
-                if (count == 0)
-                {
-                    _lockedHashes.Remove(hash);
-                }
-                else
-                {
-                    _lockedHashes[hash] = count;
-                }
-            }
+            _blocksManager.Unlock(hash);
         }
 
         public bool Contains(Hash hash)
         {
-            lock (_lockObject)
+            if (_blocksManager.Contains(hash)) return true;
+
+            using (_lockManager.ReadLock())
             {
-                return _clusterIndex.ContainsKey(hash) || _cacheInfoManager.Contains(hash);
+                if (_contentInfoManager.Contains(hash)) return true;
             }
+
+            return false;
         }
 
         public IEnumerable<Hash> IntersectFrom(IEnumerable<Hash> collection)
         {
-            lock (_lockObject)
+            var hashSet = new HashSet<Hash>();
+            hashSet.UnionWith(_blocksManager.IntersectFrom(collection));
+
+            using (_lockManager.ReadLock())
             {
-                foreach (var key in collection)
-                {
-                    if (this.Contains(key))
-                    {
-                        yield return key;
-                    }
-                }
+                hashSet.UnionWith(_contentInfoManager.IntersectFrom(collection));
             }
+
+            return hashSet;
         }
 
         public IEnumerable<Hash> ExceptFrom(IEnumerable<Hash> collection)
         {
-            lock (_lockObject)
+            var hashSet = new HashSet<Hash>(collection);
+            hashSet.ExceptWith(_blocksManager.IntersectFrom(collection));
+
+            using (_lockManager.ReadLock())
             {
-                foreach (var key in collection)
-                {
-                    if (!this.Contains(key))
-                    {
-                        yield return key;
-                    }
-                }
+                hashSet.ExceptWith(_contentInfoManager.IntersectFrom(collection));
             }
-        }
 
-        public void Remove(Hash hash)
-        {
-            lock (_lockObject)
-            {
-                if (_clusterIndex.TryGetValue(hash, out var clusterInfo))
-                {
-                    _clusterIndex.Remove(hash);
-
-                    if (_spaceSectors_Initialized)
-                    {
-                        foreach (long sector in clusterInfo.Indexes)
-                        {
-                            _bitmapManager.Set(sector, false);
-                            if (_spaceSectors.Count < CacheManager.SpaceSectorCount) _spaceSectors.Add(sector);
-                        }
-                    }
-
-                    // Event
-                    _removedBlockEventQueue.Enqueue(hash);
-                }
-            }
+            return hashSet;
         }
 
         public void Resize(long size)
         {
-            if (size < 0) throw new ArgumentOutOfRangeException(nameof(size));
-
-            lock (_lockObject)
-            {
-                int unit = 1024 * 1024 * 256; // 256MB
-                size = CacheManager.Roundup(size, unit);
-
-                foreach (var key in _clusterIndex.Keys.ToArray()
-                    .Where(n => _clusterIndex[n].Indexes.Any(point => size < (point * CacheManager.SectorSize) + CacheManager.SectorSize))
-                    .ToArray())
-                {
-                    this.Remove(key);
-                }
-
-                _size = CacheManager.Roundup(size, CacheManager.SectorSize);
-                _fileStream.SetLength(Math.Min(_size, _fileStream.Length));
-
-                _spaceSectors.Clear();
-                _spaceSectors_Initialized = false;
-            }
+            _blocksManager.Resize(size);
         }
 
         public Task CheckBlocks(IProgress<CheckBlocksProgressReport> progress, CancellationToken token)
         {
-            return Task.Run(() =>
-            {
-                // 読めないブロックを検出しRemoveする。
-
-                var list = this.ToArray();
-
-                int badCount = 0;
-                int checkedCount = 0;
-                int blockCount = list.Length;
-
-                token.ThrowIfCancellationRequested();
-
-                progress.Report(new CheckBlocksProgressReport(badCount, checkedCount, blockCount));
-
-                foreach (var hash in list)
-                {
-                    token.ThrowIfCancellationRequested();
-
-                    var buffer = new ArraySegment<byte>();
-
-                    try
-                    {
-                        lock (_lockObject)
-                        {
-                            if (this.Contains(hash))
-                            {
-                                buffer = this[hash];
-                            }
-                        }
-                    }
-                    catch (Exception)
-                    {
-                        badCount++;
-                    }
-                    finally
-                    {
-                        if (buffer.Array != null)
-                        {
-                            _bufferManager.ReturnBuffer(buffer.Array);
-                        }
-                    }
-
-                    checkedCount++;
-
-                    if (checkedCount % 32 == 0)
-                    {
-                        progress.Report(new CheckBlocksProgressReport(badCount, checkedCount, blockCount));
-                    }
-                }
-
-                progress.Report(new CheckBlocksProgressReport(badCount, checkedCount, blockCount));
-            }, token);
+            return _blocksManager.CheckBlocks(progress, token);
         }
 
-        private byte[] _sectorBuffer = new byte[CacheManager.SectorSize];
-
-        public ArraySegment<byte> this[Hash hash]
+        public ArraySegment<byte> GetBlock(Hash hash)
         {
-            get
             {
-                // Cache
+                ArraySegment<byte> result;
+
+                if (_blocksManager.TryGet(hash, out result))
                 {
-                    ArraySegment<byte>? result = null;
+                    return result;
+                }
+            }
 
-                    lock (_lockObject)
+            {
+                ArraySegment<byte>? result = null;
+                string path = null;
+
+                using (_lockManager.ReadLock())
+                {
+                    var shareInfo = _contentInfoManager.GetShareInfo(hash);
+
+                    if (shareInfo != null)
                     {
-                        if (_clusterIndex.TryGetValue(hash, out var clusterInfo))
-                        {
-                            clusterInfo.UpdateTime = DateTime.UtcNow;
+                        var buffer = _bufferManager.TakeBuffer(shareInfo.BlockLength);
 
-                            var buffer = _bufferManager.TakeBuffer(clusterInfo.Length);
+                        try
+                        {
+                            int length;
 
                             try
                             {
-                                try
+                                using (var stream = new UnbufferedFileStream(shareInfo.Path, FileMode.Open, FileAccess.Read, FileShare.Read, FileOptions.None, _bufferManager))
                                 {
-                                    for (int i = 0, remain = clusterInfo.Length; i < clusterInfo.Indexes.Length; i++, remain -= CacheManager.SectorSize)
-                                    {
-                                        long posision = clusterInfo.Indexes[i] * CacheManager.SectorSize;
-                                        if (posision > _fileStream.Length) throw new ArgumentOutOfRangeException();
+                                    stream.Seek((long)shareInfo.GetIndex(hash) * shareInfo.BlockLength, SeekOrigin.Begin);
 
-                                        if (_fileStream.Position != posision)
-                                        {
-                                            _fileStream.Seek(posision, SeekOrigin.Begin);
-                                        }
-
-                                        int length = Math.Min(remain, CacheManager.SectorSize);
-
-                                        {
-                                            _fileStream.Read(_sectorBuffer, 0, _sectorBuffer.Length);
-
-                                            Unsafe.Copy(_sectorBuffer, 0, buffer, CacheManager.SectorSize * i, length);
-                                        }
-                                    }
+                                    length = (int)Math.Min(stream.Length - stream.Position, shareInfo.BlockLength);
+                                    stream.Read(buffer, 0, length);
                                 }
-                                catch (ArgumentOutOfRangeException)
-                                {
-                                    throw new BlockNotFoundException();
-                                }
-                                catch (IOException)
-                                {
-                                    throw new BlockNotFoundException();
-                                }
-
-                                result = new ArraySegment<byte>(buffer, 0, clusterInfo.Length);
                             }
-                            catch (Exception)
+                            catch (ArgumentOutOfRangeException)
                             {
-                                _bufferManager.ReturnBuffer(buffer);
-
-                                this.Remove(hash);
-
-                                throw;
+                                throw new BlockNotFoundException();
                             }
-                        }
-                    }
+                            catch (IOException)
+                            {
+                                throw new BlockNotFoundException();
+                            }
 
-                    if (result != null)
-                    {
-                        if (hash.Algorithm == HashAlgorithm.Sha256
-                            && Unsafe.Equals(Sha256.ComputeHash(result.Value), hash.Value))
-                        {
-                            return result.Value;
+                            result = new ArraySegment<byte>(buffer, 0, length);
+                            path = shareInfo.Path;
                         }
-                        else
+                        catch (Exception)
                         {
-                            _bufferManager.ReturnBuffer(result.Value.Array);
+                            _bufferManager.ReturnBuffer(buffer);
 
-                            this.Remove(hash);
+                            throw;
                         }
                     }
                 }
 
-                // Share
+                if (result != null)
                 {
-                    ArraySegment<byte>? result = null;
-                    ShareInfo shareInfo;
-
-                    lock (_lockObject)
+                    if (hash.Algorithm == HashAlgorithm.Sha256
+                        && Unsafe.Equals(Sha256.Compute(result.Value), hash.Value))
                     {
-                        shareInfo = _cacheInfoManager.GetShareInfo(hash);
-
-                        if (shareInfo != null)
-                        {
-                            var buffer = _bufferManager.TakeBuffer(shareInfo.BlockLength);
-
-                            try
-                            {
-                                int length;
-
-                                try
-                                {
-                                    using (var stream = new UnbufferedFileStream(shareInfo.Path, FileMode.Open, FileAccess.Read, FileShare.Read, FileOptions.None, _bufferManager))
-                                    {
-                                        stream.Seek((long)shareInfo.GetIndex(hash) * shareInfo.BlockLength, SeekOrigin.Begin);
-
-                                        length = (int)Math.Min(stream.Length - stream.Position, shareInfo.BlockLength);
-                                        stream.Read(buffer, 0, length);
-                                    }
-                                }
-                                catch (ArgumentOutOfRangeException)
-                                {
-                                    throw new BlockNotFoundException();
-                                }
-                                catch (IOException)
-                                {
-                                    throw new BlockNotFoundException();
-                                }
-
-                                result = new ArraySegment<byte>(buffer, 0, length);
-                            }
-                            catch (Exception)
-                            {
-                                _bufferManager.ReturnBuffer(buffer);
-
-                                throw;
-                            }
-                        }
+                        return result.Value;
                     }
-
-                    if (result != null)
+                    else
                     {
-                        if (hash.Algorithm == HashAlgorithm.Sha256
-                            && Unsafe.Equals(Sha256.ComputeHash(result.Value), hash.Value))
-                        {
-                            return result.Value;
-                        }
-                        else
-                        {
-                            _bufferManager.ReturnBuffer(result.Value.Array);
-                            result = null;
+                        _bufferManager.ReturnBuffer(result.Value.Array);
+                        result = null;
 
-                            this.RemoveContent(shareInfo.Path);
-                        }
+                        this.RemoveContent(path);
                     }
-                }
-
-                throw new BlockNotFoundException();
-            }
-            set
-            {
-                if (value.Count > 1024 * 1024 * 32) throw new BadBlockException();
-
-                if (hash.Algorithm == HashAlgorithm.Sha256)
-                {
-                    if (!Unsafe.Equals(Sha256.ComputeHash(value), hash.Value)) throw new BadBlockException();
-                }
-                else
-                {
-                    throw new FormatException();
-                }
-
-                lock (_lockObject)
-                {
-                    if (this.Contains(hash)) return;
-
-                    List<long> sectorList = null;
-
-                    try
-                    {
-                        int count = (value.Count + (CacheManager.SectorSize - 1)) / CacheManager.SectorSize;
-
-                        sectorList = new List<long>(count);
-
-                        if (_spaceSectors.Count < count)
-                        {
-                            this.CreatingSpace();
-                        }
-
-                        if (_spaceSectors.Count < count) throw new SpaceNotFoundException();
-
-                        sectorList.AddRange(_spaceSectors.Take(count));
-
-                        foreach (long sector in sectorList)
-                        {
-                            _bitmapManager.Set(sector, true);
-                            _spaceSectors.Remove(sector);
-                        }
-
-                        for (int i = 0, remain = value.Count; i < sectorList.Count && 0 < remain; i++, remain -= CacheManager.SectorSize)
-                        {
-                            long posision = sectorList[i] * CacheManager.SectorSize;
-
-                            if ((_fileStream.Length < posision + CacheManager.SectorSize))
-                            {
-                                int unit = 1024 * 1024 * 256; // 256MB
-                                long size = CacheManager.Roundup((posision + CacheManager.SectorSize), unit);
-
-                                _fileStream.SetLength(Math.Min(size, this.Size));
-                            }
-
-                            if (_fileStream.Position != posision)
-                            {
-                                _fileStream.Seek(posision, SeekOrigin.Begin);
-                            }
-
-                            int length = Math.Min(remain, CacheManager.SectorSize);
-
-                            {
-                                Unsafe.Copy(value.Array, value.Offset + (CacheManager.SectorSize * i), _sectorBuffer, 0, length);
-                                Unsafe.Zero(_sectorBuffer, length, _sectorBuffer.Length - length);
-
-                                _fileStream.Write(_sectorBuffer, 0, _sectorBuffer.Length);
-                            }
-                        }
-
-                        _fileStream.Flush();
-                    }
-                    catch (SpaceNotFoundException e)
-                    {
-                        Log.Error(e);
-
-                        throw e;
-                    }
-                    catch (IOException e)
-                    {
-                        Log.Error(e);
-
-                        throw e;
-                    }
-
-                    var clusterInfo = new ClusterInfo(sectorList.ToArray(), value.Count);
-                    clusterInfo.UpdateTime = DateTime.UtcNow;
-
-                    _clusterIndex[hash] = clusterInfo;
-
-                    // Event
-                    _addedBlockEventQueue.Enqueue(hash);
                 }
             }
+
+            throw new BlockNotFoundException();
+        }
+
+        public void Set(Hash hash, ArraySegment<byte> value)
+        {
+            _blocksManager.Set(hash, value);
         }
 
         public int GetLength(Hash hash)
         {
-            lock (_lockObject)
             {
-                if (_clusterIndex.ContainsKey(hash))
-                {
-                    return _clusterIndex[hash].Length;
-                }
+                int length = _blocksManager.GetLength(hash);
+                if (length != 0) return length;
+            }
 
-                // Share
+            {
+                int length = 0;
+
+                using (_lockManager.ReadLock())
                 {
-                    var shareInfo = _cacheInfoManager.GetShareInfo(hash);
+                    var shareInfo = _contentInfoManager.GetShareInfo(hash);
 
                     if (shareInfo != null)
                     {
-                        return Math.Min((int)(shareInfo.FileLength - (shareInfo.BlockLength * shareInfo.GetIndex(hash))), shareInfo.BlockLength);
+                        length = Math.Min((int)(shareInfo.FileLength - (shareInfo.BlockLength * shareInfo.GetIndex(hash))), shareInfo.BlockLength);
                     }
                 }
 
-                return 0;
+                if (length != 0) return length;
             }
+
+            return 0;
         }
 
         public Stream Decoding(IEnumerable<Hash> hashes)
         {
             if (hashes == null) throw new ArgumentNullException(nameof(hashes));
 
-            lock (_lockObject)
-            {
-                return new CacheStreamReader(hashes.ToList(), this, _bufferManager);
-            }
+            return new CacheStreamReader(hashes.ToList(), this, _bufferManager);
         }
 
         private object _parityDecodingLockObject = new object();
@@ -766,7 +324,7 @@ namespace Amoeba.Service
 
                                     try
                                     {
-                                        buffer = this[hashList[i]];
+                                        buffer = this.GetBlock(hashList[i]);
 
                                         if (buffer.Count < blockLength)
                                         {
@@ -811,7 +369,7 @@ namespace Amoeba.Service
 
                                 for (int i = 0; i < informationCount; length -= blockLength, i++)
                                 {
-                                    this[hashList[i]] = new ArraySegment<byte>(buffers[i].Array, buffers[i].Offset, (int)Math.Min(buffers[i].Count, length));
+                                    _blocksManager.Set(hashList[i], new ArraySegment<byte>(buffers[i].Array, buffers[i].Offset, (int)Math.Min(buffers[i].Count, length)));
                                 }
                             }
                         }
@@ -868,13 +426,13 @@ namespace Amoeba.Service
 
                                 if (hashAlgorithm == HashAlgorithm.Sha256)
                                 {
-                                    hash = new Hash(HashAlgorithm.Sha256, Sha256.ComputeHash(safeBuffer.Value, 0, length));
+                                    hash = new Hash(HashAlgorithm.Sha256, Sha256.Compute(safeBuffer.Value, 0, length));
                                 }
 
-                                this.Lock(hash);
-                                lockedHashes.Add(hash);
+                                _blocksManager.Lock(hash);
+                                _blocksManager.Set(hash, new ArraySegment<byte>(safeBuffer.Value, 0, length));
 
-                                this[hash] = new ArraySegment<byte>(safeBuffer.Value, 0, length);
+                                lockedHashes.Add(hash);
                             }
 
                             // Stream Dispose
@@ -925,13 +483,13 @@ namespace Amoeba.Service
 
                                         if (hashAlgorithm == HashAlgorithm.Sha256)
                                         {
-                                            hash = new Hash(HashAlgorithm.Sha256, Sha256.ComputeHash(buffer));
+                                            hash = new Hash(HashAlgorithm.Sha256, Sha256.Compute(buffer));
                                         }
 
-                                        this.Lock(hash);
-                                        lockedHashes.Add(hash);
+                                        _blocksManager.Lock(hash);
+                                        _blocksManager.Set(hash, buffer);
 
-                                        this[hash] = buffer;
+                                        lockedHashes.Add(hash);
 
                                         targetHashes.Add(hash);
                                         targetBuffers.Add(buffer);
@@ -968,32 +526,30 @@ namespace Amoeba.Service
                             stream = (new Index(groupList)).Export(_bufferManager);
                         }
                     }
-
-                    lock (_lockObject)
-                    {
-                        if (!_cacheInfoManager.ContainsMessage(metadata))
-                        {
-                            _cacheInfoManager.Add(new CacheInfo(DateTime.UtcNow, lifeSpan, metadata, lockedHashes, null));
-
-                            _importedBlockEventQueue.Enqueue(lockedHashes);
-                        }
-                    }
-
-                    return metadata;
                 }
                 finally
                 {
-                    foreach (var hash in lockedHashes)
-                    {
-                        this.Unlock(hash);
-                    }
-
                     if (stream != null)
                     {
                         stream.Dispose();
                         stream = null;
                     }
                 }
+
+                using (_lockManager.WriteLock())
+                {
+                    if (!_contentInfoManager.ContainsMessageContentInfo(metadata))
+                    {
+                        _contentInfoManager.Add(new ContentInfo(DateTime.UtcNow, lifeSpan, metadata, lockedHashes, null));
+
+                        foreach (var hash in lockedHashes)
+                        {
+                            _blocksManager.Lock(hash);
+                        }
+                    }
+                }
+
+                return metadata;
             }, token);
         }
 
@@ -1004,9 +560,9 @@ namespace Amoeba.Service
             return Task.Run(() =>
             {
                 // Check
-                lock (_lockObject)
+                using (_lockManager.ReadLock())
                 {
-                    var info = _cacheInfoManager.GetContentCacheInfo(path);
+                    var info = _contentInfoManager.GetFileContentInfo(path);
                     if (info != null) return info.Metadata;
                 }
 
@@ -1014,7 +570,6 @@ namespace Amoeba.Service
                 var lockedHashes = new HashSet<Hash>();
                 ShareInfo shareInfo = null;
 
-                try
                 {
                     const int blockLength = 1024 * 1024;
                     const HashAlgorithm hashAlgorithm = HashAlgorithm.Sha256;
@@ -1038,7 +593,7 @@ namespace Amoeba.Service
 
                                 if (hashAlgorithm == HashAlgorithm.Sha256)
                                 {
-                                    hash = new Hash(HashAlgorithm.Sha256, Sha256.ComputeHash(safeBuffer.Value, 0, length));
+                                    hash = new Hash(HashAlgorithm.Sha256, Sha256.Compute(safeBuffer.Value, 0, length));
                                 }
                             }
 
@@ -1085,7 +640,7 @@ namespace Amoeba.Service
 
                                         if (hashAlgorithm == HashAlgorithm.Sha256)
                                         {
-                                            hash = new Hash(HashAlgorithm.Sha256, Sha256.ComputeHash(buffer));
+                                            hash = new Hash(HashAlgorithm.Sha256, Sha256.Compute(buffer));
                                         }
 
                                         sharedHashes.Add(hash);
@@ -1139,13 +694,13 @@ namespace Amoeba.Service
 
                                     if (hashAlgorithm == HashAlgorithm.Sha256)
                                     {
-                                        hash = new Hash(HashAlgorithm.Sha256, Sha256.ComputeHash(safeBuffer.Value, 0, length));
+                                        hash = new Hash(HashAlgorithm.Sha256, Sha256.Compute(safeBuffer.Value, 0, length));
                                     }
 
-                                    this.Lock(hash);
-                                    lockedHashes.Add(hash);
+                                    _blocksManager.Lock(hash);
+                                    _blocksManager.Set(hash, new ArraySegment<byte>(safeBuffer.Value, 0, length));
 
-                                    this[hash] = new ArraySegment<byte>(safeBuffer.Value, 0, length);
+                                    lockedHashes.Add(hash);
                                 }
 
                                 metadata = new Metadata(depth, hash);
@@ -1188,13 +743,13 @@ namespace Amoeba.Service
 
                                             if (hashAlgorithm == HashAlgorithm.Sha256)
                                             {
-                                                hash = new Hash(HashAlgorithm.Sha256, Sha256.ComputeHash(buffer));
+                                                hash = new Hash(HashAlgorithm.Sha256, Sha256.Compute(buffer));
                                             }
 
-                                            this.Lock(hash);
-                                            lockedHashes.Add(hash);
+                                            _blocksManager.Lock(hash);
+                                            _blocksManager.Set(hash, buffer);
 
-                                            this[hash] = buffer;
+                                            lockedHashes.Add(hash);
 
                                             targetHashes.Add(hash);
                                             targetBuffers.Add(buffer);
@@ -1224,26 +779,22 @@ namespace Amoeba.Service
                             }
                         }
                     }
+                }
 
-                    lock (_lockObject)
+                using (_lockManager.WriteLock())
+                {
+                    if (!_contentInfoManager.ContainsFileContentInfo(path))
                     {
-                        if (!_cacheInfoManager.ContainsContent(path))
-                        {
-                            _cacheInfoManager.Add(new CacheInfo(creationTime, Timeout.InfiniteTimeSpan, metadata, lockedHashes, shareInfo));
+                        _contentInfoManager.Add(new ContentInfo(creationTime, Timeout.InfiniteTimeSpan, metadata, lockedHashes, shareInfo));
 
-                            _importedBlockEventQueue.Enqueue(lockedHashes);
+                        foreach (var hash in lockedHashes)
+                        {
+                            _blocksManager.Lock(hash);
                         }
                     }
+                }
 
-                    return metadata;
-                }
-                finally
-                {
-                    foreach (var hash in lockedHashes)
-                    {
-                        this.Unlock(hash);
-                    }
-                }
+                return metadata;
             }, token);
         }
 
@@ -1320,15 +871,15 @@ namespace Amoeba.Service
 
                             if (hashAlgorithm == HashAlgorithm.Sha256)
                             {
-                                hash = new Hash(HashAlgorithm.Sha256, Sha256.ComputeHash(parityBuffers[i]));
+                                hash = new Hash(HashAlgorithm.Sha256, Sha256.Compute(parityBuffers[i]));
                             }
                             else
                             {
                                 throw new NotSupportedException();
                             }
 
-                            this.Lock(hash);
-                            this[hash] = parityBuffers[i];
+                            _blocksManager.Lock(hash);
+                            _blocksManager.Set(hash, parityBuffers[i]);
 
                             parityHashes.Add(hash);
                         }
@@ -1356,15 +907,20 @@ namespace Amoeba.Service
 
         private void CheckMessages()
         {
-            lock (_lockObject)
+            using (_lockManager.WriteLock())
             {
                 var now = DateTime.UtcNow;
 
-                foreach (var info in _cacheInfoManager.GetMessageCacheInfos())
+                foreach (var info in _contentInfoManager.GetMessageContentInfos())
                 {
                     if ((now - info.CreationTime) > info.LifeSpan)
                     {
-                        _cacheInfoManager.RemoveMessage(info.Metadata);
+                        _contentInfoManager.RemoveMessageContentInfo(info.Metadata);
+
+                        foreach (var hash in info.LockedHashes)
+                        {
+                            _blocksManager.Unlock(hash);
+                        }
                     }
                 }
             }
@@ -1376,9 +932,9 @@ namespace Amoeba.Service
 
         private void CheckContents()
         {
-            lock (_lockObject)
+            using (_lockManager.WriteLock())
             {
-                foreach (var cacheInfo in _cacheInfoManager.GetContentCacheInfos())
+                foreach (var cacheInfo in _contentInfoManager.GetFileContentInfos())
                 {
                     if (cacheInfo.LockedHashes.All(n => this.Contains(n))) continue;
 
@@ -1389,26 +945,31 @@ namespace Amoeba.Service
 
         public void RemoveContent(string path)
         {
-            lock (_lockObject)
+            using (_lockManager.WriteLock())
             {
-                var cacheInfo = _cacheInfoManager.GetContentCacheInfo(path);
-                if (cacheInfo == null) return;
+                var contentInfo = _contentInfoManager.GetFileContentInfo(path);
+                if (contentInfo == null) return;
 
-                _cacheInfoManager.RemoveContent(path);
+                _contentInfoManager.RemoveFileContentInfo(path);
+
+                foreach (var hash in contentInfo.LockedHashes)
+                {
+                    _blocksManager.Unlock(hash);
+                }
 
                 // Event
-                _removedBlockEventQueue.Enqueue(cacheInfo.ShareInfo.Hashes.Where(n => !this.Contains(n)).ToArray());
+                _removedBlockEventQueue.Enqueue(contentInfo.ShareInfo.Hashes.Where(n => !this.Contains(n)).ToArray());
             }
         }
 
         public IEnumerable<Hash> GetContentHashes(string path)
         {
-            lock (_lockObject)
+            using (_lockManager.ReadLock())
             {
-                var cacheInfo = _cacheInfoManager.GetContentCacheInfo(path);
-                if (cacheInfo == null) Enumerable.Empty<Hash>();
+                var contentInfo = _contentInfoManager.GetFileContentInfo(path);
+                if (contentInfo == null) Enumerable.Empty<Hash>();
 
-                return cacheInfo.LockedHashes.ToArray();
+                return contentInfo.LockedHashes.ToArray();
             }
         }
 
@@ -1418,32 +979,35 @@ namespace Amoeba.Service
 
         public void Load()
         {
-            lock (_lockObject)
+            _blocksManager.Load();
+
+            using (_lockManager.WriteLock())
             {
                 int version = _settings.Load("Version", () => 0);
 
-                _size = _settings.Load("Size", () => (long)1024 * 1024 * 1024 * 32);
-                _clusterIndex = _settings.Load("ClusterIndex", () => new Dictionary<Hash, ClusterInfo>());
-
-                foreach (var cacheInfo in _settings.Load<IEnumerable<CacheInfo>>("CacheInfos", () => Array.Empty<CacheInfo>()))
+                foreach (var contentInfo in _settings.Load<IEnumerable<ContentInfo>>("ContentInfos", () => Array.Empty<ContentInfo>()))
                 {
-                    _cacheInfoManager.Add(cacheInfo);
+                    _contentInfoManager.Add(contentInfo);
+
+                    foreach (var hash in contentInfo.LockedHashes)
+                    {
+                        _blocksManager.Lock(hash);
+                    }
                 }
 
-                _watchTimer.Start(new TimeSpan(0, 0, 0), new TimeSpan(0, 10, 0));
-                _updateTimer.Start(new TimeSpan(0, 0, 0), new TimeSpan(0, 1, 0));
+                _checkTimer.Start(new TimeSpan(0, 0, 0), new TimeSpan(0, 10, 0));
             }
         }
 
         public void Save()
         {
-            lock (_lockObject)
+            _blocksManager.Save();
+
+            using (_lockManager.WriteLock())
             {
                 _settings.Save("Version", 0);
 
-                _settings.Save("Size", _size);
-                _settings.Save("ClusterIndex", _clusterIndex);
-                _settings.Save("CacheInfos", _cacheInfoManager.ToArray());
+                _settings.Save("ContentInfos", _contentInfoManager.ToArray());
             }
         }
 
@@ -1451,11 +1015,11 @@ namespace Amoeba.Service
 
         public Hash[] ToArray()
         {
-            lock (_lockObject)
+            using (_lockManager.ReadLock())
             {
                 var hashSet = new HashSet<Hash>();
-                hashSet.UnionWith(_clusterIndex.Keys);
-                hashSet.UnionWith(_cacheInfoManager.GetHashes());
+                hashSet.UnionWith(_blocksManager.ToArray());
+                hashSet.UnionWith(_contentInfoManager.GetHashes());
 
                 return hashSet.ToArray();
             }
@@ -1465,9 +1029,9 @@ namespace Amoeba.Service
 
         public IEnumerator<Hash> GetEnumerator()
         {
-            lock (_lockObject)
+            using (_lockManager.ReadLock())
             {
-                foreach (var hash in _clusterIndex.Keys)
+                foreach (var hash in this.ToArray())
                 {
                     yield return hash;
                 }
@@ -1480,7 +1044,7 @@ namespace Amoeba.Service
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            lock (_lockObject)
+            using (_lockManager.ReadLock())
             {
                 return this.GetEnumerator();
             }
@@ -1489,7 +1053,7 @@ namespace Amoeba.Service
         #endregion
 
         [DataContract(Name = nameof(ClusterInfo))]
-        private class ClusterInfo
+        sealed class ClusterInfo
         {
             private long[] _indexes;
             private int _length;
@@ -1542,444 +1106,55 @@ namespace Amoeba.Service
             }
         }
 
-        private class CacheInfoManager : IEnumerable<CacheInfo>
+        protected override void Dispose(bool isDisposing)
         {
-            private Dictionary<Metadata, CacheInfo> _messageCacheInfos;
-            private Dictionary<string, CacheInfo> _contentCacheInfos;
+            if (_isDisposed) return;
+            _isDisposed = true;
 
-            private HashMap _hashMap;
-
-            public CacheInfoManager()
+            if (isDisposing)
             {
-                _messageCacheInfos = new Dictionary<Metadata, CacheInfo>();
-                _contentCacheInfos = new Dictionary<string, CacheInfo>();
-
-                _hashMap = new HashMap();
-            }
-
-            public void Add(CacheInfo info)
-            {
-                if (info.ShareInfo == null)
-                {
-                    _messageCacheInfos.Add(info.Metadata, info);
-                }
-                else
-                {
-                    _contentCacheInfos.Add(info.ShareInfo.Path, info);
-
-                    _hashMap.Add(info.ShareInfo);
-                }
-            }
-
-            #region Message
-
-            public void RemoveMessage(Metadata metadata)
-            {
-                _messageCacheInfos.Remove(metadata);
-            }
-
-            public bool ContainsMessage(Metadata metadata)
-            {
-                return _messageCacheInfos.ContainsKey(metadata);
-            }
-
-            public IEnumerable<CacheInfo> GetMessageCacheInfos()
-            {
-                return _messageCacheInfos.Values.ToArray();
-            }
-
-            public CacheInfo GetMessageCacheInfo(Metadata metadata)
-            {
-                CacheInfo cacheInfo;
-                if (!_messageCacheInfos.TryGetValue(metadata, out cacheInfo)) return null;
-
-                return cacheInfo;
-            }
-
-            #endregion
-
-            #region Content
-
-            public void RemoveContent(string path)
-            {
-                if (_contentCacheInfos.TryGetValue(path, out var cacheInfo))
-                {
-                    _contentCacheInfos.Remove(path);
-
-                    _hashMap.Remove(cacheInfo.ShareInfo);
-                }
-            }
-
-            public bool ContainsContent(string path)
-            {
-                return _contentCacheInfos.ContainsKey(path);
-            }
-
-            public IEnumerable<CacheInfo> GetContentCacheInfos()
-            {
-                return _contentCacheInfos.Values.ToArray();
-            }
-
-            public CacheInfo GetContentCacheInfo(string path)
-            {
-                CacheInfo cacheInfo;
-                if (!_contentCacheInfos.TryGetValue(path, out cacheInfo)) return null;
-
-                return cacheInfo;
-            }
-
-            #endregion
-
-            #region Hash
-
-            public bool Contains(Hash hash)
-            {
-                return _hashMap.Contains(hash);
-            }
-
-            public ShareInfo GetShareInfo(Hash hash)
-            {
-                return _hashMap.Get(hash);
-            }
-
-            public IEnumerable<Hash> GetHashes()
-            {
-                return _hashMap.ToArray();
-            }
-
-            #endregion
-
-            #region IEnumerable<CacheInfo>
-
-            public IEnumerator<CacheInfo> GetEnumerator()
-            {
-                foreach (var info in CollectionUtils.Unite(_messageCacheInfos.Values, _contentCacheInfos.Values))
-                {
-                    yield return info;
-                }
-            }
-
-            #endregion
-
-            #region IEnumerable
-
-            IEnumerator IEnumerable.GetEnumerator()
-            {
-                return this.GetEnumerator();
-            }
-
-            #endregion
-
-            private class HashMap
-            {
-                private Dictionary<Hash, SmallList<ShareInfo>> _map;
-
-                public HashMap()
-                {
-                    _map = new Dictionary<Hash, SmallList<ShareInfo>>();
-                }
-
-                public void Add(ShareInfo info)
-                {
-                    foreach (var hash in info.Hashes)
-                    {
-                        _map.GetOrAdd(hash, (_) => new SmallList<ShareInfo>()).Add(info);
-                    }
-                }
-
-                public void Remove(ShareInfo info)
-                {
-                    foreach (var hash in info.Hashes)
-                    {
-                        if (_map.TryGetValue(hash, out var infos))
-                        {
-                            infos.Remove(info);
-
-                            if (infos.Count == 0)
-                            {
-                                _map.Remove(hash);
-                            }
-                        }
-                    }
-                }
-
-                public ShareInfo Get(Hash hash)
-                {
-                    if (_map.TryGetValue(hash, out var infos))
-                    {
-                        return infos[0];
-                    }
-
-                    return null;
-                }
-
-                public bool Contains(Hash hash)
-                {
-                    return _map.ContainsKey(hash);
-                }
-
-                public Hash[] ToArray()
-                {
-                    return _map.Keys.ToArray();
-                }
-            }
-        }
-
-        [DataContract(Name = nameof(CacheInfo))]
-        private class CacheInfo
-        {
-            private DateTime _creationTime;
-            private TimeSpan _lifeSpan;
-
-            private Metadata _metadata;
-            private HashCollection _lockedHashes;
-            private ShareInfo _shareInfo;
-
-            public CacheInfo(DateTime creationTime, TimeSpan lifeTime, Metadata metadata, IEnumerable<Hash> lockedHashes, ShareInfo shareInfo)
-            {
-                this.CreationTime = creationTime;
-                this.LifeSpan = lifeTime;
-
-                this.Metadata = metadata;
-                if (lockedHashes != null) this.ProtectedLockedHashes.AddRange(lockedHashes);
-                this.ShareInfo = shareInfo;
-            }
-
-            [DataMember(Name = nameof(CreationTime))]
-            public DateTime CreationTime
-            {
-                get
-                {
-                    return _creationTime;
-                }
-                private set
-                {
-                    _creationTime = value;
-                }
-            }
-
-            [DataMember(Name = nameof(LifeSpan))]
-            public TimeSpan LifeSpan
-            {
-                get
-                {
-                    return _lifeSpan;
-                }
-                private set
-                {
-                    _lifeSpan = value;
-                }
-            }
-
-            [DataMember(Name = nameof(Metadata))]
-            public Metadata Metadata
-            {
-                get
-                {
-                    return _metadata;
-                }
-                private set
-                {
-                    _metadata = value;
-                }
-            }
-
-            private volatile ReadOnlyCollection<Hash> _readOnlyLockedHashes;
-
-            public IEnumerable<Hash> LockedHashes
-            {
-                get
-                {
-                    if (_readOnlyLockedHashes == null)
-                        _readOnlyLockedHashes = new ReadOnlyCollection<Hash>(this.ProtectedLockedHashes);
-
-                    return _readOnlyLockedHashes;
-                }
-            }
-
-            [DataMember(Name = nameof(LockedHashes))]
-            private HashCollection ProtectedLockedHashes
-            {
-                get
-                {
-                    if (_lockedHashes == null)
-                        _lockedHashes = new HashCollection();
-
-                    return _lockedHashes;
-                }
-            }
-
-            [DataMember(Name = nameof(ShareInfo))]
-            public ShareInfo ShareInfo
-            {
-                get
-                {
-                    return _shareInfo;
-                }
-                private set
-                {
-                    _shareInfo = value;
-                }
-            }
-        }
-
-        [DataContract(Name = nameof(ShareInfo))]
-        private class ShareInfo
-        {
-            private string _path;
-            private long _fileLength;
-            private int _blockLength;
-            private HashCollection _hashes;
-
-            public ShareInfo(string path, long fileLength, int blockLength, IEnumerable<Hash> hashes)
-            {
-                this.Path = path;
-                this.FileLength = fileLength;
-                this.BlockLength = blockLength;
-                if (hashes != null) this.ProtectedHashes.AddRange(hashes);
-            }
-
-            [DataMember(Name = nameof(Path))]
-            public string Path
-            {
-                get
-                {
-                    return _path;
-                }
-                private set
-                {
-                    _path = value;
-                }
-            }
-
-            [DataMember(Name = nameof(FileLength))]
-            public long FileLength
-            {
-                get
-                {
-                    return _fileLength;
-                }
-                private set
-                {
-                    _fileLength = value;
-                }
-            }
-
-            [DataMember(Name = nameof(BlockLength))]
-            public int BlockLength
-            {
-                get
-                {
-                    return _blockLength;
-                }
-                private set
-                {
-                    _blockLength = value;
-                }
-            }
-
-            private volatile ReadOnlyCollection<Hash> _readOnlyHashes;
-
-            public IEnumerable<Hash> Hashes
-            {
-                get
-                {
-                    if (_readOnlyHashes == null)
-                        _readOnlyHashes = new ReadOnlyCollection<Hash>(this.ProtectedHashes);
-
-                    return _readOnlyHashes;
-                }
-            }
-
-            [DataMember(Name = nameof(Hashes))]
-            private HashCollection ProtectedHashes
-            {
-                get
-                {
-                    if (_hashes == null)
-                        _hashes = new HashCollection();
-
-                    return _hashes;
-                }
-            }
-
-            #region Hash to Index
-
-            private Dictionary<Hash, int> _hashMap = null;
-
-            public int GetIndex(Hash hash)
-            {
-                if (_hashMap == null)
-                {
-                    _hashMap = new Dictionary<Hash, int>();
-
-                    for (int i = 0; i < this.ProtectedHashes.Count; i++)
-                    {
-                        _hashMap[this.ProtectedHashes[i]] = i;
-                    }
-                }
-
-                {
-                    int result;
-                    if (!_hashMap.TryGetValue(hash, out result)) return -1;
-
-                    return result;
-                }
-            }
-
-            #endregion
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (_disposed) return;
-            _disposed = true;
-
-            if (disposing)
-            {
-                _addedBlockEventQueue.Dispose();
                 _removedBlockEventQueue.Dispose();
 
-                if (_fileStream != null)
+                if (_blocksManager != null)
                 {
                     try
                     {
-                        _fileStream.Dispose();
+                        _blocksManager.Dispose();
                     }
                     catch (Exception)
                     {
 
                     }
 
-                    _fileStream = null;
+                    _blocksManager = null;
                 }
 
-                if (_watchTimer != null)
+                if (_checkTimer != null)
                 {
                     try
                     {
-                        _watchTimer.Dispose();
+                        _checkTimer.Dispose();
                     }
                     catch (Exception)
                     {
 
                     }
 
-                    _watchTimer = null;
+                    _checkTimer = null;
                 }
 
-                if (_updateTimer != null)
+                if (_checkTimer != null)
                 {
                     try
                     {
-                        _updateTimer.Dispose();
+                        _checkTimer.Dispose();
                     }
                     catch (Exception)
                     {
 
                     }
 
-                    _updateTimer = null;
+                    _checkTimer = null;
                 }
             }
         }

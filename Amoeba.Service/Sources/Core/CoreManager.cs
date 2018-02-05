@@ -12,7 +12,7 @@ using Omnius.Security;
 
 namespace Amoeba.Service
 {
-    class CoreManager : StateManagerBase, ISettings
+    sealed class CoreManager : StateManagerBase, ISettings
     {
         private BufferManager _bufferManager;
         private CacheManager _cacheManager;
@@ -24,7 +24,7 @@ namespace Amoeba.Service
         private bool _isLoaded = false;
 
         private readonly object _lockObject = new object();
-        private volatile bool _disposed;
+        private volatile bool _isDisposed;
 
         public CoreManager(string configPath, string blocksPath, BufferManager bufferManager)
         {
@@ -40,7 +40,7 @@ namespace Amoeba.Service
 
         private void Check()
         {
-            if (_disposed) throw new ObjectDisposedException(this.GetType().FullName);
+            if (_isDisposed) throw new ObjectDisposedException(this.GetType().FullName);
             if (!_isLoaded) throw new CoreManagerException("CoreManager is not loaded.");
         }
 
@@ -406,7 +406,7 @@ namespace Amoeba.Service
 
         public void Load()
         {
-            if (_disposed) throw new ObjectDisposedException(this.GetType().FullName);
+            if (_isDisposed) throw new ObjectDisposedException(this.GetType().FullName);
 
             lock (_lockObject)
             {
@@ -479,12 +479,12 @@ namespace Amoeba.Service
 
         #endregion
 
-        protected override void Dispose(bool disposing)
+        protected override void Dispose(bool isDisposing)
         {
-            if (_disposed) return;
-            _disposed = true;
+            if (_isDisposed) return;
+            _isDisposed = true;
 
-            if (disposing)
+            if (isDisposing)
             {
                 _downloadManager.Dispose();
                 _networkManager.Dispose();

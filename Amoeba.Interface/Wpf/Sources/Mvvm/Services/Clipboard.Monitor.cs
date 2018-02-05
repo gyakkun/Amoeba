@@ -65,7 +65,7 @@ namespace Amoeba.Interface
                 return _wndProcSuccess;
             }
 
-            protected override void Dispose(bool disposing)
+            protected override void Dispose(bool isDisposing)
             {
                 _hwndSource.RemoveHook(this.WndProc);
                 _hwndSource.Dispose();

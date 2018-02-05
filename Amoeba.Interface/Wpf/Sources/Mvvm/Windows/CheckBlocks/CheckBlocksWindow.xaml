@@ -1,0 +1,80 @@
+﻿<Window
+    x:Class="Amoeba.Interface.CheckBlocksWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+    xmlns:local="clr-namespace:Amoeba.Interface"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:omnius="clr-namespace:Omnius.Wpf;assembly=Omnius.Wpf"
+    Title="{Binding CheckBlocksWindow_Title, Source={StaticResource Languages}}"
+    Width="{Binding Path=DynamicOptions.WindowWidth, Mode=TwoWay, FallbackValue=360}"
+    x:ClassModifier="internal"
+    SizeToContent="Height"
+    Style="{StaticResource CustomWindow}"
+    WindowStartupLocation="CenterOwner"
+    mc:Ignorable="d">
+
+    <Grid>
+        <StackPanel Orientation="Vertical">
+            <DockPanel Margin="16">
+                <Label
+                    Height="32"
+                    HorizontalContentAlignment="Stretch"
+                    VerticalContentAlignment="Center"
+                    Content="{Binding Path=CheckBlocksWindow_BadCount, Source={StaticResource Languages}}" />
+                <Label
+                    Height="32"
+                    HorizontalAlignment="Right"
+                    HorizontalContentAlignment="Stretch"
+                    VerticalContentAlignment="Center"
+                    Content="{Binding Path=Info.Value.BadCount, FallbackValue=0}" />
+            </DockPanel>
+
+            <DockPanel Margin="16,0,16,16">
+                <Label
+                    Height="32"
+                    HorizontalContentAlignment="Stretch"
+                    VerticalContentAlignment="Center"
+                    Content="{Binding Path=CheckBlocksWindow_CheckedCount, Source={StaticResource Languages}}" />
+                <Label
+                    Height="32"
+                    HorizontalAlignment="Right"
+                    HorizontalContentAlignment="Stretch"
+                    VerticalContentAlignment="Center"
+                    Content="{Binding Path=Info.Value.CheckedCount, FallbackValue=0}" />
+            </DockPanel>
+
+            <DockPanel Margin="16,0,16,16">
+                <Label
+                    Height="32"
+                    HorizontalContentAlignment="Stretch"
+                    VerticalContentAlignment="Center"
+                    Content="{Binding Path=CheckBlocksWindow_BlockCount, Source={StaticResource Languages}}" />
+                <Label
+                    Height="32"
+                    HorizontalAlignment="Right"
+                    HorizontalContentAlignment="Stretch"
+                    VerticalContentAlignment="Center"
+                    Content="{Binding Path=Info.Value.BlockCount, FallbackValue=0}" />
+            </DockPanel>
+
+            <ProgressBar
+                Height="16"
+                Margin="16,0,16,16"
+                Maximum="{Binding Path=Info.Value.BlockCount, Mode=OneWay}"
+                Value="{Binding Path=Info.Value.CheckedCount, Mode=OneWay}" />
+            <Button
+                Width="120"
+                Height="32"
+                Margin="0,0,16,16"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                Command="{Binding Path=CloseCommand}"
+                Content="{Binding Path=CheckBlocksWindow_Close, Source={StaticResource Languages}}"
+                IsCancel="True"
+                IsDefault="True" />
+        </StackPanel>
+    </Grid>
+</Window>

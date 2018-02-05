@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2008
+VisualStudioVersion = 15.0.27130.2027
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Omnius", "Omnius", "{E6A49293-3102-455F-98F4-B572ADFFE2EA}"
 EndProject
@@ -44,14 +44,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Amoeba.Messages", "Amoeba.M
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Amoeba.Service", "Amoeba.Service\Amoeba.Service.csproj", "{170FCF7C-1245-4059-B2BE-7BB863CF6D70}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Amoeba.Update", "Amoeba.Update\Wpf\Amoeba.Update.csproj", "{7847434C-5101-4937-8C4E-B51D8415ABD6}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Amoeba.Interface", "Amoeba.Interface\Wpf\Amoeba.Interface.csproj", "{19E45677-BD12-4F48-8C19-87E60B7CBA36}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Amoeba.Update", "Amoeba.Update\Amoeba.Update.csproj", "{7847434C-5101-4937-8C4E-B51D8415ABD6}"
-EndProject
 Global
-	GlobalSection(Performance) = preSolution
-		HasPerformanceSessions = true
-	EndGlobalSection
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Omnius\Omnius.Utilities\Omnius.Utilities.projitems*{0a55926d-70ce-41ba-a838-99937a3b219d}*SharedItemsImports = 4
 		Omnius\Omnius.Utilities\Omnius.Utilities.projitems*{19e45677-bd12-4f48-8c19-87e60b7cba36}*SharedItemsImports = 4
@@ -126,14 +123,14 @@ Global
 		{170FCF7C-1245-4059-B2BE-7BB863CF6D70}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{170FCF7C-1245-4059-B2BE-7BB863CF6D70}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{170FCF7C-1245-4059-B2BE-7BB863CF6D70}.Release|Any CPU.Build.0 = Release|Any CPU
-		{19E45677-BD12-4F48-8C19-87E60B7CBA36}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{19E45677-BD12-4F48-8C19-87E60B7CBA36}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{19E45677-BD12-4F48-8C19-87E60B7CBA36}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{19E45677-BD12-4F48-8C19-87E60B7CBA36}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7847434C-5101-4937-8C4E-B51D8415ABD6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7847434C-5101-4937-8C4E-B51D8415ABD6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7847434C-5101-4937-8C4E-B51D8415ABD6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7847434C-5101-4937-8C4E-B51D8415ABD6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{19E45677-BD12-4F48-8C19-87E60B7CBA36}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19E45677-BD12-4F48-8C19-87E60B7CBA36}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19E45677-BD12-4F48-8C19-87E60B7CBA36}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19E45677-BD12-4F48-8C19-87E60B7CBA36}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -156,5 +153,8 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6DC027E1-AD9D-4BB2-B06A-499E74D23186}
+	EndGlobalSection
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
 	EndGlobalSection
 EndGlobal

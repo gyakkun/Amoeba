@@ -9,7 +9,7 @@ using Omnius.Utilities;
 
 namespace Amoeba.Service
 {
-    class ConnectionManager : StateManagerBase, ISettings
+    sealed partial class ConnectionManager : StateManagerBase, ISettings
     {
         private BufferManager _bufferManager;
         private CoreManager _coreManager;
@@ -22,7 +22,7 @@ namespace Amoeba.Service
         private volatile ManagerState _state = ManagerState.Stop;
 
         private readonly object _lockObject = new object();
-        private volatile bool _disposed;
+        private volatile bool _isDisposed;
 
         public ConnectionManager(string configPath, CoreManager coreManager, BufferManager bufferManager)
         {
@@ -74,7 +74,7 @@ namespace Amoeba.Service
 
         public Cap ConnectCap(string uri)
         {
-            if (_disposed) return null;
+            if (_isDisposed) return null;
             if (this.State == ManagerState.Stop) return null;
 
             Cap cap;
@@ -89,7 +89,7 @@ namespace Amoeba.Service
         {
             uri = null;
 
-            if (_disposed) return null;
+            if (_isDisposed) return null;
             if (this.State == ManagerState.Stop) return null;
 
             Cap cap;
@@ -186,12 +186,12 @@ namespace Amoeba.Service
 
         #endregion
 
-        protected override void Dispose(bool disposing)
+        protected override void Dispose(bool isDisposing)
         {
-            if (_disposed) return;
-            _disposed = true;
+            if (_isDisposed) return;
+            _isDisposed = true;
 
-            if (disposing)
+            if (isDisposing)
             {
                 _catharsisManager.Dispose();
                 _tcpConnectionManager.Dispose();

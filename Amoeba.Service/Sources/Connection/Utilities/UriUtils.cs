@@ -4,45 +4,48 @@ using Omnius.Base;
 
 namespace Amoeba.Service
 {
-    static class UriUtils
+    partial class ConnectionManager
     {
-        private readonly static Regex _regex1 = new Regex(@"(.*?):(.*)", RegexOptions.Compiled);
-        private readonly static Regex _regex2 = new Regex(@"(.*):(\d*)", RegexOptions.Compiled);
-
-        public static Information Parse(string uri)
+        static class UriUtils
         {
-            var match1 = _regex1.Match(uri);
+            private readonly static Regex _regex1 = new Regex(@"(.*?):(.*)", RegexOptions.Compiled);
+            private readonly static Regex _regex2 = new Regex(@"(.*):(\d*)", RegexOptions.Compiled);
 
-            if (match1.Success)
+            public static Information Parse(string uri)
             {
-                string scheme = match1.Groups[1].Value;
-                string value = match1.Groups[2].Value;
+                var match1 = _regex1.Match(uri);
 
-                var match2 = _regex2.Match(value);
-
-                if (match2.Success)
+                if (match1.Success)
                 {
-                    string address = match2.Groups[1].Value;
-                    int port = int.Parse(match2.Groups[2].Value);
+                    string scheme = match1.Groups[1].Value;
+                    string value = match1.Groups[2].Value;
 
-                    var contexts = new List<InformationContext>();
-                    contexts.Add(new InformationContext("Scheme", scheme));
-                    contexts.Add(new InformationContext("Address", address));
-                    contexts.Add(new InformationContext("Port", port));
+                    var match2 = _regex2.Match(value);
 
-                    return new Information(contexts);
+                    if (match2.Success)
+                    {
+                        string address = match2.Groups[1].Value;
+                        int port = int.Parse(match2.Groups[2].Value);
+
+                        var contexts = new List<InformationContext>();
+                        contexts.Add(new InformationContext("Scheme", scheme));
+                        contexts.Add(new InformationContext("Address", address));
+                        contexts.Add(new InformationContext("Port", port));
+
+                        return new Information(contexts);
+                    }
+                    else
+                    {
+                        var contexts = new List<InformationContext>();
+                        contexts.Add(new InformationContext("Scheme", scheme));
+                        contexts.Add(new InformationContext("Address", value));
+
+                        return new Information(contexts);
+                    }
                 }
-                else
-                {
-                    var contexts = new List<InformationContext>();
-                    contexts.Add(new InformationContext("Scheme", scheme));
-                    contexts.Add(new InformationContext("Address", value));
 
-                    return new Information(contexts);
-                }
+                return null;
             }
-
-            return null;
         }
     }
 }
