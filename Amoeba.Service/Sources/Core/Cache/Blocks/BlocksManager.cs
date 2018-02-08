@@ -88,10 +88,10 @@ namespace Amoeba.Service
             {
                 using (_lockManager.ReadLock())
                 {
-                    var blockCount = _clusterIndex.Count;
-                    var usingSpace = _fileStream.Length;
+                    long blockCount = _clusterIndex.Count;
+                    long usingSpace = _fileStream.Length;
 
-                    var lockSpace = 0;
+                    long lockSpace = 0;
                     {
                         foreach (var hash in _protectionManager.GetHashes())
                         {
@@ -102,7 +102,7 @@ namespace Amoeba.Service
                         }
                     }
 
-                    var freeSpace = (_size - lockSpace);
+                    long freeSpace = (_size - lockSpace);
 
                     _report = new CacheReport(blockCount, usingSpace, lockSpace, freeSpace);
                 }
@@ -285,11 +285,11 @@ namespace Amoeba.Service
                     _size = Roundup(size, SectorSize);
                     _fileStream.SetLength(Math.Min(_size, _fileStream.Length));
 
-                    this.SectorsManager_initialize();
+                    this.UpdateSectorsBitmap();
                 }
             }
 
-            private void SectorsManager_initialize()
+            private void UpdateSectorsBitmap()
             {
                 using (_lockManager.WriteLock())
                 {
@@ -536,7 +536,7 @@ namespace Amoeba.Service
                     _size = _settings.Load("Size", () => (long)1024 * 1024 * 1024 * 32);
                     _clusterIndex = _settings.Load("ClusterIndex", () => new Dictionary<Hash, ClusterInfo>());
 
-                    this.SectorsManager_initialize();
+                    this.UpdateSectorsBitmap();
 
                     _updateTimer.Start(new TimeSpan(0, 0, 0), new TimeSpan(0, 1, 0));
                 }

@@ -42,7 +42,7 @@ namespace Amoeba.Messages
                     }
                     else if (id == (int)SerializeId.Hash)
                     {
-                        this.Hash = HashConverter.FromStream(reader.GetStream());
+                        this.Hash = Hash.Import(reader.GetStream(), bufferManager);
                     }
                 }
             }
@@ -62,7 +62,7 @@ namespace Amoeba.Messages
                 if (this.Hash != null)
                 {
                     writer.Write((uint)SerializeId.Hash);
-                    writer.Write(HashConverter.ToStream(this.Hash));
+                    writer.Write(this.Hash.Export(bufferManager));
                 }
 
                 return writer.GetStream();

@@ -16,7 +16,7 @@ namespace Amoeba.Interface
     {
         public static T Clone<T>(T item)
         {
-            using (var stream = new BufferStream(BufferManager.Instance))
+            using (var stream = new RecyclableMemoryStream(BufferManager.Instance))
             {
                 JsonUtils.Save(stream, item);
                 stream.Seek(0, SeekOrigin.Begin);

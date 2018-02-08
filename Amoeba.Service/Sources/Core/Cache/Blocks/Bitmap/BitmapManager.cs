@@ -28,7 +28,7 @@ namespace Amoeba.Service
 
                 public BitmapManager(BufferManager bufferManager)
                 {
-                    _bitmapStream = new BufferStream(bufferManager);
+                    _bitmapStream = new RecyclableMemoryStream(bufferManager);
                     _bufferManager = bufferManager;
 
                     _cacheBuffer = _bufferManager.TakeBuffer(SectorSize);

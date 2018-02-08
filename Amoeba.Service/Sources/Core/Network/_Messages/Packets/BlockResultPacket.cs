@@ -40,7 +40,7 @@ namespace Amoeba.Service
 
                         if (id == (int)SerializeId.Hash)
                         {
-                            this.Hash = HashConverter.FromStream(reader.GetStream());
+                            this.Hash = Hash.Import(reader.GetStream(), bufferManager);
                         }
                         else if (id == (int)SerializeId.Value)
                         {
@@ -83,7 +83,7 @@ namespace Amoeba.Service
                     if (this.Hash != null)
                     {
                         writer.Write((uint)SerializeId.Hash);
-                        writer.Write(HashConverter.ToStream(this.Hash));
+                        writer.Write(this.Hash.Export(bufferManager));
                     }
                     // Value
                     if (this.Value.Array != null)

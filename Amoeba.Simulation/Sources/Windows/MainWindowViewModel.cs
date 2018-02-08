@@ -134,7 +134,7 @@ namespace Amoeba.Simulation
                                 using (var metadataMemoryStream = new MemoryStream(NetworkConverter.FromBase64UrlString(process.StandardOutput.ReadLine())))
                                 using (var hashMemoryStream = new MemoryStream(NetworkConverter.FromBase64UrlString(process.StandardOutput.ReadLine())))
                                 {
-                                    tuples.Add((Metadata.Import(metadataMemoryStream, BufferManager.Instance), HashConverter.FromStream(hashMemoryStream)));
+                                    tuples.Add((Metadata.Import(metadataMemoryStream, BufferManager.Instance), Hash.Import(hashMemoryStream, BufferManager.Instance)));
 
                                     if (tuples.Count == maxNodeCount) resetEvent.Set();
                                 }

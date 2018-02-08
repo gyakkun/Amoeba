@@ -37,7 +37,7 @@ namespace Amoeba.Service
             {
                 if (stream == null) throw new ArgumentNullException(nameof(stream));
 
-                var versionStream = new BufferStream(_bufferManager);
+                var versionStream = new RecyclableMemoryStream(_bufferManager);
                 Varint.SetUInt64(versionStream, (uint)version);
 
                 return new UniteStream(versionStream, stream);
@@ -63,11 +63,11 @@ namespace Amoeba.Service
                     {
                         stream.Seek(0, SeekOrigin.Begin);
 
-                        BufferStream deflateBufferStream = null;
+                        RecyclableMemoryStream deflateBufferStream = null;
 
                         try
                         {
-                            deflateBufferStream = new BufferStream(_bufferManager);
+                            deflateBufferStream = new RecyclableMemoryStream(_bufferManager);
 
                             using (var deflateStream = new DeflateStream(deflateBufferStream, CompressionMode.Compress, true))
                             using (var safeBuffer = _bufferManager.CreateSafeBuffer(1024 * 4))
@@ -114,7 +114,7 @@ namespace Amoeba.Service
                         list[i].Value.Dispose();
                     }
 
-                    var headerStream = new BufferStream(_bufferManager);
+                    var headerStream = new RecyclableMemoryStream(_bufferManager);
                     Varint.SetUInt64(headerStream, list[0].Key);
 
                     return new UniteStream(headerStream, list[0].Value);
@@ -146,11 +146,11 @@ namespace Amoeba.Service
                     }
                     else if (type == (int)ConvertCompressionAlgorithm.Deflate)
                     {
-                        BufferStream deflateBufferStream = null;
+                        RecyclableMemoryStream deflateBufferStream = null;
 
                         try
                         {
-                            deflateBufferStream = new BufferStream(_bufferManager);
+                            deflateBufferStream = new RecyclableMemoryStream(_bufferManager);
 
                             using (var deflateStream = new DeflateStream(stream, CompressionMode.Decompress))
                             using (var safeBuffer = _bufferManager.CreateSafeBuffer(1024 * 4))
@@ -202,11 +202,11 @@ namespace Amoeba.Service
 
                 try
                 {
-                    BufferStream outStream = null;
+                    RecyclableMemoryStream outStream = null;
 
                     try
                     {
-                        outStream = new BufferStream(_bufferManager);
+                        outStream = new RecyclableMemoryStream(_bufferManager);
                         Varint.SetUInt64(outStream, (uint)ConvertCryptoAlgorithm.Aes256);
 
                         var cryptoKey = new byte[32];
@@ -297,11 +297,11 @@ namespace Amoeba.Service
                         var iv = new byte[32];
                         stream.Read(iv, 0, iv.Length);
 
-                        BufferStream outStream = null;
+                        RecyclableMemoryStream outStream = null;
 
                         try
                         {
-                            outStream = new BufferStream(_bufferManager);
+                            outStream = new RecyclableMemoryStream(_bufferManager);
 
                             using (var aes = Aes.Create())
                             {
@@ -358,7 +358,7 @@ namespace Amoeba.Service
             {
                 if (stream == null) throw new ArgumentNullException(nameof(stream));
 
-                var hashStream = new BufferStream(_bufferManager);
+                var hashStream = new RecyclableMemoryStream(_bufferManager);
                 {
                     Varint.SetUInt64(hashStream, (uint)ConvertHashAlgorithm.Sha256);
                     var value = Sha256.Compute(new WrapperStream(stream));
@@ -397,7 +397,7 @@ namespace Amoeba.Service
 
                 try
                 {
-                    var lengthStream = new BufferStream(_bufferManager);
+                    var lengthStream = new RecyclableMemoryStream(_bufferManager);
                     Varint.SetUInt64(lengthStream, (ulong)stream.Length);
 
                     Stream paddingStream;
@@ -406,7 +406,7 @@ namespace Amoeba.Service
                         {
                             int paddingLength = size - (int)(lengthStream.Length + stream.Length);
 
-                            paddingStream = new BufferStream(_bufferManager);
+                            paddingStream = new RecyclableMemoryStream(_bufferManager);
 
                             using (var safeBuffer = _bufferManager.CreateSafeBuffer(1024 * 4))
                             {

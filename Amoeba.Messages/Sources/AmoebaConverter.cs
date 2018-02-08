@@ -37,11 +37,11 @@ namespace Amoeba.Messages
                 {
                     stream.Seek(0, SeekOrigin.Begin);
 
-                    BufferStream deflateBufferStream = null;
+                    RecyclableMemoryStream deflateBufferStream = null;
 
                     try
                     {
-                        deflateBufferStream = new BufferStream(_bufferManager);
+                        deflateBufferStream = new RecyclableMemoryStream(_bufferManager);
 
                         using (var deflateStream = new DeflateStream(deflateBufferStream, CompressionMode.Compress, true))
                         using (var safeBuffer = _bufferManager.CreateSafeBuffer(1024 * 4))
@@ -88,7 +88,7 @@ namespace Amoeba.Messages
                     list[i].Value.Dispose();
                 }
 
-                var headerStream = new BufferStream(_bufferManager);
+                var headerStream = new RecyclableMemoryStream(_bufferManager);
                 Varint.SetUInt64(headerStream, (uint)version);
                 Varint.SetUInt64(headerStream, list[0].Key);
 
@@ -144,7 +144,7 @@ namespace Amoeba.Messages
                     }
                     else if (type == (int)ConvertCompressionAlgorithm.Deflate)
                     {
-                        using (var deflateBufferStream = new BufferStream(_bufferManager))
+                        using (var deflateBufferStream = new RecyclableMemoryStream(_bufferManager))
                         {
                             using (var deflateStream = new DeflateStream(dataStream, CompressionMode.Decompress, true))
                             using (var safeBuffer = _bufferManager.CreateSafeBuffer(1024 * 4))

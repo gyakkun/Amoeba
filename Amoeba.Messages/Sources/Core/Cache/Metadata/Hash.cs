@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
+using Newtonsoft.Json;
 using Omnius.Base;
 using Omnius.Security;
 using Omnius.Serialization;
@@ -11,20 +12,44 @@ namespace Amoeba.Messages
 {
     [DataContract(Name = nameof(Hash))]
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct Hash : IHash, IEquatable<Hash>
+    public readonly struct Hash : IHash, IEquatable<Hash>
     {
-        private HashAlgorithm _algorithm;
-        private byte[] _value;
+        private readonly HashAlgorithm _algorithm;
+        private readonly byte[] _value;
 
         public static readonly int MaxValueLength = 32;
 
+        [JsonConstructor]
         public Hash(HashAlgorithm algorithm, byte[] value)
         {
-            _algorithm = 0;
-            _value = null;
+            if (!Enum.IsDefined(typeof(HashAlgorithm), algorithm)) throw new ArgumentException(nameof(algorithm));
+            if (value == null) throw new ArgumentNullException(nameof(value));
+            if (value.Length > Hash.MaxValueLength) throw new ArgumentOutOfRangeException(nameof(value));
 
-            this.Algorithm = algorithm;
-            this.Value = value;
+            _algorithm = algorithm;
+            _value = value;
+        }
+
+        public static Hash Import(Stream stream, BufferManager bufferManager)
+        {
+            using (var reader = new ItemStreamReader(stream, BufferManager.Instance))
+            {
+                var algorithm = (HashAlgorithm)reader.GetUInt32();
+                var value = reader.GetBytes();
+
+                return new Hash(algorithm, value);
+            }
+        }
+
+        public Stream Export(BufferManager bufferManager)
+        {
+            using (var writer = new ItemStreamWriter(BufferManager.Instance))
+            {
+                writer.Write((uint)this.Algorithm);
+                writer.Write(this.Value);
+
+                return writer.GetStream();
+            }
         }
 
         public static bool operator ==(Hash x, Hash y)
@@ -77,17 +102,6 @@ namespace Amoeba.Messages
             {
                 return _algorithm;
             }
-            private set
-            {
-                if (!Enum.IsDefined(typeof(HashAlgorithm), value))
-                {
-                    throw new ArgumentException();
-                }
-                else
-                {
-                    _algorithm = value;
-                }
-            }
         }
 
         [DataMember(Name = nameof(Value))]
@@ -96,17 +110,6 @@ namespace Amoeba.Messages
             get
             {
                 return _value;
-            }
-            private set
-            {
-                if (value != null && value.Length > Hash.MaxValueLength)
-                {
-                    throw new ArgumentException();
-                }
-                else
-                {
-                    _value = value;
-                }
             }
         }
 

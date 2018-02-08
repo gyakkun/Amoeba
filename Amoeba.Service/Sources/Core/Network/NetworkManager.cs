@@ -1004,7 +1004,7 @@ namespace Amoeba.Service
             {
                 sessionInfo.Send.IsInitialized = true;
 
-                Stream versionStream = new BufferStream(_bufferManager);
+                Stream versionStream = new RecyclableMemoryStream(_bufferManager);
                 Varint.SetUInt64(versionStream, (uint)ProtocolVersion.Version1);
 
                 var packet = new ProfilePacket(_baseId, _myLocation);
@@ -1031,7 +1031,7 @@ namespace Amoeba.Service
 
                     var packet = new LocationsPacket(tempLocations.Take(_maxLocationCount));
 
-                    Stream typeStream = new BufferStream(_bufferManager);
+                    Stream typeStream = new RecyclableMemoryStream(_bufferManager);
                     Varint.SetUInt64(typeStream, (uint)SerializeId.Locations);
 
                     _status.PushLocationCount.Add(packet.Locations.Count());
@@ -1052,7 +1052,7 @@ namespace Amoeba.Service
                         sessionInfo.Send.PushBlockLinkQueue.Clear();
                     }
 
-                    Stream typeStream = new BufferStream(_bufferManager);
+                    Stream typeStream = new RecyclableMemoryStream(_bufferManager);
                     Varint.SetUInt64(typeStream, (uint)SerializeId.BlocksLink);
 
                     _status.PushBlockLinkCount.Add(packet.Hashes.Count());
@@ -1073,7 +1073,7 @@ namespace Amoeba.Service
                         sessionInfo.Send.PushBlockRequestQueue.Clear();
                     }
 
-                    Stream typeStream = new BufferStream(_bufferManager);
+                    Stream typeStream = new RecyclableMemoryStream(_bufferManager);
                     Varint.SetUInt64(typeStream, (uint)SerializeId.BlocksRequest);
 
                     _status.PushBlockRequestCount.Add(packet.Hashes.Count());
@@ -1124,7 +1124,7 @@ namespace Amoeba.Service
 
                         if (dataStream != null)
                         {
-                            Stream typeStream = new BufferStream(_bufferManager);
+                            Stream typeStream = new RecyclableMemoryStream(_bufferManager);
                             Varint.SetUInt64(typeStream, (uint)SerializeId.BlockResult);
 
                             _status.PushBlockResultCount.Increment();
@@ -1148,7 +1148,7 @@ namespace Amoeba.Service
                         sessionInfo.Send.PushBroadcastMetadataRequestQueue.Clear();
                     }
 
-                    Stream typeStream = new BufferStream(_bufferManager);
+                    Stream typeStream = new RecyclableMemoryStream(_bufferManager);
                     Varint.SetUInt64(typeStream, (uint)SerializeId.BroadcastMetadatasRequest);
 
                     _status.PushMessageRequestCount.Add(packet.Signatures.Count());
@@ -1191,7 +1191,7 @@ namespace Amoeba.Service
                         var packet = new BroadcastMetadatasResultPacket(broadcastMetadatas);
                         broadcastMetadatas.Clear();
 
-                        Stream typeStream = new BufferStream(_bufferManager);
+                        Stream typeStream = new RecyclableMemoryStream(_bufferManager);
                         Varint.SetUInt64(typeStream, (uint)SerializeId.BroadcastMetadatasResult);
 
                         _status.PushMessageResultCount.Add(packet.BroadcastMetadatas.Count());
@@ -1211,7 +1211,7 @@ namespace Amoeba.Service
                         sessionInfo.Send.PushUnicastMetadataRequestQueue.Clear();
                     }
 
-                    Stream typeStream = new BufferStream(_bufferManager);
+                    Stream typeStream = new RecyclableMemoryStream(_bufferManager);
                     Varint.SetUInt64(typeStream, (uint)SerializeId.UnicastMetadatasRequest);
 
                     _status.PushMessageRequestCount.Add(packet.Signatures.Count());
@@ -1254,7 +1254,7 @@ namespace Amoeba.Service
                         var packet = new UnicastMetadatasResultPacket(UnicastMetadatas);
                         UnicastMetadatas.Clear();
 
-                        Stream typeStream = new BufferStream(_bufferManager);
+                        Stream typeStream = new RecyclableMemoryStream(_bufferManager);
                         Varint.SetUInt64(typeStream, (uint)SerializeId.UnicastMetadatasResult);
 
                         _status.PushMessageResultCount.Add(packet.UnicastMetadatas.Count());
@@ -1274,7 +1274,7 @@ namespace Amoeba.Service
                         sessionInfo.Send.PushMulticastMetadataRequestQueue.Clear();
                     }
 
-                    Stream typeStream = new BufferStream(_bufferManager);
+                    Stream typeStream = new RecyclableMemoryStream(_bufferManager);
                     Varint.SetUInt64(typeStream, (uint)SerializeId.MulticastMetadatasRequest);
 
                     _status.PushMessageRequestCount.Add(packet.Tags.Count());
@@ -1317,7 +1317,7 @@ namespace Amoeba.Service
                         var packet = new MulticastMetadatasResultPacket(MulticastMetadatas);
                         MulticastMetadatas.Clear();
 
-                        Stream typeStream = new BufferStream(_bufferManager);
+                        Stream typeStream = new RecyclableMemoryStream(_bufferManager);
                         Varint.SetUInt64(typeStream, (uint)SerializeId.MulticastMetadatasResult);
 
                         _status.PushMessageResultCount.Add(packet.MulticastMetadatas.Count());

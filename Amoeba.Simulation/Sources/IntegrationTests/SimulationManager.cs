@@ -143,7 +143,7 @@ namespace Amoeba.Simulation
             Metadata metadata = null;
             Hash hash;
 
-            using (var stream = new BufferStream(_bufferManager))
+            using (var stream = new RecyclableMemoryStream(_bufferManager))
             {
                 using (var safeBuffer = _bufferManager.CreateSafeBuffer(1024 * 4))
                 {
@@ -170,7 +170,7 @@ namespace Amoeba.Simulation
                 Console.WriteLine(NetworkConverter.ToBase64UrlString(safeBuffer.Value, 0, (int)stream.Length));
             }
 
-            using (var stream = HashConverter.ToStream(hash))
+            using (var stream = hash.Export(_bufferManager))
             using (var safeBuffer = _bufferManager.CreateSafeBuffer((int)stream.Length))
             {
                 stream.Read(safeBuffer.Value, 0, (int)stream.Length);

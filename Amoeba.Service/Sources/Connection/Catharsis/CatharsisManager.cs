@@ -203,7 +203,7 @@ namespace Amoeba.Service
 
             private Stream GetStream(string url)
             {
-                var bufferStream = new BufferStream(_bufferManager);
+                var recyclableMemoryStream = new RecyclableMemoryStream(_bufferManager);
 
                 try
                 {
@@ -219,20 +219,20 @@ namespace Amoeba.Service
 
                                 while ((length = stream.Read(safeBuffer.Value, 0, safeBuffer.Value.Length)) > 0)
                                 {
-                                    bufferStream.Write(safeBuffer.Value, 0, length);
+                                    recyclableMemoryStream.Write(safeBuffer.Value, 0, length);
 
-                                    if (bufferStream.Length > 1024 * 1024 * 32) throw new Exception("too large");
+                                    if (recyclableMemoryStream.Length > 1024 * 1024 * 32) throw new Exception("too large");
                                 }
                             }
 
-                            bufferStream.Seek(0, SeekOrigin.Begin);
-                            return bufferStream;
+                            recyclableMemoryStream.Seek(0, SeekOrigin.Begin);
+                            return recyclableMemoryStream;
                         }
                     }
                 }
                 catch (Exception)
                 {
-                    bufferStream.Dispose();
+                    recyclableMemoryStream.Dispose();
 
                     throw;
                 }
