@@ -2,13 +2,12 @@
 {
     class ProgressDialog
     {
-        private MainWindowViewModel _viewModel;
         private int _value = 0;
         private readonly object _lockObject = new object();
 
         private ProgressDialog()
         {
-            _viewModel = App.Current.MainWindow.DataContext as MainWindowViewModel;
+
         }
 
         public static ProgressDialog Instance { get; } = new ProgressDialog();
@@ -19,8 +18,10 @@
             {
                 lock (_lockObject)
                 {
+                    var viewModel = App.Current.MainWindow.DataContext as MainWindowViewModel;
+
                     _value++;
-                    _viewModel.IsProgressDialogOpen.Value = true;
+                    viewModel.IsProgressDialogOpen.Value = true;
                 }
             });
         }
@@ -31,8 +32,10 @@
             {
                 lock (_lockObject)
                 {
+                    var viewModel = App.Current.MainWindow.DataContext as MainWindowViewModel;
+
                     _value--;
-                    _viewModel.IsProgressDialogOpen.Value = (_value != 0);
+                    viewModel.IsProgressDialogOpen.Value = (_value != 0);
                 }
             });
         }

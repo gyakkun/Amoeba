@@ -493,6 +493,8 @@ namespace Amoeba.Interface
         {
             for (; ; )
             {
+                Start:;
+
                 if (token.WaitHandle.WaitOne(1000 * 3)) return;
 
                 var targetUploadItemsInfo = _uploadItemsInfo;
@@ -535,7 +537,7 @@ namespace Amoeba.Interface
                     foreach (string path in hashMap)
                     {
                         if (token.IsCancellationRequested) return;
-                        if (targetUploadItemsInfo != _uploadItemsInfo) return;
+                        if (targetUploadItemsInfo != _uploadItemsInfo) goto Start;
 
                         _serviceManager.RemoveContent(path);
                     }
@@ -556,7 +558,7 @@ namespace Amoeba.Interface
                     foreach (var (path, i) in sortedList.Select((n, i) => (n, i)))
                     {
                         if (token.IsCancellationRequested) return;
-                        if (targetUploadItemsInfo != _uploadItemsInfo) return;
+                        if (targetUploadItemsInfo != _uploadItemsInfo) goto Start;
 
                         try
                         {
@@ -865,7 +867,7 @@ namespace Amoeba.Interface
                     }
                 };
 
-                _dialogService.Show(viewModel);
+                _dialogService.ShowDialog(viewModel);
             }
         }
 
@@ -892,7 +894,7 @@ namespace Amoeba.Interface
                 }
             };
 
-            _dialogService.Show(viewModel);
+            _dialogService.ShowDialog(viewModel);
 
             this.TabViewModel.Value.Model.IsUpdated = true;
             this.Refresh();
@@ -916,7 +918,7 @@ namespace Amoeba.Interface
                 }
             };
 
-            _dialogService.Show(viewModel);
+            _dialogService.ShowDialog(viewModel);
 
             this.TabViewModel.Value.Model.IsUpdated = true;
             this.Refresh();
@@ -932,7 +934,7 @@ namespace Amoeba.Interface
                     categoryViewModel.Model.Name = name;
                 };
 
-                _dialogService.Show(viewModel);
+                _dialogService.ShowDialog(viewModel);
             }
             else if (this.TabSelectedItem.Value is UploadDirectoryViewModel directoryViewModel)
             {
@@ -942,7 +944,7 @@ namespace Amoeba.Interface
                     directoryViewModel.Model.Name = name;
                 };
 
-                _dialogService.Show(viewModel);
+                _dialogService.ShowDialog(viewModel);
             }
 
             this.TabViewModel.Value.Model.IsUpdated = true;
@@ -950,8 +952,8 @@ namespace Amoeba.Interface
 
         private void TabDelete()
         {
-            var viewModel = new ConfirmWindowViewModel(ConfirmWindowType.Delete);
-            viewModel.Callback += () =>
+            if (_dialogService.ShowDialog(LanguagesManager.Instance.ConfirmWindow_DeleteMessage,
+                MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.Cancel) == MessageBoxResult.OK)
             {
                 if (this.TabSelectedItem.Value is UploadCategoryViewModel categoryViewModel)
                 {
@@ -961,9 +963,7 @@ namespace Amoeba.Interface
                 {
                     directoryViewModel.Parent.TryRemove(directoryViewModel);
                 }
-            };
-
-            _dialogService.Show(viewModel);
+            }
 
             this.TabViewModel.Value.Model.IsUpdated = true;
         }
@@ -1116,7 +1116,7 @@ namespace Amoeba.Interface
                 categoryInfo.CategoryInfos.Add(new UploadCategoryInfo() { Name = name });
             };
 
-            _dialogService.Show(viewModel);
+            _dialogService.ShowDialog(viewModel);
 
             this.Refresh();
             this.TabViewModel.Value.Model.IsUpdated = true;
@@ -1140,7 +1140,7 @@ namespace Amoeba.Interface
                 categoryInfo.DirectoryInfos.Add(directoryInfo);
             };
 
-            _dialogService.Show(viewModel);
+            _dialogService.ShowDialog(viewModel);
 
             this.Refresh();
             this.TabViewModel.Value.Model.IsUpdated = true;
@@ -1159,7 +1159,7 @@ namespace Amoeba.Interface
                     categoryInfo.Name = name;
                 };
 
-                _dialogService.Show(viewModel);
+                _dialogService.ShowDialog(viewModel);
             }
             else if (selectedModel is UploadDirectoryInfo directoryInfo)
             {
@@ -1169,7 +1169,7 @@ namespace Amoeba.Interface
                     directoryInfo.Name = name;
                 };
 
-                _dialogService.Show(viewModel);
+                _dialogService.ShowDialog(viewModel);
             }
 
             this.TabViewModel.Value.Model.IsUpdated = true;
@@ -1178,8 +1178,8 @@ namespace Amoeba.Interface
 
         private void Delete()
         {
-            var viewModel = new ConfirmWindowViewModel(ConfirmWindowType.Delete);
-            viewModel.Callback += () =>
+            if (_dialogService.ShowDialog(LanguagesManager.Instance.ConfirmWindow_DeleteMessage,
+                MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.Cancel) == MessageBoxResult.OK)
             {
                 var categoryInfos = this.SelectedItems.OfType<UploadListViewItemInfo>().Select(n => n.Model).OfType<UploadCategoryInfo>().ToArray();
                 var directoryInfos = this.SelectedItems.OfType<UploadListViewItemInfo>().Select(n => n.Model).OfType<UploadDirectoryInfo>().ToArray();
@@ -1212,8 +1212,6 @@ namespace Amoeba.Interface
                 this.TabViewModel.Value.Model.IsUpdated = true;
                 this.Refresh();
             };
-
-            _dialogService.Show(viewModel);
         }
 
         private void Cut()

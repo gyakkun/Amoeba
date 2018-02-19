@@ -15,31 +15,28 @@ namespace Amoeba.Interface
 {
     class DataOptionsControlViewModel : ManagerBase
     {
-        private ServiceManager _serviceManager;
+        private DialogService _dialogService;
 
         private Settings _settings;
 
-        private DialogService _dialogService;
-
-        private Random _random = new Random();
-
-        public DataOptionsInfo DataOptions { get; } = new DataOptionsInfo();
+        public DataOptionsInfo Options { get; }
 
         public ReactiveProperty<string> SelectedItem { get; private set; }
 
         public ReactiveCommand DownloadDirectoryPathEditDialogCommand { get; private set; }
 
-        public ObservableCollection<int> RateList { get; private set; }
+        public ObservableCollection<int> ProtectedPercentageList { get; private set; }
 
         public DynamicOptions DynamicOptions { get; } = new DynamicOptions();
 
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _isDisposed;
 
-        public DataOptionsControlViewModel(ServiceManager serviceManager, DialogService dialogService)
+        public DataOptionsControlViewModel(DataOptionsInfo options, DialogService dialogService)
         {
-            _serviceManager = serviceManager;
             _dialogService = dialogService;
+
+            this.Options = options;
 
             this.Init();
         }
@@ -52,7 +49,7 @@ namespace Amoeba.Interface
                 this.DownloadDirectoryPathEditDialogCommand = new ReactiveCommand().AddTo(_disposable);
                 this.DownloadDirectoryPathEditDialogCommand.Subscribe(() => this.DownloadDirectoryPathEditDialog()).AddTo(_disposable);
 
-                this.RateList = new ObservableCollection<int>(Enumerable.Range(0, 50 + 1));
+                this.ProtectedPercentageList = new ObservableCollection<int>(Enumerable.Range(0, 50 + 1));
             }
 
             {
@@ -65,55 +62,8 @@ namespace Amoeba.Interface
                 this.DynamicOptions.SetProperties(_settings.Load(nameof(DynamicOptions), () => Array.Empty<DynamicOptions.DynamicPropertyInfo>()));
             }
 
-            this.GetOptions();
-
             {
                 Backup.Instance.SaveEvent += this.Save;
-            }
-        }
-
-        private void GetOptions()
-        {
-            {
-                this.DataOptions.Cache.Size = _serviceManager.Size;
-            }
-
-            {
-                var config = _serviceManager.Config.Core.Download;
-                this.DataOptions.Download.DirectoryPath = config.BasePath;
-                this.DataOptions.Download.ProtectedPercentage = config.ProtectedPercentage;
-            }
-        }
-
-        public void SetOptions()
-        {
-            if (this.DataOptions.Cache.Size < _serviceManager.Size)
-            {
-                var viewModel = new ConfirmWindowViewModel(LanguagesManager.Instance.DataOptionsControl_CacheResize_Message);
-                viewModel.Callback += () =>
-                {
-                    ProgressDialog.Instance.Increment();
-
-                    _serviceManager.Resize(this.DataOptions.Cache.Size);
-
-                    ProgressDialog.Instance.Decrement();
-                };
-
-                _dialogService.Show(viewModel);
-            }
-            else if (this.DataOptions.Cache.Size > _serviceManager.Size)
-            {
-                ProgressDialog.Instance.Increment();
-
-                _serviceManager.Resize(this.DataOptions.Cache.Size);
-
-                ProgressDialog.Instance.Decrement();
-            }
-
-            lock (_serviceManager.LockObject)
-            {
-                var oldConfig = _serviceManager.Config;
-                _serviceManager.SetConfig(new ServiceConfig(new CoreConfig(oldConfig.Core.Network, new DownloadConfig(this.DataOptions.Download.DirectoryPath, this.DataOptions.Download.ProtectedPercentage)), oldConfig.Connection, oldConfig.Message));
             }
         }
 
@@ -122,12 +72,12 @@ namespace Amoeba.Interface
             using (var dialog = new System.Windows.Forms.FolderBrowserDialog())
             {
                 dialog.RootFolder = System.Environment.SpecialFolder.MyComputer;
-                dialog.SelectedPath = this.DataOptions.Download.DirectoryPath;
+                dialog.SelectedPath = this.Options.Download.DirectoryPath;
                 dialog.ShowNewFolderButton = true;
 
                 if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
-                    this.DataOptions.Download.DirectoryPath = dialog.SelectedPath;
+                    this.Options.Download.DirectoryPath = dialog.SelectedPath;
                 }
             }
         }

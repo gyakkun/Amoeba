@@ -17,17 +17,15 @@ namespace Amoeba.Interface
 {
     class ViewOptionsControlViewModel : ManagerBase
     {
-        private ServiceManager _serviceManager;
+        private DialogService _dialogService;
 
         private Settings _settings;
 
-        private Random _random = new Random();
-
-        public ViewOptionsInfo ViewOptions { get; } = new ViewOptionsInfo();
+        public ViewOptionsInfo Options { get; }
 
         public ReactiveProperty<string> SelectedItem { get; private set; }
 
-        public ListCollectionView SubscribeSignaturesView => (ListCollectionView)CollectionViewSource.GetDefaultView(this.ViewOptions.Subscribe.SubscribeSignatures);
+        public ListCollectionView SubscribeSignaturesView => (ListCollectionView)CollectionViewSource.GetDefaultView(this.Options.Subscribe.Signatures);
         public ObservableCollection<object> SelectedSubscribeSignatureItems { get; } = new ObservableCollection<object>();
         private ListSortInfo _subscribeSignaturesSortInfo;
         public ReactiveCommand<string> SubscribeSignaturesSortCommand { get; private set; }
@@ -41,9 +39,11 @@ namespace Amoeba.Interface
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _isDisposed;
 
-        public ViewOptionsControlViewModel(ServiceManager serviceManager)
+        public ViewOptionsControlViewModel(ViewOptionsInfo options, DialogService dialogService)
         {
-            _serviceManager = serviceManager;
+            _dialogService = dialogService;
+
+            this.Options = options;
 
             this.Init();
         }
@@ -77,28 +77,12 @@ namespace Amoeba.Interface
                 this.DynamicOptions.SetProperties(_settings.Load(nameof(DynamicOptions), () => Array.Empty<DynamicOptions.DynamicPropertyInfo>()));
             }
 
-            this.GetOptions();
-
             {
                 Backup.Instance.SaveEvent += this.Save;
             }
 
             {
                 this.SubscribeSignaturesSort(null);
-            }
-        }
-
-        private void GetOptions()
-        {
-            this.ViewOptions.Subscribe.SubscribeSignatures.AddRange(SettingsManager.Instance.SubscribeSignatures);
-        }
-
-        public void SetOptions()
-        {
-            lock (SettingsManager.Instance.SubscribeSignatures.LockObject)
-            {
-                SettingsManager.Instance.SubscribeSignatures.Clear();
-                SettingsManager.Instance.SubscribeSignatures.UnionWith(this.ViewOptions.Subscribe.SubscribeSignatures);
             }
         }
 
@@ -172,7 +156,7 @@ namespace Amoeba.Interface
         {
             foreach (var item in this.SelectedSubscribeSignatureItems.OfType<Signature>().ToArray())
             {
-                this.ViewOptions.Subscribe.SubscribeSignatures.Remove(item);
+                this.Options.Subscribe.Signatures.Remove(item);
             }
         }
 
@@ -185,9 +169,9 @@ namespace Amoeba.Interface
         {
             foreach (var item in Clipboard.GetSignatures())
             {
-                if (this.ViewOptions.Subscribe.SubscribeSignatures.Contains(item)) continue;
+                if (this.Options.Subscribe.Signatures.Contains(item)) continue;
 
-                this.ViewOptions.Subscribe.SubscribeSignatures.Add(item);
+                this.Options.Subscribe.Signatures.Add(item);
             }
         }
 

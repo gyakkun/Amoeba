@@ -21,15 +21,11 @@ namespace Amoeba.Interface
 {
     class AccountOptionsControlViewModel : ManagerBase
     {
-        private ServiceManager _serviceManager;
-
         private Settings _settings;
 
         private DialogService _dialogService;
 
-        private Random _random = new Random();
-
-        public AccountOptionsInfo AccountOptions { get; } = new AccountOptionsInfo();
+        public AccountOptionsInfo Options { get; }
 
         public ReactiveProperty<string> SelectedItem { get; private set; }
 
@@ -37,7 +33,7 @@ namespace Amoeba.Interface
         public ReactiveCommand SignatureImportCommand { get; private set; }
         public ReactiveCommand SignatureExportCommand { get; private set; }
 
-        public ListCollectionView TrustSignaturesView => (ListCollectionView)CollectionViewSource.GetDefaultView(this.AccountOptions.TrustSignatures);
+        public ListCollectionView TrustSignaturesView => (ListCollectionView)CollectionViewSource.GetDefaultView(this.Options.TrustSignatures);
         public ObservableCollection<object> SelectedTrustSignatureItems { get; } = new ObservableCollection<object>();
         private ListSortInfo _trustSignaturesSortInfo;
         public ReactiveCommand<string> TrustSignaturesSortCommand { get; private set; }
@@ -46,7 +42,7 @@ namespace Amoeba.Interface
         public ReactiveCommand TrustSignaturesCopyCommand { get; private set; }
         public ReactiveCommand TrustSignaturesPasteCommand { get; private set; }
 
-        public ListCollectionView UntrustSignaturesView => (ListCollectionView)CollectionViewSource.GetDefaultView(this.AccountOptions.UntrustSignatures);
+        public ListCollectionView UntrustSignaturesView => (ListCollectionView)CollectionViewSource.GetDefaultView(this.Options.UntrustSignatures);
         public ObservableCollection<object> SelectedUntrustSignatureItems { get; } = new ObservableCollection<object>();
         private ListSortInfo _untrustSignaturesSortInfo;
         public ReactiveCommand<string> UntrustSignaturesSortCommand { get; private set; }
@@ -55,7 +51,7 @@ namespace Amoeba.Interface
         public ReactiveCommand UntrustSignaturesCopyCommand { get; private set; }
         public ReactiveCommand UntrustSignaturesPasteCommand { get; private set; }
 
-        public ListCollectionView TagsView => (ListCollectionView)CollectionViewSource.GetDefaultView(this.AccountOptions.Tags);
+        public ListCollectionView TagsView => (ListCollectionView)CollectionViewSource.GetDefaultView(this.Options.Tags);
         public ObservableCollection<object> SelectedTagItems { get; } = new ObservableCollection<object>();
         private ListSortInfo _tagsSortInfo;
         public ReactiveCommand<string> TagsSortCommand { get; private set; }
@@ -70,10 +66,11 @@ namespace Amoeba.Interface
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _isDisposed;
 
-        public AccountOptionsControlViewModel(ServiceManager serviceManager, DialogService dialogService)
+        public AccountOptionsControlViewModel(AccountOptionsInfo options, DialogService dialogService)
         {
-            _serviceManager = serviceManager;
             _dialogService = dialogService;
+
+            this.Options = options;
 
             this.Init();
         }
@@ -145,8 +142,6 @@ namespace Amoeba.Interface
                 this.DynamicOptions.SetProperties(_settings.Load(nameof(DynamicOptions), () => Array.Empty<DynamicOptions.DynamicPropertyInfo>()));
             }
 
-            this.GetOptions();
-
             {
                 Backup.Instance.SaveEvent += this.Save;
             }
@@ -158,71 +153,16 @@ namespace Amoeba.Interface
             }
         }
 
-        private void GetOptions()
-        {
-            var info = SettingsManager.Instance.AccountInfo;
-            this.AccountOptions.DigitalSignature = info.DigitalSignature;
-            this.AccountOptions.Comment = info.Comment;
-            this.AccountOptions.TrustSignatures.AddRange(info.TrustSignatures);
-            this.AccountOptions.UntrustSignatures.AddRange(info.UntrustSignatures);
-            this.AccountOptions.Tags.AddRange(info.Tags);
-        }
-
-        public void SetOptions()
-        {
-            var info = SettingsManager.Instance.AccountInfo;
-
-            if (info.DigitalSignature != this.AccountOptions.DigitalSignature)
-            {
-                info.Exchange = new Exchange(ExchangeAlgorithm.Rsa4096);
-            }
-
-            bool uploadFlag = false;
-
-            if (info.DigitalSignature != this.AccountOptions.DigitalSignature
-                || info.Comment != this.AccountOptions.Comment
-                || !CollectionUtils.Equals(info.TrustSignatures, this.AccountOptions.TrustSignatures)
-                || !CollectionUtils.Equals(info.UntrustSignatures, this.AccountOptions.UntrustSignatures)
-                || !CollectionUtils.Equals(info.Tags, this.AccountOptions.Tags))
-            {
-                uploadFlag = true;
-            }
-
-            info.DigitalSignature = this.AccountOptions.DigitalSignature;
-            info.Comment = this.AccountOptions.Comment;
-            info.TrustSignatures.Clear();
-            info.TrustSignatures.AddRange(this.AccountOptions.TrustSignatures);
-            info.UntrustSignatures.Clear();
-            info.UntrustSignatures.AddRange(this.AccountOptions.UntrustSignatures);
-            info.Tags.Clear();
-            info.Tags.AddRange(this.AccountOptions.Tags);
-
-            if (uploadFlag)
-            {
-                ProgressDialog.Instance.Increment();
-
-                _serviceManager.SetProfile(
-                    new Profile(info.Comment,
-                        info.Exchange.GetExchangePublicKey(),
-                        info.TrustSignatures,
-                        info.UntrustSignatures,
-                        info.Tags),
-                    info.DigitalSignature,
-                    CancellationToken.None)
-                    .ContinueWith((_) => ProgressDialog.Instance.Decrement());
-            }
-        }
-
         private void SignatureNew()
         {
             var viewModel = new NameEditWindowViewModel("Anonymous", Signature.MaxNameLength);
             viewModel.Callback += (name) =>
             {
                 var digitalSignature = new DigitalSignature(name, DigitalSignatureAlgorithm.EcDsaP521_Sha256_v3);
-                this.AccountOptions.DigitalSignature = digitalSignature;
+                this.Options.DigitalSignature = digitalSignature;
             };
 
-            _dialogService.Show(viewModel);
+            _dialogService.ShowDialog(viewModel);
         }
 
         private void SignatureImport()
@@ -244,7 +184,7 @@ namespace Amoeba.Interface
                         var digitalSignature = DigitalSignatureConverter.FromDigitalSignatureStream(stream);
                         if (digitalSignature == null) return;
 
-                        this.AccountOptions.DigitalSignature = digitalSignature;
+                        this.Options.DigitalSignature = digitalSignature;
                     }
                 }
             }
@@ -255,7 +195,7 @@ namespace Amoeba.Interface
             using (var dialog = new System.Windows.Forms.SaveFileDialog())
             {
                 dialog.RestoreDirectory = true;
-                dialog.FileName = this.AccountOptions.DigitalSignature.GetSignature().ToString();
+                dialog.FileName = this.Options.DigitalSignature.GetSignature().ToString();
                 dialog.DefaultExt = ".ds";
                 dialog.Filter = "DigitalSignature (*.ds)|*.ds";
 
@@ -264,7 +204,7 @@ namespace Amoeba.Interface
                     string fileName = dialog.FileName;
 
                     using (var fileStream = new FileStream(fileName, FileMode.Create))
-                    using (var digitalSignatureStream = DigitalSignatureConverter.ToDigitalSignatureStream(this.AccountOptions.DigitalSignature))
+                    using (var digitalSignatureStream = DigitalSignatureConverter.ToDigitalSignatureStream(this.Options.DigitalSignature))
                     using (var safeBuffer = BufferManager.Instance.CreateSafeBuffer(1024 * 4))
                     {
                         int length;
@@ -347,7 +287,7 @@ namespace Amoeba.Interface
         {
             foreach (var item in this.SelectedTrustSignatureItems.OfType<Signature>().ToArray())
             {
-                this.AccountOptions.TrustSignatures.Remove(item);
+                this.Options.TrustSignatures.Remove(item);
             }
         }
 
@@ -360,9 +300,9 @@ namespace Amoeba.Interface
         {
             foreach (var item in Clipboard.GetSignatures())
             {
-                if (this.AccountOptions.TrustSignatures.Contains(item)) continue;
+                if (this.Options.TrustSignatures.Contains(item)) continue;
 
-                this.AccountOptions.TrustSignatures.Add(item);
+                this.Options.TrustSignatures.Add(item);
             }
         }
 
@@ -435,7 +375,7 @@ namespace Amoeba.Interface
         {
             foreach (var item in this.SelectedUntrustSignatureItems.OfType<Signature>().ToArray())
             {
-                this.AccountOptions.UntrustSignatures.Remove(item);
+                this.Options.UntrustSignatures.Remove(item);
             }
         }
 
@@ -448,9 +388,9 @@ namespace Amoeba.Interface
         {
             foreach (var item in Clipboard.GetSignatures())
             {
-                if (this.AccountOptions.UntrustSignatures.Contains(item)) continue;
+                if (this.Options.UntrustSignatures.Contains(item)) continue;
 
-                this.AccountOptions.UntrustSignatures.Add(item);
+                this.Options.UntrustSignatures.Add(item);
             }
         }
 
@@ -513,17 +453,17 @@ namespace Amoeba.Interface
             var viewModel = new NameEditWindowViewModel("", Tag.MaxNameLength);
             viewModel.Callback += (name) =>
             {
-                this.AccountOptions.Tags.Add(new Tag(name, _random.GetBytes(32)));
+                this.Options.Tags.Add(new Tag(name, RandomProvider.GetThreadRandom().GetBytes(32)));
             };
 
-            _dialogService.Show(viewModel);
+            _dialogService.ShowDialog(viewModel);
         }
 
         private void TagsDelete()
         {
             foreach (var item in this.SelectedTagItems.OfType<Tag>().ToArray())
             {
-                this.AccountOptions.Tags.Remove(item);
+                this.Options.Tags.Remove(item);
             }
         }
 
@@ -536,9 +476,9 @@ namespace Amoeba.Interface
         {
             foreach (var item in Clipboard.GetTags())
             {
-                if (this.AccountOptions.Tags.Contains(item)) continue;
+                if (this.Options.Tags.Contains(item)) continue;
 
-                this.AccountOptions.Tags.Add(item);
+                this.Options.Tags.Add(item);
             }
         }
 

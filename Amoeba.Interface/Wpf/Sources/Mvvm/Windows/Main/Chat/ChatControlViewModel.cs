@@ -338,7 +338,7 @@ namespace Amoeba.Interface
                 chatCategoryViewModel.Model.CategoryInfos.Add(new ChatCategoryInfo() { Name = name });
             };
 
-            _dialogService.Show(viewModel);
+            _dialogService.ShowDialog(viewModel);
         }
 
         private void TabEdit()
@@ -352,13 +352,13 @@ namespace Amoeba.Interface
                 chatCategoryViewModel.Model.Name = name;
             };
 
-            _dialogService.Show(viewModel);
+            _dialogService.ShowDialog(viewModel);
         }
 
         private void TabDelete()
         {
-            var viewModel = new ConfirmWindowViewModel(ConfirmWindowType.Delete);
-            viewModel.Callback += () =>
+            if (_dialogService.ShowDialog(LanguagesManager.Instance.ConfirmWindow_DeleteMessage,
+                MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.Cancel) == MessageBoxResult.OK)
             {
                 if (this.TabSelectedItem.Value is ChatCategoryViewModel chatCategoryViewModel)
                 {
@@ -369,9 +369,7 @@ namespace Amoeba.Interface
                 {
                     chatViewModel.Parent.TryRemove(chatViewModel);
                 }
-            };
-
-            _dialogService.Show(viewModel);
+            }
         }
 
         private void TabCut()
@@ -445,7 +443,7 @@ namespace Amoeba.Interface
                     chatCategoryViewModel.Model.ThreadInfos.Add(new ChatThreadInfo() { Tag = tag });
                 };
 
-                _dialogService.Show(viewModel);
+                _dialogService.ShowDialog(viewModel);
             }
         }
 
@@ -509,7 +507,7 @@ namespace Amoeba.Interface
 
             var viewModel = new ChatMessageEditWindowViewModel(chatViewModel.Model.Tag, sb.ToString(), _serviceManager, _messageManager, _tokenSource.Token);
 
-            _dialogService.Show(viewModel);
+            _dialogService.ShowDialog(viewModel);
         }
 
         private void NewMessage()
@@ -519,7 +517,7 @@ namespace Amoeba.Interface
 
             var viewModel = new ChatMessageEditWindowViewModel(chatViewModel.Model.Tag, "", _serviceManager, _messageManager, _tokenSource.Token);
 
-            _dialogService.Show(viewModel);
+            _dialogService.ShowDialog(viewModel);
         }
 
         private void Save()

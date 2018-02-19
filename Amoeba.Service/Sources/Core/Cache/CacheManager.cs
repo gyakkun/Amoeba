@@ -172,15 +172,17 @@ namespace Amoeba.Service
 
         public ArraySegment<byte> GetBlock(Hash hash)
         {
+            // Cache
             {
-                ArraySegment<byte> result;
+                var result = _blocksManager.Get(hash);
 
-                if (_blocksManager.TryGet(hash, out result))
+                if (result != null)
                 {
-                    return result;
+                    return result.Value;
                 }
             }
 
+            // Share
             {
                 ArraySegment<byte>? result = null;
                 string path = null;

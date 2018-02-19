@@ -736,56 +736,56 @@ namespace Amoeba.Interface
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
-        private TcpOptionsInfo _tcp;
-        private I2pOptionsInfo _i2p;
-        private CustomOptionsInfo _custom;
-        private BandwidthOptionsInfo _bandwidth;
+        private ConnectionOptionsTcpInfo _tcp;
+        private ConnectionOptionsI2pInfo _i2p;
+        private ConnectionOptionsCustomInfo _custom;
+        private ConnectionOptionsBandwidthInfo _bandwidth;
 
         public ConnectionOptionsInfo() { }
 
         [DataMember(Name = nameof(Tcp))]
-        public TcpOptionsInfo Tcp
+        public ConnectionOptionsTcpInfo Tcp
         {
             get
             {
                 if (_tcp == null)
-                    _tcp = new TcpOptionsInfo();
+                    _tcp = new ConnectionOptionsTcpInfo();
 
                 return _tcp;
             }
         }
 
         [DataMember(Name = nameof(I2p))]
-        public I2pOptionsInfo I2p
+        public ConnectionOptionsI2pInfo I2p
         {
             get
             {
                 if (_i2p == null)
-                    _i2p = new I2pOptionsInfo();
+                    _i2p = new ConnectionOptionsI2pInfo();
 
                 return _i2p;
             }
         }
 
         [DataMember(Name = nameof(Custom))]
-        public CustomOptionsInfo Custom
+        public ConnectionOptionsCustomInfo Custom
         {
             get
             {
                 if (_custom == null)
-                    _custom = new CustomOptionsInfo();
+                    _custom = new ConnectionOptionsCustomInfo();
 
                 return _custom;
             }
         }
 
         [DataMember(Name = nameof(Bandwidth))]
-        public BandwidthOptionsInfo Bandwidth
+        public ConnectionOptionsBandwidthInfo Bandwidth
         {
             get
             {
                 if (_bandwidth == null)
-                    _bandwidth = new BandwidthOptionsInfo();
+                    _bandwidth = new ConnectionOptionsBandwidthInfo();
 
                 return _bandwidth;
             }
@@ -797,8 +797,8 @@ namespace Amoeba.Interface
         }
     }
 
-    [DataContract(Name = nameof(TcpOptionsInfo))]
-    sealed partial class TcpOptionsInfo : INotifyPropertyChanged, ICloneable<TcpOptionsInfo>
+    [DataContract(Name = nameof(ConnectionOptionsTcpInfo))]
+    sealed partial class ConnectionOptionsTcpInfo : INotifyPropertyChanged, ICloneable<ConnectionOptionsTcpInfo>
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -813,7 +813,7 @@ namespace Amoeba.Interface
         private ushort _ipv6Port;
         private string _proxyUri;
 
-        public TcpOptionsInfo() { }
+        public ConnectionOptionsTcpInfo() { }
 
         [DataMember(Name = nameof(Ipv4IsEnabled))]
         public bool Ipv4IsEnabled
@@ -900,14 +900,14 @@ namespace Amoeba.Interface
             }
         }
 
-        public TcpOptionsInfo Clone()
+        public ConnectionOptionsTcpInfo Clone()
         {
             return JsonUtils.Clone(this);
         }
     }
 
-    [DataContract(Name = nameof(I2pOptionsInfo))]
-    sealed partial class I2pOptionsInfo : INotifyPropertyChanged, ICloneable<I2pOptionsInfo>
+    [DataContract(Name = nameof(ConnectionOptionsI2pInfo))]
+    sealed partial class ConnectionOptionsI2pInfo : INotifyPropertyChanged, ICloneable<ConnectionOptionsI2pInfo>
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -919,7 +919,7 @@ namespace Amoeba.Interface
         private bool _isEnabled;
         private string _samBridgeUri;
 
-        public I2pOptionsInfo() { }
+        public ConnectionOptionsI2pInfo() { }
 
         [DataMember(Name = nameof(IsEnabled))]
         public bool IsEnabled
@@ -955,14 +955,14 @@ namespace Amoeba.Interface
             }
         }
 
-        public I2pOptionsInfo Clone()
+        public ConnectionOptionsI2pInfo Clone()
         {
             return JsonUtils.Clone(this);
         }
     }
 
-    [DataContract(Name = nameof(CustomOptionsInfo))]
-    sealed partial class CustomOptionsInfo : INotifyPropertyChanged, ICloneable<CustomOptionsInfo>
+    [DataContract(Name = nameof(ConnectionOptionsCustomInfo))]
+    sealed partial class ConnectionOptionsCustomInfo : INotifyPropertyChanged, ICloneable<ConnectionOptionsCustomInfo>
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -975,7 +975,7 @@ namespace Amoeba.Interface
         private ObservableCollection<ConnectionFilter> _connectionFilters;
         private ObservableCollection<string> _listenUris;
 
-        public CustomOptionsInfo() { }
+        public ConnectionOptionsCustomInfo() { }
 
         [DataMember(Name = nameof(LocationUris))]
         public ObservableCollection<string> LocationUris
@@ -1013,14 +1013,14 @@ namespace Amoeba.Interface
             }
         }
 
-        public CustomOptionsInfo Clone()
+        public ConnectionOptionsCustomInfo Clone()
         {
             return JsonUtils.Clone(this);
         }
     }
 
-    [DataContract(Name = nameof(BandwidthOptionsInfo))]
-    sealed partial class BandwidthOptionsInfo : INotifyPropertyChanged, ICloneable<BandwidthOptionsInfo>
+    [DataContract(Name = nameof(ConnectionOptionsBandwidthInfo))]
+    sealed partial class ConnectionOptionsBandwidthInfo : INotifyPropertyChanged, ICloneable<ConnectionOptionsBandwidthInfo>
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -1032,7 +1032,7 @@ namespace Amoeba.Interface
         private int _connectionCountLimit;
         private int _bandwidthLimit;
 
-        public BandwidthOptionsInfo() { }
+        public ConnectionOptionsBandwidthInfo() { }
 
         [DataMember(Name = nameof(ConnectionCountLimit))]
         public int ConnectionCountLimit
@@ -1068,7 +1068,7 @@ namespace Amoeba.Interface
             }
         }
 
-        public BandwidthOptionsInfo Clone()
+        public ConnectionOptionsBandwidthInfo Clone()
         {
             return JsonUtils.Clone(this);
         }
@@ -1084,30 +1084,30 @@ namespace Amoeba.Interface
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
-        private CacheOptionsInfo _cache;
-        private DownloadOptionsInfo _download;
+        private DataOptionsCacheInfo _cache;
+        private DataOptionsDownloadInfo _download;
 
         public DataOptionsInfo() { }
 
         [DataMember(Name = nameof(Cache))]
-        public CacheOptionsInfo Cache
+        public DataOptionsCacheInfo Cache
         {
             get
             {
                 if (_cache == null)
-                    _cache = new CacheOptionsInfo();
+                    _cache = new DataOptionsCacheInfo();
 
                 return _cache;
             }
         }
 
         [DataMember(Name = nameof(Download))]
-        public DownloadOptionsInfo Download
+        public DataOptionsDownloadInfo Download
         {
             get
             {
                 if (_download == null)
-                    _download = new DownloadOptionsInfo();
+                    _download = new DataOptionsDownloadInfo();
 
                 return _download;
             }
@@ -1119,8 +1119,8 @@ namespace Amoeba.Interface
         }
     }
 
-    [DataContract(Name = nameof(CacheOptionsInfo))]
-    sealed partial class CacheOptionsInfo : INotifyPropertyChanged, ICloneable<CacheOptionsInfo>
+    [DataContract(Name = nameof(DataOptionsCacheInfo))]
+    sealed partial class DataOptionsCacheInfo : INotifyPropertyChanged, ICloneable<DataOptionsCacheInfo>
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -1131,7 +1131,7 @@ namespace Amoeba.Interface
 
         private long _size;
 
-        public CacheOptionsInfo() { }
+        public DataOptionsCacheInfo() { }
 
         [DataMember(Name = nameof(Size))]
         public long Size
@@ -1150,14 +1150,14 @@ namespace Amoeba.Interface
             }
         }
 
-        public CacheOptionsInfo Clone()
+        public DataOptionsCacheInfo Clone()
         {
             return JsonUtils.Clone(this);
         }
     }
 
-    [DataContract(Name = nameof(DownloadOptionsInfo))]
-    sealed partial class DownloadOptionsInfo : INotifyPropertyChanged, ICloneable<DownloadOptionsInfo>
+    [DataContract(Name = nameof(DataOptionsDownloadInfo))]
+    sealed partial class DataOptionsDownloadInfo : INotifyPropertyChanged, ICloneable<DataOptionsDownloadInfo>
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -1169,7 +1169,7 @@ namespace Amoeba.Interface
         private string _directoryPath;
         private int _protectedPercentage;
 
-        public DownloadOptionsInfo() { }
+        public DataOptionsDownloadInfo() { }
 
         [DataMember(Name = nameof(DirectoryPath))]
         public string DirectoryPath
@@ -1205,7 +1205,7 @@ namespace Amoeba.Interface
             }
         }
 
-        public DownloadOptionsInfo Clone()
+        public DataOptionsDownloadInfo Clone()
         {
             return JsonUtils.Clone(this);
         }
@@ -1221,17 +1221,17 @@ namespace Amoeba.Interface
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
-        private SubscribeOptionsInfo _subscribe;
+        private ViewOptionsSubscribeInfo _subscribe;
 
         public ViewOptionsInfo() { }
 
         [DataMember(Name = nameof(Subscribe))]
-        public SubscribeOptionsInfo Subscribe
+        public ViewOptionsSubscribeInfo Subscribe
         {
             get
             {
                 if (_subscribe == null)
-                    _subscribe = new SubscribeOptionsInfo();
+                    _subscribe = new ViewOptionsSubscribeInfo();
 
                 return _subscribe;
             }
@@ -1243,8 +1243,8 @@ namespace Amoeba.Interface
         }
     }
 
-    [DataContract(Name = nameof(SubscribeOptionsInfo))]
-    sealed partial class SubscribeOptionsInfo : INotifyPropertyChanged, ICloneable<SubscribeOptionsInfo>
+    [DataContract(Name = nameof(ViewOptionsSubscribeInfo))]
+    sealed partial class ViewOptionsSubscribeInfo : INotifyPropertyChanged, ICloneable<ViewOptionsSubscribeInfo>
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -1253,23 +1253,23 @@ namespace Amoeba.Interface
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
-        private ObservableCollection<Signature> _subscribeSignatures;
+        private ObservableCollection<Signature> _signatures;
 
-        public SubscribeOptionsInfo() { }
+        public ViewOptionsSubscribeInfo() { }
 
-        [DataMember(Name = nameof(SubscribeSignatures))]
-        public ObservableCollection<Signature> SubscribeSignatures
+        [DataMember(Name = nameof(Signatures))]
+        public ObservableCollection<Signature> Signatures
         {
             get
             {
-                if (_subscribeSignatures == null)
-                    _subscribeSignatures = new ObservableCollection<Signature>();
+                if (_signatures == null)
+                    _signatures = new ObservableCollection<Signature>();
 
-                return _subscribeSignatures;
+                return _signatures;
             }
         }
 
-        public SubscribeOptionsInfo Clone()
+        public ViewOptionsSubscribeInfo Clone()
         {
             return JsonUtils.Clone(this);
         }

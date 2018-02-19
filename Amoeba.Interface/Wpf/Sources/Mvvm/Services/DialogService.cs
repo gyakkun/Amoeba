@@ -4,14 +4,14 @@ namespace Amoeba.Interface
 {
     class DialogService
     {
-        public void Show(RelationWindowViewModel viewModel)
+        public void ShowDialog(RelationWindowViewModel viewModel)
         {
             var window = new RelationWindow(viewModel);
             window.Owner = App.Current.MainWindow;
             window.ShowDialog();
         }
 
-        public void Show(OptionsWindowViewModel viewModel)
+        public void ShowDialog(OptionsWindowViewModel viewModel)
         {
             var window = new OptionsWindow(viewModel);
             window.Owner = App.Current.MainWindow;
@@ -22,72 +22,61 @@ namespace Amoeba.Interface
         {
             var window = new CheckBlocksWindow(viewModel);
             window.Owner = App.Current.MainWindow;
-            window.ShowDialog();
+            window.Show();
         }
 
-        public void Show(VersionWindowViewModel viewModel)
+        public void ShowDialog(VersionWindowViewModel viewModel)
         {
             var window = new VersionWindow(viewModel);
             window.Owner = App.Current.MainWindow;
             window.ShowDialog();
         }
 
-        public void Show(ChatMessageEditWindowViewModel viewModel)
+        public void ShowDialog(ChatMessageEditWindowViewModel viewModel)
         {
             var window = new ChatMessageEditWindow(viewModel);
             window.Owner = App.Current.MainWindow;
             window.ShowDialog();
         }
 
-        public void Show(ChatTagListWindowViewModel viewModel)
+        public void ShowDialog(ChatTagListWindowViewModel viewModel)
         {
             var window = new ChatTagListWindow(viewModel);
             window.Owner = App.Current.MainWindow;
             window.ShowDialog();
         }
 
-        public void Show(SearchInfoEditWindowViewModel viewModel)
+        public void ShowDialog(SearchInfoEditWindowViewModel viewModel)
         {
             var window = new SearchInfoEditWindow(viewModel);
             window.Owner = App.Current.MainWindow;
             window.ShowDialog();
         }
 
-        public void Show(UploadDirectoryInfoEditWindowViewModel viewModel)
+        public void ShowDialog(UploadDirectoryInfoEditWindowViewModel viewModel)
         {
             var window = new UploadDirectoryInfoEditWindow(viewModel);
             window.Owner = App.Current.MainWindow;
             window.ShowDialog();
         }
 
-        public void Show(UploadItemsPreviewWindowViewModel viewModel)
+        public void ShowDialog(UploadItemsPreviewWindowViewModel viewModel)
         {
             var window = new UploadItemsPreviewWindow(viewModel);
             window.Owner = App.Current.MainWindow;
             window.ShowDialog();
         }
 
-        public void Show(NameEditWindowViewModel viewModel)
+        public void ShowDialog(NameEditWindowViewModel viewModel)
         {
             var window = new NameEditWindow(viewModel);
             window.Owner = App.Current.MainWindow;
             window.ShowDialog();
         }
 
-        public void Show(ConfirmWindowViewModel viewModel)
+        public MessageBoxResult ShowDialog(string message, MessageBoxButton button, MessageBoxImage image, MessageBoxResult defaultResult)
         {
-            if (MessageBox.Show(viewModel.Message, LanguagesManager.Instance.ConfirmWindow_Title, MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.Cancel) == MessageBoxResult.OK)
-            {
-                viewModel.Ok();
-            }
-        }
-
-        public void Show(NoticeWindowViewModel viewModel)
-        {
-            if (MessageBox.Show(viewModel.Message, LanguagesManager.Instance.ConfirmWindow_Title, MessageBoxButton.OK, MessageBoxImage.Information, MessageBoxResult.OK) == MessageBoxResult.OK)
-            {
-                viewModel.Ok();
-            }
+            return MessageBox.Show(message, LanguagesManager.Instance.ConfirmWindow_Title, button, image, defaultResult);
         }
     }
 }

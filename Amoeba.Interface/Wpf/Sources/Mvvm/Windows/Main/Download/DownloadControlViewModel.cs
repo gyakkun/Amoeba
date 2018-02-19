@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Threading;
+using System.Windows;
 using System.Windows.Data;
 using Amoeba.Messages;
 using Amoeba.Service;
@@ -293,8 +294,8 @@ namespace Amoeba.Interface
             var selectedItems = this.SelectedItems.OfType<DownloadListViewItemInfo>().ToList();
             if (selectedItems.Count == 0) return;
 
-            var viewModel = new ConfirmWindowViewModel(ConfirmWindowType.Delete);
-            viewModel.Callback += () =>
+            if (_dialogService.ShowDialog(LanguagesManager.Instance.ConfirmWindow_DeleteMessage,
+                MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.Cancel) == MessageBoxResult.OK)
             {
                 foreach (var selectedItem in selectedItems.Select(n => n.Model))
                 {
@@ -306,9 +307,7 @@ namespace Amoeba.Interface
                 {
                     SettingsManager.Instance.DownloadedSeeds.Add(selectedItem);
                 }
-            };
-
-            _dialogService.Show(viewModel);
+            }
         }
 
         private void Copy()

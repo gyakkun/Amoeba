@@ -15,7 +15,7 @@ namespace Amoeba.Interface
 
         static Clipboard()
         {
-            App.Current.Activated += (sender, e) =>
+            App.Current.MainWindow.Loaded += (sender, e) =>
             {
                 _monitor = new Monitor(App.Current.MainWindow);
                 _monitor.ClipboardChanged += Listener;

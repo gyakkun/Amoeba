@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Windows;
 using Amoeba.Messages;
 using Amoeba.Service;
 using Omnius.Base;
@@ -142,10 +143,11 @@ namespace Amoeba.Interface
 
                             App.Current.Dispatcher.InvokeAsync(() =>
                             {
-                                var viewModel = new NoticeWindowViewModel(LanguagesManager.Instance.MainWindow_SpaceNotFound_Message);
-                                viewModel.Callback += () => watchFlag = true;
-
-                                _dialogService.Show(viewModel);
+                                if (_dialogService.ShowDialog(LanguagesManager.Instance.MainWindow_SpaceNotFound_Message,
+                                    MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.Cancel) == MessageBoxResult.OK)
+                                {
+                                    watchFlag = true;
+                                }
                             });
                         }
                     }

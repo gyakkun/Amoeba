@@ -19,17 +19,14 @@ namespace Amoeba.Interface
 {
     class OptionsWindowViewModel : ManagerBase
     {
-        private ServiceManager _serviceManager;
+        private DialogService _dialogService;
 
         private Settings _settings;
 
-        private DialogService _dialogService;
-
-        private Random _random = new Random();
-
         public event EventHandler<EventArgs> CloseEvent;
+        public event Action<OptionsInfo> Callback;
 
-        public OptionsInfo Options { get; } = new OptionsInfo();
+        public OptionsInfo Options { get; private set; }
 
         public ReactiveProperty<TreeViewItem> TabSelectedItem { get; private set; }
 
@@ -47,10 +44,11 @@ namespace Amoeba.Interface
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _isDisposed;
 
-        public OptionsWindowViewModel(ServiceManager serviceManager, DialogService dialogService)
+        public OptionsWindowViewModel(OptionsInfo options, DialogService dialogService)
         {
-            _serviceManager = serviceManager;
             _dialogService = dialogService;
+
+            this.Options = options;
 
             this.Init();
         }
@@ -61,11 +59,11 @@ namespace Amoeba.Interface
                 this.TabSelectedItem = new ReactiveProperty<TreeViewItem>().AddTo(_disposable);
                 this.TabSelectedItem.Subscribe((item) => this.TabSelectChanged(item)).AddTo(_disposable);
 
-                this.AccountOptionsControlViewModel = new AccountOptionsControlViewModel(_serviceManager, _dialogService);
-                this.ConnectionOptionsControlViewModel = new ConnectionOptionsControlViewModel(_serviceManager);
-                this.DataOptionsControlViewModel = new DataOptionsControlViewModel(_serviceManager, _dialogService);
-                this.ViewOptionsControlViewModel = new ViewOptionsControlViewModel(_serviceManager);
-                this.UpdateOptionsControlViewModel = new UpdateOptionsControlViewModel(_serviceManager);
+                this.AccountOptionsControlViewModel = new AccountOptionsControlViewModel(this.Options.Account, _dialogService);
+                this.ConnectionOptionsControlViewModel = new ConnectionOptionsControlViewModel(this.Options.Connection, _dialogService);
+                this.DataOptionsControlViewModel = new DataOptionsControlViewModel(this.Options.Data, _dialogService);
+                this.ViewOptionsControlViewModel = new ViewOptionsControlViewModel(this.Options.View, _dialogService);
+                this.UpdateOptionsControlViewModel = new UpdateOptionsControlViewModel(this.Options.Update, _dialogService);
 
                 this.OkCommand = new ReactiveCommand().AddTo(_disposable);
                 this.OkCommand.Subscribe(() => this.Ok()).AddTo(_disposable);
@@ -107,11 +105,7 @@ namespace Amoeba.Interface
 
         private void Ok()
         {
-            this.AccountOptionsControlViewModel.SetOptions();
-            this.ConnectionOptionsControlViewModel.SetOptions();
-            this.DataOptionsControlViewModel.SetOptions();
-            this.ViewOptionsControlViewModel.SetOptions();
-            this.UpdateOptionsControlViewModel.SetOptions();
+            this.Callback?.Invoke(this.Options);
 
             this.OnCloseEvent();
         }

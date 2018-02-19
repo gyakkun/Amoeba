@@ -14,8 +14,6 @@ namespace Amoeba.Interface
             viewModel.CloseEvent += (sender, e) => this.Close();
 
             InitializeComponent();
-
-            this.MouseLeftButtonDown += (sender, e) => this.DragMove();
         }
 
         protected override void OnClosed(EventArgs e)

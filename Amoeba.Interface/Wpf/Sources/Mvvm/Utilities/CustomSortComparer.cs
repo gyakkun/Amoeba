@@ -6,19 +6,18 @@ namespace Amoeba.Interface
 {
     class CustomSortComparer : IComparer
     {
-        public ListSortDirection _direction;
+        public int _direction;
         public Func<object, object, int> _callback;
 
         public CustomSortComparer(ListSortDirection direction, Func<object, object, int> callback)
         {
-            _direction = direction;
+            _direction = (direction == ListSortDirection.Ascending) ? 1 : -1;
             _callback = callback;
         }
 
         public int Compare(object x, object y)
         {
-            if (_direction == ListSortDirection.Ascending) return _callback.Invoke(x, y);
-            else return _callback.Invoke(y, x);
+            return _direction * _callback.Invoke(x, y);
         }
     }
 }

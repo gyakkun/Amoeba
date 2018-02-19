@@ -39,7 +39,7 @@
                                 Margin="240,0,0,0"
                                 VerticalAlignment="Top"
                                 IsReadOnly="True"
-                                Text="{Binding Path=AccountOptions.DigitalSignature, Mode=OneWay}" />
+                                Text="{Binding Path=Options.DigitalSignature, Mode=OneWay}" />
                             <Button
                                 Width="120"
                                 Height="32"
@@ -408,7 +408,7 @@
                             AcceptsReturn="True"
                             AcceptsTab="True"
                             BorderThickness="0"
-                            Text="{Binding Path=AccountOptions.Comment}"
+                            Text="{Binding Path=Options.Comment}"
                             TextWrapping="Wrap" />
                     </Grid>
                 </GroupBox>

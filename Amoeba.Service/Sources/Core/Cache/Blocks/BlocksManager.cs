@@ -306,62 +306,101 @@ namespace Amoeba.Service
             {
                 return Task.Run(() =>
                 {
-                    // 読めないブロックを検出しRemoveする。
-
-                    var list = this.ToArray();
-
-                    int badCount = 0;
-                    int checkedCount = 0;
-                    int blockCount = list.Length;
-
-                    token.ThrowIfCancellationRequested();
-
-                    progress.Report(new CheckBlocksProgressReport(badCount, checkedCount, blockCount));
-
-                    foreach (var hash in list)
+                    // 重複するセクタを確保したブロックを検出しRemoveする。
+                    using (_lockManager.ReadLock())
                     {
-                        token.ThrowIfCancellationRequested();
-
-                        ArraySegment<byte> block;
-
-                        try
+                        using (var bitmapManager = new BitmapManager(_bufferManager))
                         {
-                            using (_lockManager.ReadLock())
+                            bitmapManager.SetLength(this.Size / SectorSize);
+
+                            var hashes = new List<Hash>();
+
+                            foreach (var (hash, clusterInfo) in _clusterIndex)
                             {
-                                if (this.Contains(hash) && !this.TryGet(hash, out block))
+                                foreach (var sector in clusterInfo.Indexes)
                                 {
-                                    badCount++;
+                                    if (!bitmapManager.Get(sector))
+                                    {
+                                        bitmapManager.Set(sector, true);
+                                    }
+                                    else
+                                    {
+                                        hashes.Add(hash);
+
+                                        break;
+                                    }
                                 }
                             }
-                        }
-                        catch (Exception)
-                        {
 
-                        }
-                        finally
-                        {
-                            if (block.Array != null)
+                            foreach (var hash in hashes)
                             {
-                                _bufferManager.ReturnBuffer(block.Array);
+                                this.Remove(hash);
                             }
-                        }
-
-                        checkedCount++;
-
-                        if (checkedCount % 32 == 0)
-                        {
-                            progress.Report(new CheckBlocksProgressReport(badCount, checkedCount, blockCount));
                         }
                     }
 
-                    progress.Report(new CheckBlocksProgressReport(badCount, checkedCount, blockCount));
+                    // 読めないブロックを検出しRemoveする。
+                    {
+                        var list = this.ToArray();
+
+                        int badCount = 0;
+                        int checkedCount = 0;
+                        int blockCount = list.Length;
+
+                        token.ThrowIfCancellationRequested();
+
+                        progress.Report(new CheckBlocksProgressReport(badCount, checkedCount, blockCount));
+
+                        foreach (var hash in list)
+                        {
+                            token.ThrowIfCancellationRequested();
+
+                            ArraySegment<byte>? block = null;
+
+                            try
+                            {
+                                using (_lockManager.ReadLock())
+                                {
+                                    if (this.Contains(hash))
+                                    {
+                                        block = this.Get(hash);
+
+                                        if (block == null)
+                                        {
+                                            badCount++;
+                                        }
+                                    }
+                                }
+                            }
+                            catch (Exception)
+                            {
+
+                            }
+                            finally
+                            {
+                                if (block != null)
+                                {
+                                    _bufferManager.ReturnBuffer(block.Value.Array);
+                                }
+                            }
+
+                            checkedCount++;
+
+                            if (checkedCount % 32 == 0)
+                            {
+                                progress.Report(new CheckBlocksProgressReport(badCount, checkedCount, blockCount));
+                            }
+                        }
+
+                        progress.Report(new CheckBlocksProgressReport(badCount, checkedCount, blockCount));
+                    }
                 }, token);
             }
 
             private byte[] _sectorBuffer = new byte[SectorSize];
             private readonly object _streamLockObject = new object();
 
-            public bool TryGet(Hash hash, out ArraySegment<byte> value)
+            public ArraySegment<byte>? Get(Hash hash)
             {
                 ArraySegment<byte> result;
 
@@ -377,7 +416,7 @@ namespace Amoeba.Service
                         }
                     }
 
-                    if (clusterInfo == null) return false;
+                    if (clusterInfo == null) return null;
 
                     var buffer = _bufferManager.TakeBuffer(clusterInfo.Length);
 
@@ -406,31 +445,33 @@ namespace Amoeba.Service
                     }
                     catch (Exception e)
                     {
+                        _bufferManager.ReturnBuffer(buffer);
+
                         Log.Error(e);
 
-                        throw e;
+                        return null;
                     }
                 }
 
                 if (hash.Algorithm == HashAlgorithm.Sha256)
                 {
-                    if (!Unsafe.Equals(Sha256.Compute(result), hash.Value))
+                    if (Unsafe.Equals(Sha256.Compute(result), hash.Value))
+                    {
+                        return result;
+                    }
+                    else
                     {
                         _bufferManager.ReturnBuffer(result.Array);
 
                         this.Remove(hash);
 
-                        return false;
+                        return null;
                     }
                 }
                 else
                 {
                     throw new FormatException();
                 }
-
-                value = result;
-
-                return true;
             }
 
             public void Set(Hash hash, ArraySegment<byte> value)

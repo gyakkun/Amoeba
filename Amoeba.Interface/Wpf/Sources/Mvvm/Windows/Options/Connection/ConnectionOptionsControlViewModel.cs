@@ -18,17 +18,15 @@ namespace Amoeba.Interface
 {
     class ConnectionOptionsControlViewModel : ManagerBase
     {
-        private ServiceManager _serviceManager;
+        private DialogService _dialogService;
 
         private Settings _settings;
 
-        private Random _random = new Random();
-
-        public ConnectionOptionsInfo ConnectionOptions { get; } = new ConnectionOptionsInfo();
+        public ConnectionOptionsInfo Options { get; }
 
         public ReactiveProperty<string> SelectedItem { get; private set; }
 
-        public ListCollectionView LocationUrisView => (ListCollectionView)CollectionViewSource.GetDefaultView(this.ConnectionOptions.Custom.LocationUris);
+        public ListCollectionView LocationUrisView => (ListCollectionView)CollectionViewSource.GetDefaultView(this.Options.Custom.LocationUris);
         public ReactiveProperty<string> SelectedLocationUriItem { get; private set; }
         private ListSortInfo _locationUrisSortInfo;
         public ReactiveCommand<string> LocationUrisSortCommand { get; private set; }
@@ -39,7 +37,7 @@ namespace Amoeba.Interface
         public ReactiveCommand LocationUriEditCommand { get; private set; }
         public ReactiveCommand LocationUriDeleteCommand { get; private set; }
 
-        public ListCollectionView ConnectionFiltersView => (ListCollectionView)CollectionViewSource.GetDefaultView(this.ConnectionOptions.Custom.ConnectionFilters);
+        public ListCollectionView ConnectionFiltersView => (ListCollectionView)CollectionViewSource.GetDefaultView(this.Options.Custom.ConnectionFilters);
         public ReactiveProperty<ConnectionFilter> SelectedConnectionFilterItem { get; private set; }
 
         public ReactiveProperty<string> ConnectionFilterSchemeInput { get; private set; }
@@ -52,7 +50,7 @@ namespace Amoeba.Interface
         public ReactiveCommand ConnectionFilterEditCommand { get; private set; }
         public ReactiveCommand ConnectionFilterDeleteCommand { get; private set; }
 
-        public ListCollectionView ListenUrisView => (ListCollectionView)CollectionViewSource.GetDefaultView(this.ConnectionOptions.Custom.ListenUris);
+        public ListCollectionView ListenUrisView => (ListCollectionView)CollectionViewSource.GetDefaultView(this.Options.Custom.ListenUris);
         public ReactiveProperty<string> SelectedListenUriItem { get; private set; }
         private ListSortInfo _listenUrisSortInfo;
         public ReactiveCommand<string> ListenUrisSortCommand { get; private set; }
@@ -68,9 +66,11 @@ namespace Amoeba.Interface
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _isDisposed;
 
-        public ConnectionOptionsControlViewModel(ServiceManager serviceManager)
+        public ConnectionOptionsControlViewModel(ConnectionOptionsInfo options, DialogService dialogService)
         {
-            _serviceManager = serviceManager;
+            _dialogService = dialogService;
+
+            this.Options = options;
 
             this.Init();
         }
@@ -160,8 +160,6 @@ namespace Amoeba.Interface
                 this.DynamicOptions.SetProperties(_settings.Load(nameof(DynamicOptions), () => Array.Empty<DynamicOptions.DynamicPropertyInfo>()));
             }
 
-            this.GetOptions();
-
             {
                 Backup.Instance.SaveEvent += this.Save;
             }
@@ -169,90 +167,6 @@ namespace Amoeba.Interface
             {
                 this.LocationUrisSort(null);
                 this.ListenUrisSort(null);
-            }
-        }
-
-        private void GetOptions()
-        {
-            // Tcp
-            {
-                var config = _serviceManager.Config.Connection.Tcp;
-                this.ConnectionOptions.Tcp.ProxyUri = config.ProxyUri;
-                this.ConnectionOptions.Tcp.Ipv4IsEnabled = config.Type.HasFlag(TcpConnectionType.Ipv4);
-                this.ConnectionOptions.Tcp.Ipv4Port = config.Ipv4Port;
-                this.ConnectionOptions.Tcp.Ipv6IsEnabled = config.Type.HasFlag(TcpConnectionType.Ipv6);
-                this.ConnectionOptions.Tcp.Ipv6Port = config.Ipv6Port;
-            }
-
-            // I2p
-            {
-                var config = _serviceManager.Config.Connection.I2p;
-                this.ConnectionOptions.I2p.IsEnabled = config.IsEnabled;
-                this.ConnectionOptions.I2p.SamBridgeUri = config.SamBridgeUri;
-            }
-
-            // Custom
-            {
-                var config = _serviceManager.Config.Connection.Custom;
-                this.ConnectionOptions.Custom.LocationUris.AddRange(config.LocationUris);
-                this.ConnectionOptions.Custom.ConnectionFilters.AddRange(config.ConnectionFilters);
-                this.ConnectionOptions.Custom.ListenUris.AddRange(config.ListenUris);
-            }
-
-            // Bandwidth
-            {
-                var config = _serviceManager.Config.Core.Network;
-                this.ConnectionOptions.Bandwidth.ConnectionCountLimit = config.ConnectionCountLimit;
-                this.ConnectionOptions.Bandwidth.BandwidthLimit = config.BandwidthLimit;
-            }
-        }
-
-        public void SetOptions()
-        {
-            ConnectionConfig connectionConfig;
-            {
-                TcpConnectionConfig tcpConnectionConfig;
-                {
-                    var info = this.ConnectionOptions.Tcp;
-                    var type = TcpConnectionType.None;
-                    if (info.Ipv4IsEnabled) type |= TcpConnectionType.Ipv4;
-                    if (info.Ipv6IsEnabled) type |= TcpConnectionType.Ipv6;
-
-                    tcpConnectionConfig = new TcpConnectionConfig(type, info.Ipv4Port, info.Ipv6Port, info.ProxyUri);
-                }
-
-                I2pConnectionConfig i2PConnectionConfig;
-                {
-                    var info = this.ConnectionOptions.I2p;
-                    i2PConnectionConfig = new I2pConnectionConfig(info.IsEnabled, info.SamBridgeUri);
-                }
-
-                CustomConnectionConfig customConnectionConfig;
-                {
-                    var info = this.ConnectionOptions.Custom;
-                    customConnectionConfig = new CustomConnectionConfig(info.LocationUris, info.ConnectionFilters, info.ListenUris);
-                }
-
-                CatharsisConfig catharsisConfig;
-                {
-                    var catharsisIpv4Config = new CatharsisIpv4Config(null, null);
-
-                    catharsisConfig = new CatharsisConfig(catharsisIpv4Config);
-                }
-
-                connectionConfig = new ConnectionConfig(tcpConnectionConfig, i2PConnectionConfig, customConnectionConfig, catharsisConfig);
-            }
-
-            NetworkConfig networkConfig;
-            {
-                var info = this.ConnectionOptions.Bandwidth;
-                networkConfig = new NetworkConfig(info.ConnectionCountLimit, info.BandwidthLimit);
-            }
-
-            lock (_serviceManager.LockObject)
-            {
-                var oldConfig = _serviceManager.Config;
-                _serviceManager.SetConfig(new ServiceConfig(new CoreConfig(networkConfig, oldConfig.Core.Download), connectionConfig, oldConfig.Message));
             }
         }
 
@@ -307,9 +221,9 @@ namespace Amoeba.Interface
         private void LocationUriAdd()
         {
             string selectedItem = this.LocationUriInput.Value;
-            if (this.ConnectionOptions.Custom.LocationUris.Contains(selectedItem)) return;
+            if (this.Options.Custom.LocationUris.Contains(selectedItem)) return;
 
-            this.ConnectionOptions.Custom.LocationUris.Add(selectedItem);
+            this.Options.Custom.LocationUris.Add(selectedItem);
         }
 
         private void LocationUriEdit()
@@ -318,10 +232,10 @@ namespace Amoeba.Interface
             if (selectedItem == null) return;
 
             string value = this.LocationUriInput.Value;
-            if (this.ConnectionOptions.Custom.LocationUris.Contains(value)) return;
+            if (this.Options.Custom.LocationUris.Contains(value)) return;
 
-            int index = this.ConnectionOptions.Custom.LocationUris.IndexOf(selectedItem);
-            this.ConnectionOptions.Custom.LocationUris[index] = value;
+            int index = this.Options.Custom.LocationUris.IndexOf(selectedItem);
+            this.Options.Custom.LocationUris[index] = value;
         }
 
         private void LocationUriDelete()
@@ -329,7 +243,7 @@ namespace Amoeba.Interface
             string selectedItem = this.SelectedLocationUriItem.Value;
             if (selectedItem == null) return;
 
-            this.ConnectionOptions.Custom.LocationUris.Remove(selectedItem);
+            this.Options.Custom.LocationUris.Remove(selectedItem);
         }
 
         private void ConnectionFilterUp()
@@ -337,10 +251,10 @@ namespace Amoeba.Interface
             var selectedItem = this.SelectedConnectionFilterItem.Value;
             if (selectedItem == null) return;
 
-            int index = this.ConnectionOptions.Custom.ConnectionFilters.IndexOf(selectedItem);
+            int index = this.Options.Custom.ConnectionFilters.IndexOf(selectedItem);
             if (index == 0) return;
 
-            this.ConnectionOptions.Custom.ConnectionFilters.Move(index, index - 1);
+            this.Options.Custom.ConnectionFilters.Move(index, index - 1);
         }
 
         private void ConnectionFilterDown()
@@ -348,18 +262,18 @@ namespace Amoeba.Interface
             var selectedItem = this.SelectedConnectionFilterItem.Value;
             if (selectedItem == null) return;
 
-            int index = this.ConnectionOptions.Custom.ConnectionFilters.IndexOf(selectedItem);
-            if (index == this.ConnectionOptions.Custom.ConnectionFilters.Count - 1) return;
+            int index = this.Options.Custom.ConnectionFilters.IndexOf(selectedItem);
+            if (index == this.Options.Custom.ConnectionFilters.Count - 1) return;
 
-            this.ConnectionOptions.Custom.ConnectionFilters.Move(index, index + 1);
+            this.Options.Custom.ConnectionFilters.Move(index, index + 1);
         }
 
         private void ConnectionFilterAdd()
         {
             var selectedItem = new ConnectionFilter(this.ConnectionFilterSchemeInput.Value, this.ConnectionFilterTypeInput.Value, this.ConnectionFilterProxyUriInput.Value);
-            if (this.ConnectionOptions.Custom.ConnectionFilters.Contains(selectedItem)) return;
+            if (this.Options.Custom.ConnectionFilters.Contains(selectedItem)) return;
 
-            this.ConnectionOptions.Custom.ConnectionFilters.Add(selectedItem);
+            this.Options.Custom.ConnectionFilters.Add(selectedItem);
         }
 
         private void ConnectionFilterEdit()
@@ -368,10 +282,10 @@ namespace Amoeba.Interface
             if (selectedItem == null) return;
 
             var value = new ConnectionFilter(this.ConnectionFilterSchemeInput.Value, this.ConnectionFilterTypeInput.Value, this.ConnectionFilterProxyUriInput.Value);
-            if (this.ConnectionOptions.Custom.ConnectionFilters.Contains(value)) return;
+            if (this.Options.Custom.ConnectionFilters.Contains(value)) return;
 
-            int index = this.ConnectionOptions.Custom.ConnectionFilters.IndexOf(selectedItem);
-            this.ConnectionOptions.Custom.ConnectionFilters[index] = value;
+            int index = this.Options.Custom.ConnectionFilters.IndexOf(selectedItem);
+            this.Options.Custom.ConnectionFilters[index] = value;
         }
 
         private void ConnectionFilterDelete()
@@ -379,7 +293,7 @@ namespace Amoeba.Interface
             var selectedItem = this.SelectedConnectionFilterItem.Value;
             if (selectedItem == null) return;
 
-            this.ConnectionOptions.Custom.ConnectionFilters.Remove(selectedItem);
+            this.Options.Custom.ConnectionFilters.Remove(selectedItem);
         }
 
         private void ListenUrisSort(string propertyName)
@@ -433,9 +347,9 @@ namespace Amoeba.Interface
         private void ListenUriAdd()
         {
             string selectedItem = this.ListenUriInput.Value;
-            if (this.ConnectionOptions.Custom.ListenUris.Contains(selectedItem)) return;
+            if (this.Options.Custom.ListenUris.Contains(selectedItem)) return;
 
-            this.ConnectionOptions.Custom.ListenUris.Add(selectedItem);
+            this.Options.Custom.ListenUris.Add(selectedItem);
         }
 
         private void ListenUriEdit()
@@ -444,10 +358,10 @@ namespace Amoeba.Interface
             if (selectedItem == null) return;
 
             string value = this.ListenUriInput.Value;
-            if (this.ConnectionOptions.Custom.ListenUris.Contains(value)) return;
+            if (this.Options.Custom.ListenUris.Contains(value)) return;
 
-            int index = this.ConnectionOptions.Custom.ListenUris.IndexOf(selectedItem);
-            this.ConnectionOptions.Custom.ListenUris[index] = value;
+            int index = this.Options.Custom.ListenUris.IndexOf(selectedItem);
+            this.Options.Custom.ListenUris[index] = value;
         }
 
         private void ListenUriDelete()
@@ -455,7 +369,7 @@ namespace Amoeba.Interface
             string selectedItem = this.SelectedListenUriItem.Value;
             if (selectedItem == null) return;
 
-            this.ConnectionOptions.Custom.ListenUris.Remove(selectedItem);
+            this.Options.Custom.ListenUris.Remove(selectedItem);
         }
 
         private void Save()

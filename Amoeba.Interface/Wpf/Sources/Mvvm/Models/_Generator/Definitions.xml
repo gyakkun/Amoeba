@@ -76,13 +76,13 @@
     </Class>
 
     <Class Name="ConnectionOptionsInfo">
-        <Property Type="TcpOptionsInfo" Name="Tcp" />
-        <Property Type="I2pOptionsInfo" Name="I2p" />
-        <Property Type="CustomOptionsInfo" Name="Custom" />
-        <Property Type="BandwidthOptionsInfo" Name="Bandwidth" />
+        <Property Type="ConnectionOptionsTcpInfo" Name="Tcp" />
+        <Property Type="ConnectionOptionsI2pInfo" Name="I2p" />
+        <Property Type="ConnectionOptionsCustomInfo" Name="Custom" />
+        <Property Type="ConnectionOptionsBandwidthInfo" Name="Bandwidth" />
     </Class>
 
-    <Class Name="TcpOptionsInfo">
+    <Class Name="ConnectionOptionsTcpInfo">
         <Property Type="bool" Name="Ipv4IsEnabled" IsEditable="true" />
         <Property Type="ushort" Name="Ipv4Port" IsEditable="true" />
         <Property Type="bool" Name="Ipv6IsEnabled" IsEditable="true" />
@@ -90,42 +90,42 @@
         <Property Type="string" Name="ProxyUri" IsEditable="true" />
     </Class>
 
-    <Class Name="I2pOptionsInfo">
+    <Class Name="ConnectionOptionsI2pInfo">
         <Property Type="bool" Name="IsEnabled" IsEditable="true" />
         <Property Type="string" Name="SamBridgeUri" IsEditable="true" />
     </Class>
 
-    <Class Name="CustomOptionsInfo">
+    <Class Name="ConnectionOptionsCustomInfo">
         <Property Type="ObservableCollection(string)" Name="LocationUris" />
         <Property Type="ObservableCollection(ConnectionFilter)" Name="ConnectionFilters" />
         <Property Type="ObservableCollection(string)" Name="ListenUris" />
     </Class>
 
-    <Class Name="BandwidthOptionsInfo">
+    <Class Name="ConnectionOptionsBandwidthInfo">
         <Property Type="int" Name="ConnectionCountLimit" IsEditable="true" />
         <Property Type="int" Name="BandwidthLimit" IsEditable="true" />
     </Class>
 
     <Class Name="DataOptionsInfo">
-        <Property Type="CacheOptionsInfo" Name="Cache" />
-        <Property Type="DownloadOptionsInfo" Name="Download" />
+        <Property Type="DataOptionsCacheInfo" Name="Cache" />
+        <Property Type="DataOptionsDownloadInfo" Name="Download" />
     </Class>
 
-    <Class Name="CacheOptionsInfo">
+    <Class Name="DataOptionsCacheInfo">
         <Property Type="long" Name="Size" IsEditable="true" />
     </Class>
 
-    <Class Name="DownloadOptionsInfo">
+    <Class Name="DataOptionsDownloadInfo">
         <Property Type="string" Name="DirectoryPath" IsEditable="true" />
         <Property Type="int" Name="ProtectedPercentage" IsEditable="true" />
     </Class>
 
     <Class Name="ViewOptionsInfo">
-        <Property Type="SubscribeOptionsInfo" Name="Subscribe" />
+        <Property Type="ViewOptionsSubscribeInfo" Name="Subscribe" />
     </Class>
 
-    <Class Name="SubscribeOptionsInfo">
-        <Property Type="ObservableCollection(Signature)" Name="SubscribeSignatures" />
+    <Class Name="ViewOptionsSubscribeInfo">
+        <Property Type="ObservableCollection(Signature)" Name="Signatures" />
     </Class>
 
     <Class Name="UpdateOptionsInfo">

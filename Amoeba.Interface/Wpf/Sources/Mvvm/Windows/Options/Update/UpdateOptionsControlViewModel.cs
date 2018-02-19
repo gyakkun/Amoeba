@@ -12,13 +12,11 @@ namespace Amoeba.Interface
 {
     class UpdateOptionsControlViewModel : ManagerBase
     {
-        private ServiceManager _serviceManager;
+        private DialogService _dialogService;
 
         private Settings _settings;
 
-        private Random _random = new Random();
-
-        public UpdateOptionsInfo UpdateOptions { get; } = new UpdateOptionsInfo();
+        public UpdateOptionsInfo Options { get; }
 
         public ReactiveProperty<string> SelectedItem { get; private set; }
 
@@ -27,9 +25,11 @@ namespace Amoeba.Interface
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _isDisposed;
 
-        public UpdateOptionsControlViewModel(ServiceManager serviceManager)
+        public UpdateOptionsControlViewModel(UpdateOptionsInfo options, DialogService dialogService)
         {
-            _serviceManager = serviceManager;
+            _dialogService = dialogService;
+
+            this.Options = options;
 
             this.Init();
         }
@@ -50,25 +50,9 @@ namespace Amoeba.Interface
                 this.DynamicOptions.SetProperties(_settings.Load(nameof(DynamicOptions), () => Array.Empty<DynamicOptions.DynamicPropertyInfo>()));
             }
 
-            this.GetOptions();
-
             {
                 Backup.Instance.SaveEvent += this.Save;
             }
-        }
-
-        private void GetOptions()
-        {
-            var info = SettingsManager.Instance.UpdateInfo;
-            this.UpdateOptions.IsEnabled = info.IsEnabled;
-            this.UpdateOptions.Signature = info.Signature;
-        }
-
-        public void SetOptions()
-        {
-            var info = SettingsManager.Instance.UpdateInfo;
-            info.IsEnabled = this.UpdateOptions.IsEnabled;
-            info.Signature = this.UpdateOptions.Signature;
         }
 
         private void Save()

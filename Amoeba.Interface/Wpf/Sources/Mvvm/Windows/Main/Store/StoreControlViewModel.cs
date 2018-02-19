@@ -521,7 +521,7 @@ namespace Amoeba.Interface
                     categoryViewModel.Model.CategoryInfos.Add(new StoreCategoryInfo() { Name = name });
                 };
 
-                _dialogService.Show(viewModel);
+                _dialogService.ShowDialog(viewModel);
             }
 
             this.Refresh();
@@ -537,14 +537,14 @@ namespace Amoeba.Interface
                     categoryViewModel.Model.Name = name;
                 };
 
-                _dialogService.Show(viewModel);
+                _dialogService.ShowDialog(viewModel);
             }
         }
 
         private void TabDelete()
         {
-            var viewModel = new ConfirmWindowViewModel(ConfirmWindowType.Delete);
-            viewModel.Callback += () =>
+            if (_dialogService.ShowDialog(LanguagesManager.Instance.ConfirmWindow_DeleteMessage,
+                MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.Cancel) == MessageBoxResult.OK)
             {
                 if (this.TabSelectedItem.Value is StoreCategoryViewModel categoryViewModel)
                 {
@@ -555,9 +555,7 @@ namespace Amoeba.Interface
                 {
                     signatureViewModel.Parent.TryRemove(signatureViewModel);
                 }
-            };
-
-            _dialogService.Show(viewModel);
+            }
         }
 
         private void TabCut()
@@ -693,7 +691,7 @@ namespace Amoeba.Interface
                 categoryInfo.CategoryInfos.Add(new StoreCategoryInfo() { Name = name });
             };
 
-            _dialogService.Show(viewModel);
+            _dialogService.ShowDialog(viewModel);
 
             this.Refresh();
         }
@@ -711,7 +709,7 @@ namespace Amoeba.Interface
                     categoryInfo.Name = name;
                 };
 
-                _dialogService.Show(viewModel);
+                _dialogService.ShowDialog(viewModel);
             }
 
             this.Refresh();
@@ -719,8 +717,8 @@ namespace Amoeba.Interface
 
         private void Delete()
         {
-            var viewModel = new ConfirmWindowViewModel(ConfirmWindowType.Delete);
-            viewModel.Callback += () =>
+            if (_dialogService.ShowDialog(LanguagesManager.Instance.ConfirmWindow_DeleteMessage,
+                MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.Cancel) == MessageBoxResult.OK)
             {
                 var categoryInfos = this.SelectedItems.OfType<StoreListViewItemInfo>().Select(n => n.Model).OfType<StoreCategoryInfo>().ToArray();
                 var signatureInfos = this.SelectedItems.OfType<StoreListViewItemInfo>().Select(n => n.Model).OfType<StoreSignatureInfo>().ToArray();
@@ -739,9 +737,7 @@ namespace Amoeba.Interface
                 }
 
                 this.Refresh();
-            };
-
-            _dialogService.Show(viewModel);
+            }
         }
 
         private void Cut()

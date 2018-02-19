@@ -622,7 +622,7 @@ namespace Amoeba.Interface
                     searchViewModel.Model.Children.Add(info);
                 };
 
-                _dialogService.Show(viewModel);
+                _dialogService.ShowDialog(viewModel);
             }
         }
 
@@ -632,23 +632,21 @@ namespace Amoeba.Interface
             {
                 var viewModel = new SearchInfoEditWindowViewModel(searchViewModel.Model);
 
-                _dialogService.Show(viewModel);
+                _dialogService.ShowDialog(viewModel);
             }
         }
 
         private void TabDelete()
         {
-            var viewModel = new ConfirmWindowViewModel(ConfirmWindowType.Delete);
-            viewModel.Callback += () =>
+            if (_dialogService.ShowDialog(LanguagesManager.Instance.ConfirmWindow_DeleteMessage,
+                MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.Cancel) == MessageBoxResult.OK)
             {
                 if (this.TabSelectedItem.Value is SearchViewModel searchViewModel)
                 {
                     if (searchViewModel.Parent == null) return;
                     searchViewModel.Parent.TryRemove(searchViewModel);
                 }
-            };
-
-            _dialogService.Show(viewModel);
+            }
         }
 
         private void TabCut()
@@ -738,8 +736,8 @@ namespace Amoeba.Interface
                 .Select(n => n.Model.Metadata).ToArray());
             if (hashSet.Count == 0) return;
 
-            var viewModel = new ConfirmWindowViewModel(ConfirmWindowType.Delete);
-            viewModel.Callback += () =>
+            if (_dialogService.ShowDialog(LanguagesManager.Instance.ConfirmWindow_DeleteMessage,
+                MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.Cancel) == MessageBoxResult.OK)
             {
                 Task.Run(() =>
                 {
@@ -757,9 +755,7 @@ namespace Amoeba.Interface
 
                     }
                 });
-            };
-
-            _dialogService.Show(viewModel);
+            }
         }
 
         private void RemoveDownloadingItem()
@@ -769,8 +765,8 @@ namespace Amoeba.Interface
                 .Select(n => n.Model).ToArray());
             if (hashSet.Count == 0) return;
 
-            var viewModel = new ConfirmWindowViewModel(ConfirmWindowType.Delete);
-            viewModel.Callback += () =>
+            if (_dialogService.ShowDialog(LanguagesManager.Instance.ConfirmWindow_DeleteMessage,
+                MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.Cancel) == MessageBoxResult.OK)
             {
                 Task.Run(() =>
                 {
@@ -787,9 +783,7 @@ namespace Amoeba.Interface
 
                     }
                 });
-            };
-
-            _dialogService.Show(viewModel);
+            }
         }
 
         private void RemoveDownloadedItem()
@@ -799,8 +793,8 @@ namespace Amoeba.Interface
                 .Select(n => n.Model.Metadata).ToArray());
             if (hashSet.Count == 0) return;
 
-            var viewModel = new ConfirmWindowViewModel(ConfirmWindowType.Delete);
-            viewModel.Callback += () =>
+            if (_dialogService.ShowDialog(LanguagesManager.Instance.ConfirmWindow_DeleteMessage,
+                MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.Cancel) == MessageBoxResult.OK)
             {
                 Task.Run(() =>
                 {
@@ -817,9 +811,7 @@ namespace Amoeba.Interface
 
                     }
                 });
-            };
-
-            _dialogService.Show(viewModel);
+            }
         }
 
         private void Save()
