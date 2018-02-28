@@ -24,7 +24,7 @@ namespace Amoeba.Interface
 
         private DigitalSignature _digitalSignature;
         private string _comment;
-        private Exchange _exchange;
+        private Agreement _agreement;
         private ObservableCollection<Signature> _trustSignatures;
         private ObservableCollection<Signature> _untrustSignatures;
         private ObservableCollection<Tag> _tags;
@@ -65,19 +65,19 @@ namespace Amoeba.Interface
             }
         }
 
-        [DataMember(Name = nameof(Exchange))]
-        public Exchange Exchange
+        [DataMember(Name = nameof(Agreement))]
+        public Agreement Agreement
         {
             get
             {
-                return _exchange;
+                return _agreement;
             }
             set
             {
-                if (_exchange != value)
+                if (_agreement != value)
                 {
-                    _exchange = value;
-                    this.OnPropertyChanged(nameof(Exchange));
+                    _agreement = value;
+                    this.OnPropertyChanged(nameof(Agreement));
                 }
             }
         }

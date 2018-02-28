@@ -59,7 +59,7 @@ namespace Amoeba.Interface
             }
 
             {
-                string configPath = System.IO.Path.Combine(AmoebaEnvironment.Paths.ConfigPath, "View", nameof(UploadDirectoryInfoEditWindow));
+                string configPath = System.IO.Path.Combine(AmoebaEnvironment.Paths.ConfigDirectoryPath, "View", nameof(UploadDirectoryInfoEditWindow));
                 if (!Directory.Exists(configPath)) Directory.CreateDirectory(configPath);
 
                 _settings = new Settings(configPath);

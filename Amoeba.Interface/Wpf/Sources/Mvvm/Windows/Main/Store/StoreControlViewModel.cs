@@ -12,7 +12,7 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Threading;
 using Amoeba.Messages;
-using Amoeba.Service;
+using Amoeba.Rpc;
 using Omnius.Base;
 using Omnius.Collections;
 using Omnius.Configuration;
@@ -25,7 +25,7 @@ namespace Amoeba.Interface
 {
     class StoreControlViewModel : ManagerBase
     {
-        private ServiceManager _serviceManager;
+        private AmoebaInterfaceManager _amoebaInterfaceManager;
         private TaskManager _watchTaskManager;
 
         private Settings _settings;
@@ -72,9 +72,9 @@ namespace Amoeba.Interface
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _isDisposed;
 
-        public StoreControlViewModel(ServiceManager serviceManager, DialogService dialogService)
+        public StoreControlViewModel(AmoebaInterfaceManager serviceManager, DialogService dialogService)
         {
-            _serviceManager = serviceManager;
+            _amoebaInterfaceManager = serviceManager;
             _dialogService = dialogService;
 
             this.Init();
@@ -189,7 +189,7 @@ namespace Amoeba.Interface
             }
 
             {
-                string configPath = Path.Combine(AmoebaEnvironment.Paths.ConfigPath, "View", nameof(StoreControl));
+                string configPath = Path.Combine(AmoebaEnvironment.Paths.ConfigDirectoryPath, "View", nameof(StoreControl));
                 if (!Directory.Exists(configPath)) Directory.CreateDirectory(configPath);
 
                 _settings = new Settings(configPath);
@@ -415,7 +415,7 @@ namespace Amoeba.Interface
                 {
                     if (token.IsCancellationRequested) return;
 
-                    var message = _serviceManager.GetStore(storeInfo.AuthorSignature, CancellationToken.None).Result;
+                    var message = _amoebaInterfaceManager.GetStore(storeInfo.AuthorSignature, CancellationToken.None).Result;
                     if (message == null || storeInfo.UpdateTime == message.CreationTime) continue;
 
                     var tempBoxInfos = new List<StoreBoxInfo>();
@@ -463,10 +463,10 @@ namespace Amoeba.Interface
 
                 {
                     var cacheMetadatas = new HashSet<Metadata>();
-                    cacheMetadatas.UnionWith(_serviceManager.GetCacheContentReports().Select(n => n.Metadata));
+                    cacheMetadatas.UnionWith(_amoebaInterfaceManager.GetCacheContentReports().Select(n => n.Metadata));
 
                     var downloadingMetadatas = new HashSet<Metadata>();
-                    downloadingMetadatas.UnionWith(_serviceManager.GetDownloadContentReports().Select(n => n.Metadata));
+                    downloadingMetadatas.UnionWith(_amoebaInterfaceManager.GetDownloadContentReports().Select(n => n.Metadata));
 
                     var downloadedMetadatas = new HashSet<Metadata>();
                     downloadedMetadatas.UnionWith(SettingsManager.Instance.DownloadedSeeds.Select(n => n.Metadata));

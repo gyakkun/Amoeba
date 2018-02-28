@@ -8,7 +8,7 @@ using Omnius.Base;
 using Omnius.Collections;
 using Omnius.Configuration;
 using Omnius.Security;
-using Omnius.Utilities;
+using Omnius.Utils;
 
 namespace Amoeba.Service
 {
@@ -31,7 +31,7 @@ namespace Amoeba.Service
         private Random _random = new Random();
 
         private readonly object _lockObject = new object();
-        private volatile bool _disposed;
+        private volatile bool _isDisposed;
 
         public MessageManager(string configPath, CoreManager coreManager, BufferManager bufferManager)
         {
@@ -105,7 +105,7 @@ namespace Amoeba.Service
                 var result = new BroadcastMessage<Profile>(
                     broadcastMetadata.Certificate.GetSignature(),
                     broadcastMetadata.CreationTime,
-                    ContentConverter.FromStream<Profile>(stream));
+                    ContentConverter.FromStream<Profile>(stream, 0));
 
                 if (result.Value == null) return null;
 
@@ -138,7 +138,7 @@ namespace Amoeba.Service
                 var result = new BroadcastMessage<Store>(
                     broadcastMetadata.Certificate.GetSignature(),
                     broadcastMetadata.CreationTime,
-                    ContentConverter.FromStream<Store>(stream));
+                    ContentConverter.FromStream<Store>(stream, 0));
 
                 if (result.Value == null) return null;
 
@@ -148,10 +148,10 @@ namespace Amoeba.Service
             });
         }
 
-        public Task<IEnumerable<UnicastMessage<MailMessage>>> GetMailMessages(Signature signature, ExchangePrivateKey exchangePrivateKey)
+        public Task<IEnumerable<UnicastMessage<MailMessage>>> GetMailMessages(Signature signature, AgreementPrivateKey agreementPrivateKey)
         {
             if (signature == null) throw new ArgumentNullException(nameof(signature));
-            if (exchangePrivateKey == null) throw new ArgumentNullException(nameof(exchangePrivateKey));
+            if (agreementPrivateKey == null) throw new ArgumentNullException(nameof(agreementPrivateKey));
 
             return Task.Run(() =>
             {
@@ -191,7 +191,7 @@ namespace Amoeba.Service
                             unicastMetadata.Signature,
                             unicastMetadata.Certificate.GetSignature(),
                             unicastMetadata.CreationTime,
-                            ContentConverter.FromCryptoStream<MailMessage>(stream, exchangePrivateKey));
+                            ContentConverter.FromCryptoStream<MailMessage>(stream, agreementPrivateKey, 0));
 
                         if (result.Value == null) continue;
 
@@ -265,7 +265,7 @@ namespace Amoeba.Service
                             multicastMetadata.Certificate.GetSignature(),
                             multicastMetadata.CreationTime,
                             multicastMetadata.Cost,
-                            ContentConverter.FromStream<ChatMessage>(stream));
+                            ContentConverter.FromStream<ChatMessage>(stream, 0));
 
                         if (result.Value == null) continue;
 
@@ -284,7 +284,7 @@ namespace Amoeba.Service
             if (profile == null) throw new ArgumentNullException(nameof(profile));
             if (digitalSignature == null) throw new ArgumentNullException(nameof(digitalSignature));
 
-            return _coreManager.VolatileSetStream(ContentConverter.ToStream(profile), TimeSpan.FromDays(360), token)
+            return _coreManager.VolatileSetStream(ContentConverter.ToStream(profile, 0), TimeSpan.FromDays(360), token)
                 .ContinueWith(task =>
                 {
                     _coreManager.UploadMetadata(new BroadcastMetadata("Profile", DateTime.UtcNow, task.Result, digitalSignature));
@@ -296,20 +296,20 @@ namespace Amoeba.Service
             if (store == null) throw new ArgumentNullException(nameof(store));
             if (digitalSignature == null) throw new ArgumentNullException(nameof(digitalSignature));
 
-            return _coreManager.VolatileSetStream(ContentConverter.ToStream(store), TimeSpan.FromDays(360), token)
+            return _coreManager.VolatileSetStream(ContentConverter.ToStream(store, 0), TimeSpan.FromDays(360), token)
                 .ContinueWith(task =>
                 {
                     _coreManager.UploadMetadata(new BroadcastMetadata("Store", DateTime.UtcNow, task.Result, digitalSignature));
                 });
         }
 
-        public Task Upload(Signature targetSignature, MailMessage mailMessage, ExchangePublicKey exchangePublicKey, DigitalSignature digitalSignature, CancellationToken token)
+        public Task Upload(Signature targetSignature, MailMessage mailMessage, AgreementPublicKey agreementPublicKey, DigitalSignature digitalSignature, CancellationToken token)
         {
             if (targetSignature == null) throw new ArgumentNullException(nameof(targetSignature));
             if (mailMessage == null) throw new ArgumentNullException(nameof(mailMessage));
             if (digitalSignature == null) throw new ArgumentNullException(nameof(digitalSignature));
 
-            return _coreManager.VolatileSetStream(ContentConverter.ToCryptoStream(mailMessage, 1024 * 256, exchangePublicKey), TimeSpan.FromDays(360), token)
+            return _coreManager.VolatileSetStream(ContentConverter.ToCryptoStream(mailMessage, 1024 * 256, agreementPublicKey, 0), TimeSpan.FromDays(360), token)
                 .ContinueWith(task =>
                 {
                     _coreManager.UploadMetadata(new UnicastMetadata("MailMessage", targetSignature, DateTime.UtcNow, task.Result, digitalSignature));
@@ -322,7 +322,7 @@ namespace Amoeba.Service
             if (chatMessage == null) throw new ArgumentNullException(nameof(chatMessage));
             if (digitalSignature == null) throw new ArgumentNullException(nameof(digitalSignature));
 
-            return _coreManager.VolatileSetStream(ContentConverter.ToStream(chatMessage), TimeSpan.FromDays(360), token)
+            return _coreManager.VolatileSetStream(ContentConverter.ToStream(chatMessage, 0), TimeSpan.FromDays(360), token)
                 .ContinueWith(task =>
                 {
                     MulticastMetadata multicastMetadata;
@@ -375,8 +375,8 @@ namespace Amoeba.Service
 
         protected override void Dispose(bool disposing)
         {
-            if (_disposed) return;
-            _disposed = true;
+            if (_isDisposed) return;
+            _isDisposed = true;
 
             if (disposing)
             {

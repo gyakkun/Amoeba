@@ -11,7 +11,7 @@
     <OldToolsVersion>2.0</OldToolsVersion>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
-    <AssemblyVersion>2018.2.19.132</AssemblyVersion>
+    <AssemblyVersion>2018.2.28.184</AssemblyVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="System.Threading.Thread" Version="4.3.0" />
@@ -31,5 +31,5 @@
     <ProjectReference Include="..\Omnius\Omnius.Security\Omnius.Security.csproj" />
     <ProjectReference Include="..\Omnius\Omnius.Serialization\Omnius.Serialization.csproj" />
   </ItemGroup>
-  <Import Project="..\Omnius\Omnius.Utilities\Omnius.Utilities.projitems" Label="Shared" />
+  <Import Project="..\Omnius\Omnius.Utils\Omnius.Utils.projitems" Label="Shared" />
 </Project>

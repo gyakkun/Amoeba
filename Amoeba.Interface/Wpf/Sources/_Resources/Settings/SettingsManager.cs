@@ -1,9 +1,8 @@
-using System.ComponentModel;
+using Amoeba.Messages;
 using Omnius.Collections;
 using Omnius.Configuration;
-using Amoeba.Service;
 using Omnius.Security;
-using Amoeba.Messages;
+using System.ComponentModel;
 using System.Globalization;
 
 namespace Amoeba.Interface
@@ -19,7 +18,7 @@ namespace Amoeba.Interface
 
         private Settings _settings;
 
-        public static SettingsManager Instance { get; } = new SettingsManager(System.IO.Path.Combine(AmoebaEnvironment.Paths.ConfigPath, "View", "Settings"));
+        public static SettingsManager Instance { get; } = new SettingsManager(System.IO.Path.Combine(AmoebaEnvironment.Paths.ConfigDirectoryPath, "View", "Settings"));
 
         private SettingsManager(string configPath)
         {
@@ -39,12 +38,13 @@ namespace Amoeba.Interface
                 else
                 {
                     return "English";
-                }            });
+                }
+            });
             this.AccountInfo = _settings.Load(nameof(AccountInfo), () =>
             {
                 var info = new AccountInfo();
                 info.DigitalSignature = new DigitalSignature("Anonymous", DigitalSignatureAlgorithm.EcDsaP521_Sha256_v3);
-                info.Exchange = new Exchange(ExchangeAlgorithm.Rsa4096);
+                info.Agreement = new Agreement(AgreementAlgorithm.EcDhP521_Sha256);
 
                 return info;
             });

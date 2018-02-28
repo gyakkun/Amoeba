@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 using Omnius.Base;
 using Omnius.Security;
 using Omnius.Serialization;
-using Omnius.Utilities;
+using Omnius.Utils;
 
 namespace Amoeba.Messages
 {
@@ -22,7 +22,7 @@ namespace Amoeba.Messages
         [JsonConstructor]
         public Hash(HashAlgorithm algorithm, byte[] value)
         {
-            if (!Enum.IsDefined(typeof(HashAlgorithm), algorithm)) throw new ArgumentException(nameof(algorithm));
+            if (!EnumUtils.IsValid(algorithm)) throw new ArgumentException(nameof(algorithm));
             if (value == null) throw new ArgumentNullException(nameof(value));
             if (value.Length > Hash.MaxValueLength) throw new ArgumentOutOfRangeException(nameof(value));
 

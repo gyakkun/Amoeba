@@ -13,7 +13,7 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Threading;
 using Amoeba.Messages;
-using Amoeba.Service;
+using Amoeba.Rpc;
 using Omnius.Base;
 using Omnius.Collections;
 using Omnius.Configuration;
@@ -26,7 +26,7 @@ namespace Amoeba.Interface
 {
     class UploadControlViewModel : ManagerBase
     {
-        private ServiceManager _serviceManager;
+        private AmoebaInterfaceManager _amoebaInterfaceManager;
         private TaskManager _watchTaskManager;
         private TaskManager _uploadWatchTaskManager;
 
@@ -86,9 +86,9 @@ namespace Amoeba.Interface
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _isDisposed;
 
-        public UploadControlViewModel(ServiceManager serviceManager, DialogService dialogService)
+        public UploadControlViewModel(AmoebaInterfaceManager serviceManager, DialogService dialogService)
         {
-            _serviceManager = serviceManager;
+            _amoebaInterfaceManager = serviceManager;
             _dialogService = dialogService;
 
             this.Init();
@@ -225,7 +225,7 @@ namespace Amoeba.Interface
             }
 
             {
-                string configPath = Path.Combine(AmoebaEnvironment.Paths.ConfigPath, "View", nameof(UploadControl));
+                string configPath = Path.Combine(AmoebaEnvironment.Paths.ConfigDirectoryPath, "View", nameof(UploadControl));
                 if (!Directory.Exists(configPath)) Directory.CreateDirectory(configPath);
 
                 _settings = new Settings(configPath);
@@ -457,10 +457,10 @@ namespace Amoeba.Interface
             for (; ; )
             {
                 var cacheMetadatas = new HashSet<Metadata>();
-                cacheMetadatas.UnionWith(_serviceManager.GetCacheContentReports().Select(n => n.Metadata));
+                cacheMetadatas.UnionWith(_amoebaInterfaceManager.GetCacheContentReports().Select(n => n.Metadata));
 
                 var downloadingMetadatas = new HashSet<Metadata>();
-                downloadingMetadatas.UnionWith(_serviceManager.GetDownloadContentReports().Select(n => n.Metadata));
+                downloadingMetadatas.UnionWith(_amoebaInterfaceManager.GetDownloadContentReports().Select(n => n.Metadata));
 
                 var downloadedMetadatas = new HashSet<Metadata>();
                 downloadedMetadatas.UnionWith(SettingsManager.Instance.DownloadedSeeds.Select(n => n.Metadata));
@@ -531,7 +531,7 @@ namespace Amoeba.Interface
                 // Remove
                 {
                     var hashMap = new HashSet<string>();
-                    hashMap.UnionWith(_serviceManager.GetCacheContentReports().Select(n => n.Path));
+                    hashMap.UnionWith(_amoebaInterfaceManager.GetCacheContentReports().Select(n => n.Path));
                     hashMap.ExceptWith(targetUploadItemsInfo.Map.SelectMany(n => n.Value));
 
                     foreach (string path in hashMap)
@@ -539,7 +539,7 @@ namespace Amoeba.Interface
                         if (token.IsCancellationRequested) return;
                         if (targetUploadItemsInfo != _uploadItemsInfo) goto Start;
 
-                        _serviceManager.RemoveContent(path);
+                        _amoebaInterfaceManager.RemoveContent(path);
                     }
                 }
 
@@ -549,7 +549,7 @@ namespace Amoeba.Interface
                     {
                         var hashMap = new HashSet<string>();
                         hashMap.UnionWith(targetUploadItemsInfo.Map.SelectMany(n => n.Value));
-                        hashMap.ExceptWith(_serviceManager.GetCacheContentReports().Select(n => n.Path));
+                        hashMap.ExceptWith(_amoebaInterfaceManager.GetCacheContentReports().Select(n => n.Path));
 
                         sortedList.AddRange(hashMap);
                         sortedList.Sort((x, y) => x.CompareTo(y));
@@ -576,7 +576,7 @@ namespace Amoeba.Interface
 
                         try
                         {
-                            _serviceManager.AddContent(path, targetUploadItemsInfo.CreationTime, token).Wait();
+                            _amoebaInterfaceManager.AddContent(path, targetUploadItemsInfo.CreationTime, token).Wait();
                         }
                         catch (OperationCanceledException)
                         {
@@ -595,7 +595,7 @@ namespace Amoeba.Interface
                 {
                     var reportMap = new Dictionary<string, CacheContentReport>();
 
-                    foreach (var report in _serviceManager.GetCacheContentReports())
+                    foreach (var report in _amoebaInterfaceManager.GetCacheContentReports())
                     {
                         reportMap.Add(report.Path, report);
                     }
@@ -671,7 +671,7 @@ namespace Amoeba.Interface
                         store = StoreBuilder.Create(this.TabViewModel.Value.Model);
                     }, DispatcherPriority.Background, token);
 
-                    _serviceManager.SetStore(store, digitalSignature, token).Wait();
+                    _amoebaInterfaceManager.SetStore(store, digitalSignature, token).Wait();
 
                     App.Current.Dispatcher.Invoke(() =>
                     {
@@ -839,7 +839,7 @@ namespace Amoeba.Interface
                         addItems.Add(path, new FileInfo(path).Length);
                     }
 
-                    foreach (string path in _serviceManager.GetCacheContentReports().Select(n => n.Path))
+                    foreach (string path in _amoebaInterfaceManager.GetCacheContentReports().Select(n => n.Path))
                     {
                         addItems.Remove(path);
                     }
@@ -847,7 +847,7 @@ namespace Amoeba.Interface
 
                 var removeItems = new Dictionary<string, long>();
                 {
-                    foreach (var (path, length) in _serviceManager.GetCacheContentReports().Select(n => (n.Path, n.Length)))
+                    foreach (var (path, length) in _amoebaInterfaceManager.GetCacheContentReports().Select(n => (n.Path, n.Length)))
                     {
                         removeItems.Add(path, length);
                     }
@@ -1333,7 +1333,7 @@ namespace Amoeba.Interface
 
                 var tempMap = new Dictionary<Metadata, string>();
                 {
-                    foreach (var report in _serviceManager.GetCacheContentReports())
+                    foreach (var report in _amoebaInterfaceManager.GetCacheContentReports())
                     {
                         tempMap[report.Metadata] = report.Path;
                     }
@@ -1354,7 +1354,7 @@ namespace Amoeba.Interface
                 {
                     foreach (string path in pathList)
                     {
-                        _serviceManager.DiffuseContent(path);
+                        _amoebaInterfaceManager.DiffuseContent(path);
                     }
                 }
                 catch (Exception)

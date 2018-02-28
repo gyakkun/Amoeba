@@ -5,7 +5,7 @@ using Amoeba.Messages;
 using Omnius.Base;
 using Omnius.Security;
 using Omnius.Serialization;
-using Omnius.Utilities;
+using Omnius.Utils;
 
 namespace Amoeba.Service
 {

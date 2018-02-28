@@ -13,7 +13,7 @@ using Omnius.Io;
 using Omnius.Net;
 using Omnius.Security;
 using Omnius.Serialization;
-using Omnius.Utilities;
+using Omnius.Utils;
 
 namespace Amoeba.Service
 {
@@ -52,10 +52,12 @@ namespace Amoeba.Service
 
         private ManagerState _state = ManagerState.Stop;
 
+        private ReaderWriterLockManager _connectionLockManager = new ReaderWriterLockManager();
+
         private readonly object _lockObject = new object();
         private volatile bool _isDisposed;
 
-        private const int _maxLocationCount = 32;
+        private const int _maxLocationCount = 256;
         private const int _maxBlockLinkCount = 256;
         private const int _maxBlockRequestCount = 256;
         private const int _maxMetadataRequestCount = 256;
@@ -386,6 +388,7 @@ namespace Amoeba.Service
                 if (_connections.TryGetValue(connection, out var sessionInfo))
                 {
                     _connections.Remove(connection);
+
                     connection.Dispose();
 
                     var location = sessionInfo.Location;
@@ -906,21 +909,27 @@ namespace Amoeba.Service
                     {
                         int remain = (_config.BandwidthLimit != 0) ? _config.BandwidthLimit / _threadCount : int.MaxValue;
 
-                        foreach (var connection in _connections.Where(n => n.Value.ThreadId == threadId).Select(n => n.Key).Randomize())
+                        foreach (var (connection, sessionInfo) in _connections.Where(n => n.Value.ThreadId == threadId).Randomize())
                         {
                             try
                             {
-                                int count = connection.Send(Math.Min(remain, 1024 * 1024 * 4));
-                                _status.SentByteCount.Add(count);
+                                using (_connectionLockManager.ReadLock())
+                                {
+                                    int count = connection.Send(Math.Min(remain, 1024 * 1024 * 4));
+                                    _status.SentByteCount.Add(count);
 
-                                remain -= count;
-                                if (remain <= 0) break;
+                                    remain -= count;
+                                    if (remain <= 0) break;
+                                }
                             }
                             catch (Exception e)
                             {
                                 Debug.WriteLine(e);
 
-                                this.RemoveConnection(connection);
+                                using (_connectionLockManager.WriteLock())
+                                {
+                                    this.RemoveConnection(connection);
+                                }
                             }
                         }
                     }
@@ -954,21 +963,27 @@ namespace Amoeba.Service
                     {
                         int remain = (_config.BandwidthLimit != 0) ? _config.BandwidthLimit / _threadCount : int.MaxValue;
 
-                        foreach (var connection in _connections.Where(n => n.Value.ThreadId == threadId).Select(n => n.Key).Randomize())
+                        foreach (var (connection, sessionInfo) in _connections.Where(n => n.Value.ThreadId == threadId).Randomize())
                         {
                             try
                             {
-                                int count = connection.Receive(Math.Min(remain, 1024 * 1024 * 4));
-                                _status.ReceivedByteCount.Add(count);
+                                using (_connectionLockManager.ReadLock())
+                                {
+                                    int count = connection.Receive(Math.Min(remain, 1024 * 1024 * 4));
+                                    _status.ReceivedByteCount.Add(count);
 
-                                remain -= count;
-                                if (remain <= 0) break;
+                                    remain -= count;
+                                    if (remain <= 0) break;
+                                }
                             }
                             catch (Exception e)
                             {
                                 Debug.WriteLine(e);
 
-                                this.RemoveConnection(connection);
+                                using (_connectionLockManager.WriteLock())
+                                {
+                                    this.RemoveConnection(connection);
+                                }
                             }
                         }
                     }
@@ -1863,6 +1878,12 @@ namespace Amoeba.Service
                     taskManager.Dispose();
                 }
                 _receiveTaskManagers.Clear();
+
+                if (_connectionLockManager != null)
+                {
+                    _connectionLockManager.Dispose();
+                    _connectionLockManager = null;
+                }
             }
         }
     }

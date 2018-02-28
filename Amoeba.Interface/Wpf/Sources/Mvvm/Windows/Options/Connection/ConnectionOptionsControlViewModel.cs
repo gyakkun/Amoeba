@@ -7,7 +7,7 @@ using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Windows.Data;
 using Amoeba.Messages;
-using Amoeba.Service;
+using Amoeba.Rpc;
 using Omnius.Base;
 using Omnius.Configuration;
 using Omnius.Wpf;
@@ -149,7 +149,7 @@ namespace Amoeba.Interface
             }
 
             {
-                string configPath = Path.Combine(AmoebaEnvironment.Paths.ConfigPath, "View", nameof(ConnectionOptionsControl));
+                string configPath = Path.Combine(AmoebaEnvironment.Paths.ConfigDirectoryPath, "View", nameof(ConnectionOptionsControl));
                 if (!Directory.Exists(configPath)) Directory.CreateDirectory(configPath);
 
                 _settings = new Settings(configPath);

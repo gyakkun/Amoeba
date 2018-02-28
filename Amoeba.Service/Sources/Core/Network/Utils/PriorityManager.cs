@@ -13,7 +13,7 @@ namespace Amoeba.Service
 
             private Dictionary<DateTime, int> _table = new Dictionary<DateTime, int>();
 
-            private readonly ReaderWriterLockManager _lockManager = new ReaderWriterLockManager();
+            private readonly object _lockObject = new object();
 
             public PriorityManager(TimeSpan survivalTime)
             {
@@ -30,7 +30,7 @@ namespace Amoeba.Service
 
             public void Add(int value)
             {
-                using (_lockManager.WriteLock())
+                lock (_lockObject)
                 {
                     var now = DateTime.UtcNow;
 
@@ -40,7 +40,7 @@ namespace Amoeba.Service
 
             public int GetValue()
             {
-                using (_lockManager.ReadLock())
+                lock (_lockObject)
                 {
                     return _table.Sum(n => n.Value);
                 }
@@ -48,7 +48,7 @@ namespace Amoeba.Service
 
             public void Update()
             {
-                using (_lockManager.WriteLock())
+                lock (_lockObject)
                 {
                     var now = DateTime.UtcNow;
 

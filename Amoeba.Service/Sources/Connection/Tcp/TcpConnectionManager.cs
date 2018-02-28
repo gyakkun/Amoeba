@@ -9,7 +9,7 @@ using Omnius.Configuration;
 using Omnius.Net;
 using Omnius.Net.Proxy;
 using Omnius.Net.Upnp;
-using Omnius.Utilities;
+using Omnius.Utils;
 
 namespace Amoeba.Service
 {

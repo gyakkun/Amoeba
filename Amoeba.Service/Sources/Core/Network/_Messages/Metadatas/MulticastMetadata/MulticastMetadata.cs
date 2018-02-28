@@ -8,7 +8,7 @@ using Omnius.Base;
 using Omnius.Io;
 using Omnius.Security;
 using Omnius.Serialization;
-using Omnius.Utilities;
+using Omnius.Utils;
 
 namespace Amoeba.Service
 {

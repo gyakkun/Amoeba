@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Collections;
 using System.Linq;
-using Omnius.Utilities;
+using Omnius.Utils;
 using Omnius.Collections;
 using Omnius.Base;
 using System.Runtime.Serialization;

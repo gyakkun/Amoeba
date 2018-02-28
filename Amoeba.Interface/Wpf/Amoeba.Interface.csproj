@@ -20,7 +20,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\Core\</OutputPath>
+    <OutputPath>bin\Debug\Interface\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -32,7 +32,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\Core\</OutputPath>
+    <OutputPath>bin\Release\Interface\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -70,11 +70,12 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="Sources\App.xaml">
+    <Page Include="Sources\App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </ApplicationDefinition>
+    </Page>
     <Compile Include="Sources\Managers\MessageManager.cs" />
+    <Compile Include="Sources\Managers\SetupManager.cs" />
     <Compile Include="Sources\Managers\WatchManager.cs" />
     <Compile Include="Sources\Mvvm\Behaviors\TextEditorSelectedTextBlendBehavior.cs" />
     <Compile Include="Sources\Mvvm\Converters\ManagerStateToStringConverter.cs" />
@@ -110,10 +111,10 @@
     <Compile Include="Sources\Mvvm\Services\Backup.cs" />
     <Compile Include="Sources\Mvvm\Services\Clipboard.cs" />
     <Compile Include="Sources\Mvvm\Services\Clipboard.Monitor.cs" />
-    <Compile Include="Sources\Mvvm\Utilities\CustomSortComparer.cs" />
-    <Compile Include="Sources\Mvvm\Utilities\IconUtils.cs" />
-    <Compile Include="Sources\Mvvm\Utilities\JsonUtils.cs" />
-    <Compile Include="Sources\Mvvm\Utilities\MessageUtils.cs" />
+    <Compile Include="Sources\Mvvm\Utils\CustomSortComparer.cs" />
+    <Compile Include="Sources\Mvvm\Utils\IconUtils.cs" />
+    <Compile Include="Sources\Mvvm\Utils\JsonUtils.cs" />
+    <Compile Include="Sources\Mvvm\Utils\MessageUtils.cs" />
     <Compile Include="Sources\Mvvm\Windows\Main\Chat\ChatControl.xaml.cs">
       <DependentUpon>ChatControl.xaml</DependentUpon>
     </Compile>
@@ -238,6 +239,8 @@
       <DependentUpon>QuickSearchControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Sources\Mvvm\Windows\_Common\QuickSearch\QuickSearchControlViewModel.cs" />
+    <Compile Include="Sources\Program.cs" />
+    <Compile Include="Sources\Utils\UriUtils.cs" />
     <Compile Include="Sources\_Resources\Languages\_Generator\LanguagesManager.generated.cs">
       <DependentUpon>LanguagesManager.tt</DependentUpon>
       <DesignTime>True</DesignTime>
@@ -452,9 +455,9 @@
       <Project>{a06681c1-7f26-4078-bdd4-cbd7b1710d33}</Project>
       <Name>Amoeba.Messages</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Amoeba.Service\Amoeba.Service.csproj">
-      <Project>{170fcf7c-1245-4059-b2be-7bb863cf6d70}</Project>
-      <Name>Amoeba.Service</Name>
+    <ProjectReference Include="..\..\Amoeba.Rpc\Amoeba.Rpc.csproj">
+      <Project>{ed9027e5-4cc7-4882-a9cd-c76872e2af35}</Project>
+      <Name>Amoeba.Rpc</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Amoeba.Update\Wpf\Amoeba.Update.csproj">
       <Project>{7847434c-5101-4937-8c4e-b51d8415abd6}</Project>
@@ -537,7 +540,7 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup />
-  <Import Project="..\..\Omnius\Omnius.Utilities\Omnius.Utilities.projitems" Label="Shared" />
+  <Import Project="..\..\Omnius\Omnius.Utils\Omnius.Utils.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

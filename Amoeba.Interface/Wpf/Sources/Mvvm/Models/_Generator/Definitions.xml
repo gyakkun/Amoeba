@@ -15,7 +15,7 @@
     <Class Name="AccountInfo">
         <Property Type="DigitalSignature" Name="DigitalSignature" IsEditable="true" />
         <Property Type="string" Name="Comment" IsEditable="true" />
-        <Property Type="Exchange" Name="Exchange" IsEditable="true" />
+        <Property Type="Agreement" Name="Agreement" IsEditable="true" />
         <Property Type="ObservableCollection(Signature)" Name="TrustSignatures" />
         <Property Type="ObservableCollection(Signature)" Name="UntrustSignatures" />
         <Property Type="ObservableCollection(Tag)" Name="Tags" />

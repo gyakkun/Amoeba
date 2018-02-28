@@ -147,10 +147,8 @@ namespace Amoeba.Messages
                 {
                     throw new ArgumentException();
                 }
-                else
-                {
-                    _name = value;
-                }
+
+                _name = value;
             }
         }
 

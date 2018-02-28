@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows;
 using Amoeba.Messages;
-using Amoeba.Service;
+using Amoeba.Rpc;
 using Omnius.Base;
 using Omnius.Wpf;
 
@@ -15,7 +15,7 @@ namespace Amoeba.Interface
 {
     class WatchManager : ManagerBase
     {
-        private ServiceManager _serviceManager;
+        private AmoebaInterfaceManager _amoebaInterfaceManager;
 
         private DialogService _dialogService;
 
@@ -26,9 +26,9 @@ namespace Amoeba.Interface
         private readonly object _lockObject = new object();
         private volatile bool _isDisposed;
 
-        public WatchManager(ServiceManager serviceManager, DialogService dialogService)
+        public WatchManager(AmoebaInterfaceManager serviceManager, DialogService dialogService)
         {
-            _serviceManager = serviceManager;
+            _amoebaInterfaceManager = serviceManager;
             _dialogService = dialogService;
 
             this.Setting_ChechUpdate();
@@ -45,7 +45,7 @@ namespace Amoeba.Interface
                     var updateInfo = SettingsManager.Instance.UpdateInfo;
                     if (!updateInfo.IsEnabled) return;
 
-                    var store = _serviceManager.GetStore(updateInfo.Signature, CancellationToken.None).Result;
+                    var store = _amoebaInterfaceManager.GetStore(updateInfo.Signature, CancellationToken.None).Result;
                     if (store == null) return;
 
                     var updateBox = store.Value.Boxes.FirstOrDefault(n => n.Name == "Update")?.Boxes.FirstOrDefault(n => n.Name == "Windows");
@@ -79,7 +79,7 @@ namespace Amoeba.Interface
 
                     if (targetSeed == null) return;
 
-                    string fullPath = Path.GetFullPath(Path.Combine(AmoebaEnvironment.Paths.UpdatePath, targetSeed.Name));
+                    string fullPath = Path.GetFullPath(Path.Combine(AmoebaEnvironment.Paths.UpdateDirectoryPath, targetSeed.Name));
                     if (File.Exists(fullPath)) return;
 
                     var downloadItemInfo = new DownloadItemInfo(targetSeed, fullPath);
@@ -103,40 +103,26 @@ namespace Amoeba.Interface
 
                 try
                 {
-                    var paths = new List<string>();
-                    paths.Add(AmoebaEnvironment.Config.Cache.BlocksPath);
-
                     bool flag = false;
 
-                    foreach (string path in paths)
-                    {
-                        var drive = new DriveInfo(Path.GetFullPath(path));
-
-                        if (drive.AvailableFreeSpace < NetworkConverter.FromSizeString("256MB"))
-                        {
-                            flag |= true;
-                            break;
-                        }
-                    }
-
-                    if (_serviceManager.Report.Core.Cache.FreeSpace < NetworkConverter.FromSizeString("10GB"))
+                    if (_amoebaInterfaceManager.Report.Core.Cache.FreeSpace < NetworkConverter.FromSizeString("10GB"))
                     {
                         flag |= true;
                     }
 
                     if (!flag)
                     {
-                        if (_serviceManager.State == ManagerState.Stop)
+                        if (_amoebaInterfaceManager.State == ManagerState.Stop)
                         {
-                            _serviceManager.Start();
+                            _amoebaInterfaceManager.Start();
                             Log.Information("Start");
                         }
                     }
                     else
                     {
-                        if (_serviceManager.State == ManagerState.Start)
+                        if (_amoebaInterfaceManager.State == ManagerState.Start)
                         {
-                            _serviceManager.Stop();
+                            _amoebaInterfaceManager.Stop();
                             Log.Information("Stop");
 
                             watchFlag = false;

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 using Amoeba.Messages;
-using Amoeba.Service;
+using Amoeba.Rpc;
 
 namespace Amoeba.Interface
 {

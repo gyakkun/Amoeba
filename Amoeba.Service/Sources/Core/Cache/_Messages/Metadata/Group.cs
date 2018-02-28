@@ -6,7 +6,7 @@ using System.Runtime.Serialization;
 using Amoeba.Messages;
 using Omnius.Base;
 using Omnius.Serialization;
-using Omnius.Utilities;
+using Omnius.Utils;
 
 namespace Amoeba.Service
 {
@@ -134,14 +134,12 @@ namespace Amoeba.Service
             }
             private set
             {
-                if (!Enum.IsDefined(typeof(CorrectionAlgorithm), value))
+                if (!EnumUtils.IsValid(value))
                 {
                     throw new ArgumentException();
                 }
-                else
-                {
-                    _correctionAlgorithm = value;
-                }
+
+                _correctionAlgorithm = value;
             }
         }
 

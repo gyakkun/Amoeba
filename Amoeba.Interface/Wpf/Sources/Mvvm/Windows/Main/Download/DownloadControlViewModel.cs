@@ -10,7 +10,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Data;
 using Amoeba.Messages;
-using Amoeba.Service;
+using Amoeba.Rpc;
 using Omnius.Base;
 using Omnius.Configuration;
 using Omnius.Wpf;
@@ -21,7 +21,7 @@ namespace Amoeba.Interface
 {
     class DownloadControlViewModel : ManagerBase
     {
-        private ServiceManager _serviceManager;
+        private AmoebaInterfaceManager _amoebaInterfaceManager;
         private TaskManager _watchTaskManager;
 
         private Settings _settings;
@@ -46,9 +46,9 @@ namespace Amoeba.Interface
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _isDisposed;
 
-        public DownloadControlViewModel(ServiceManager serviceManager, DialogService dialogService)
+        public DownloadControlViewModel(AmoebaInterfaceManager serviceManager, DialogService dialogService)
         {
-            _serviceManager = serviceManager;
+            _amoebaInterfaceManager = serviceManager;
             _dialogService = dialogService;
 
             this.Init();
@@ -87,7 +87,7 @@ namespace Amoeba.Interface
             }
 
             {
-                string configPath = Path.Combine(AmoebaEnvironment.Paths.ConfigPath, "View", nameof(DownloadControl));
+                string configPath = Path.Combine(AmoebaEnvironment.Paths.ConfigDirectoryPath, "View", nameof(DownloadControl));
                 if (!Directory.Exists(configPath)) Directory.CreateDirectory(configPath);
 
                 _settings = new Settings(configPath);
@@ -132,7 +132,7 @@ namespace Amoeba.Interface
 
                 var map = new Dictionary<(Metadata, string), DownloadContentReport>(new CustomEqualityComparer());
 
-                foreach (var report in _serviceManager.GetDownloadContentReports())
+                foreach (var report in _amoebaInterfaceManager.GetDownloadContentReports())
                 {
                     map.Add((report.Metadata, report.Path), report);
                 }
@@ -141,7 +141,7 @@ namespace Amoeba.Interface
                 {
                     if (!map.TryGetValue((item.Seed.Metadata, item.Path), out var info))
                     {
-                        _serviceManager.AddDownload(item.Seed.Metadata, item.Path, item.Seed.Length);
+                        _amoebaInterfaceManager.AddDownload(item.Seed.Metadata, item.Path, item.Seed.Length);
                     }
                 }
 
@@ -149,7 +149,7 @@ namespace Amoeba.Interface
                 {
                     if (!downloadItemInfos.ContainsKey((metadata, path)))
                     {
-                        _serviceManager.RemoveDownload(metadata, path);
+                        _amoebaInterfaceManager.RemoveDownload(metadata, path);
                     }
                 }
 
@@ -337,7 +337,7 @@ namespace Amoeba.Interface
 
             foreach (var (metadata, path) in selectedItems)
             {
-                _serviceManager.ResetDownload(metadata, path);
+                _amoebaInterfaceManager.ResetDownload(metadata, path);
             }
         }
 
@@ -345,7 +345,7 @@ namespace Amoeba.Interface
         {
             var hashSet = new HashSet<(Metadata, string)>(new CustomEqualityComparer());
 
-            foreach (var report in _serviceManager.GetDownloadContentReports())
+            foreach (var report in _amoebaInterfaceManager.GetDownloadContentReports())
             {
                 if (report.State != DownloadState.Completed) continue;
                 hashSet.Add((report.Metadata, report.Path));

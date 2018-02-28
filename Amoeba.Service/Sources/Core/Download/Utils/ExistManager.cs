@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Amoeba.Messages;
 using Omnius.Base;
-using Omnius.Utilities;
+using Omnius.Utils;
 using Omnius.Collections;
 
 namespace Amoeba.Service

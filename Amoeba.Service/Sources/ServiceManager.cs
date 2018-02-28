@@ -140,7 +140,7 @@ namespace Amoeba.Service
             }
         }
 
-        public Task CheckBlocks(IProgress<CheckBlocksProgressReport> progress, CancellationToken token)
+        public Task CheckBlocks(Action<CheckBlocksProgressReport> progress, CancellationToken token)
         {
             this.Check();
 
@@ -230,13 +230,13 @@ namespace Amoeba.Service
             }
         }
 
-        public Task SetMailMessage(Signature targetSignature, MailMessage mailMessage, ExchangePublicKey exchangePublicKey, DigitalSignature digitalSignature, CancellationToken token)
+        public Task SetMailMessage(Signature targetSignature, MailMessage mailMessage, AgreementPublicKey agreementPublicKey, DigitalSignature digitalSignature, CancellationToken token)
         {
             this.Check();
 
             lock (_lockObject)
             {
-                return _messageManager.Upload(targetSignature, mailMessage, exchangePublicKey, digitalSignature, token);
+                return _messageManager.Upload(targetSignature, mailMessage, agreementPublicKey, digitalSignature, token);
             }
         }
 
@@ -270,13 +270,13 @@ namespace Amoeba.Service
             }
         }
 
-        public Task<IEnumerable<UnicastMessage<MailMessage>>> GetMailMessages(Signature signature, ExchangePrivateKey exchangePrivateKey, CancellationToken token)
+        public Task<IEnumerable<UnicastMessage<MailMessage>>> GetMailMessages(Signature signature, AgreementPrivateKey agreementPrivateKey, CancellationToken token)
         {
             this.Check();
 
             lock (_lockObject)
             {
-                return _messageManager.GetMailMessages(signature, exchangePrivateKey);
+                return _messageManager.GetMailMessages(signature, agreementPrivateKey);
             }
         }
 

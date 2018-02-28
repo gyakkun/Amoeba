@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Windows.Data;
 using Amoeba.Messages;
-using Amoeba.Service;
+using Amoeba.Rpc;
 
 namespace Amoeba.Interface
 {

@@ -28,9 +28,9 @@ namespace Amoeba.Interface
 #if DEBUG
             string path = @"C:\Local\Projects\Alliance-Network\Amoeba\Amoeba.Interface\Wpf\Resources\Languages";
 
-            if (!Directory.Exists(path)) path = AmoebaEnvironment.Paths.LanguagesPath;
+            if (!Directory.Exists(path)) path = AmoebaEnvironment.Paths.LanguagesDirectoryPath;
 #else
-            string path = AmoebaEnvironment.Paths.LanguagesPath;
+            string path = AmoebaEnvironment.Paths.LanguagesDirectoryPath;
 #endif
 
             this.Load(path);
@@ -70,7 +70,19 @@ namespace Amoeba.Interface
                 }
             }
 
-            if (CultureInfo.CurrentUICulture.Name == "ja-JP" && _dic.Keys.Any(n => n == "Japanese"))            {                this.SetCurrentLanguage("Japanese");            }            else if (CultureInfo.CurrentUICulture.Name == "zh-CN" && _dic.Keys.Any(n => n == "Chinese"))            {                this.SetCurrentLanguage("Chinese");            }            else if (_dic.Keys.Any(n => n == "English"))            {                this.SetCurrentLanguage("English");            }        }
+            if (CultureInfo.CurrentUICulture.Name == "ja-JP" && _dic.Keys.Any(n => n == "Japanese"))
+            {
+                this.SetCurrentLanguage("Japanese");
+            }
+            else if (CultureInfo.CurrentUICulture.Name == "zh-CN" && _dic.Keys.Any(n => n == "Chinese"))
+            {
+                this.SetCurrentLanguage("Chinese");
+            }
+            else if (_dic.Keys.Any(n => n == "English"))
+            {
+                this.SetCurrentLanguage("English");
+            }
+        }
 
         public IEnumerable<string> Languages
         {

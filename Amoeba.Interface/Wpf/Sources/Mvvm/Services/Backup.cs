@@ -8,10 +8,7 @@ namespace Amoeba.Interface
 
         public static Backup Instance { get; } = new Backup();
 
-        private Backup()
-        {
-
-        }
+        private Backup() { }
 
         public void Run()
         {

@@ -4,7 +4,7 @@ using System.IO;
 using System.Runtime.Serialization;
 using Omnius.Base;
 using Omnius.Serialization;
-using Omnius.Utilities;
+using Omnius.Utils;
 
 namespace Amoeba.Service
 {

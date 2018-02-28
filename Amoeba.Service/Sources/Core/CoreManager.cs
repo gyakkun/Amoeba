@@ -214,7 +214,7 @@ namespace Amoeba.Service
             });
         }
 
-        public Task CheckBlocks(IProgress<CheckBlocksProgressReport> progress, CancellationToken token)
+        public Task CheckBlocks(Action<CheckBlocksProgressReport> progress, CancellationToken token)
         {
             this.Check();
 

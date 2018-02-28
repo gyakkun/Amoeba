@@ -5,7 +5,7 @@ using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Threading;
 using Amoeba.Messages;
-using Amoeba.Service;
+using Amoeba.Rpc;
 using Omnius.Base;
 using Omnius.Configuration;
 using Omnius.Security;
@@ -18,7 +18,7 @@ namespace Amoeba.Interface
     class ChatMessageEditWindowViewModel : ManagerBase
     {
         private Tag _tag;
-        private ServiceManager _serviceManager;
+        private AmoebaInterfaceManager _amoebaInterfaceManager;
         private MessageManager _messageManager;
 
         private Settings _settings;
@@ -36,10 +36,10 @@ namespace Amoeba.Interface
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _isDisposed;
 
-        public ChatMessageEditWindowViewModel(Tag tag, string comment, ServiceManager serviceManager, MessageManager messageManager, CancellationToken token)
+        public ChatMessageEditWindowViewModel(Tag tag, string comment, AmoebaInterfaceManager serviceManager, MessageManager messageManager, CancellationToken token)
         {
             _tag = tag;
-            _serviceManager = serviceManager;
+            _amoebaInterfaceManager = serviceManager;
             _messageManager = messageManager;
             _token = token;
 
@@ -57,7 +57,7 @@ namespace Amoeba.Interface
             }
 
             {
-                string configPath = Path.Combine(AmoebaEnvironment.Paths.ConfigPath, "View", nameof(ChatMessageEditWindow));
+                string configPath = Path.Combine(AmoebaEnvironment.Paths.ConfigDirectoryPath, "View", nameof(ChatMessageEditWindow));
                 if (!Directory.Exists(configPath)) Directory.CreateDirectory(configPath);
 
                 _settings = new Settings(configPath);
@@ -87,7 +87,7 @@ namespace Amoeba.Interface
                 miningTime = TimeSpan.FromMinutes(3);
             }
 
-            _serviceManager.SetChatMessage(_tag, new ChatMessage(this.Comment.Value), SettingsManager.Instance.AccountInfo.DigitalSignature, miningTime, _token);
+            _amoebaInterfaceManager.SetChatMessage(_tag, new ChatMessage(this.Comment.Value), SettingsManager.Instance.AccountInfo.DigitalSignature, miningTime, _token);
 
             this.OnCloseEvent();
         }

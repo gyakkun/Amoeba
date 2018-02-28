@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Amoeba.Messages;
-using Amoeba.Service;
+using Amoeba.Rpc;
 using Omnius.Base;
 using Omnius.Collections;
 using Omnius.Configuration;
@@ -12,7 +12,7 @@ namespace Amoeba.Interface
 {
     class MessageManager : ManagerBase, ISettings
     {
-        private ServiceManager _serviceManager;
+        private AmoebaInterfaceManager _amoebaInterfaceManager;
 
         private Settings _settings;
 
@@ -25,9 +25,9 @@ namespace Amoeba.Interface
         private readonly object _lockObject = new object();
         private volatile bool _isDisposed;
 
-        public MessageManager(string configPath, ServiceManager serviceManager)
+        public MessageManager(string configPath, AmoebaInterfaceManager serviceManager)
         {
-            _serviceManager = serviceManager;
+            _amoebaInterfaceManager = serviceManager;
 
             _settings = new Settings(configPath);
 
@@ -111,10 +111,10 @@ namespace Amoeba.Interface
 
             searchSignatures.Add(SettingsManager.Instance.AccountInfo.DigitalSignature.GetSignature());
 
-            lock (_serviceManager.LockObject)
+            lock (_amoebaInterfaceManager.LockObject)
             {
-                var oldConfig = _serviceManager.Config;
-                _serviceManager.SetConfig(new ServiceConfig(oldConfig.Core, oldConfig.Connection, new MessageConfig(searchSignatures)));
+                var oldConfig = _amoebaInterfaceManager.Config;
+                _amoebaInterfaceManager.SetConfig(new ServiceConfig(oldConfig.Core, oldConfig.Connection, new MessageConfig(searchSignatures)));
             }
         }
 
@@ -124,7 +124,7 @@ namespace Amoeba.Interface
 
             foreach (var trustSignature in trustSignatures)
             {
-                var profile = _serviceManager.GetProfile(trustSignature, CancellationToken.None).Result;
+                var profile = _amoebaInterfaceManager.GetProfile(trustSignature, CancellationToken.None).Result;
 
                 if (profile == null)
                 {
@@ -157,7 +157,7 @@ namespace Amoeba.Interface
 
             foreach (var trustSignature in _trustSignatures)
             {
-                var store = _serviceManager.GetStore(trustSignature, CancellationToken.None).Result;
+                var store = _amoebaInterfaceManager.GetStore(trustSignature, CancellationToken.None).Result;
 
                 if (store == null)
                 {

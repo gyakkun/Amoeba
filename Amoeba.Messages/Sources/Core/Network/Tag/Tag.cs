@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 using Omnius.Base;
 using Omnius.Security;
 using Omnius.Serialization;
-using Omnius.Utilities;
+using Omnius.Utils;
 
 namespace Amoeba.Messages
 {
@@ -130,10 +130,8 @@ namespace Amoeba.Messages
                 {
                     throw new ArgumentException();
                 }
-                else
-                {
-                    _name = value;
-                }
+
+                _name = value;
             }
         }
 
@@ -150,10 +148,8 @@ namespace Amoeba.Messages
                 {
                     throw new ArgumentException();
                 }
-                else
-                {
-                    _id = value;
-                }
+
+                _id = value;
             }
         }
 

@@ -14,30 +14,54 @@
 
         public void Increment()
         {
-            App.Current.Dispatcher.Invoke(() =>
+            if (App.Current.Dispatcher.CheckAccess())
+            {
+                Function();
+            }
+            else
+            {
+                App.Current.Dispatcher.Invoke(() =>
+                {
+                    Function();
+                });
+            }
+
+            void Function()
             {
                 lock (_lockObject)
                 {
                     var viewModel = App.Current.MainWindow.DataContext as MainWindowViewModel;
 
                     _value++;
-                    viewModel.IsProgressDialogOpen.Value = true;
+                    viewModel.IsProgressDialogOpen.Value = (_value > 0);
                 }
-            });
+            }
         }
 
         public void Decrement()
         {
-            App.Current.Dispatcher.Invoke(() =>
+            if (App.Current.Dispatcher.CheckAccess())
+            {
+                Function();
+            }
+            else
+            {
+                App.Current.Dispatcher.Invoke(() =>
+                {
+                    Function();
+                });
+            }
+
+            void Function()
             {
                 lock (_lockObject)
                 {
                     var viewModel = App.Current.MainWindow.DataContext as MainWindowViewModel;
 
                     _value--;
-                    viewModel.IsProgressDialogOpen.Value = (_value != 0);
+                    viewModel.IsProgressDialogOpen.Value = (_value > 0);
                 }
-            });
+            }
         }
 
         public int Value

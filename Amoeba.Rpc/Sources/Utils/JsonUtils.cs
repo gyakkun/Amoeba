@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.Serialization;
 using System.Text;
 using Newtonsoft.Json;
@@ -9,13 +11,13 @@ using Newtonsoft.Json.Serialization;
 using Omnius.Base;
 using Omnius.Io;
 
-namespace Amoeba.Interface
+namespace Amoeba.Rpc
 {
     static class JsonUtils
     {
         public static T Clone<T>(T item)
         {
-            using (var stream = new BufferStream(BufferManager.Instance))
+            using (var stream = new RecyclableMemoryStream(BufferManager.Instance))
             {
                 JsonUtils.Save(stream, item);
                 stream.Seek(0, SeekOrigin.Begin);
@@ -28,7 +30,7 @@ namespace Amoeba.Interface
         {
             try
             {
-                using (var streamReader = new StreamReader(new WrapperStream(stream, true), new UTF8Encoding(false)))
+                using (var streamReader = new StreamReader(new WrapperStream(stream), new UTF8Encoding(false)))
                 using (var jsonTextReader = new JsonTextReader(streamReader))
                 {
                     var serializer = new JsonSerializer();
@@ -47,14 +49,14 @@ namespace Amoeba.Interface
                 Log.Warning(e);
             }
 
-            return default(T);
+            return default;
         }
 
         public static void Save<T>(Stream stream, T value)
         {
             try
             {
-                using (var streamWriter = new StreamWriter(new WrapperStream(stream, true), new UTF8Encoding(false)))
+                using (var streamWriter = new StreamWriter(new WrapperStream(stream), new UTF8Encoding(false)))
                 using (var jsonTextWriter = new JsonTextWriter(streamWriter))
                 {
                     var serializer = new JsonSerializer();

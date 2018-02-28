@@ -2,26 +2,38 @@ using System;
 using System.Runtime.Serialization;
 using Omnius.Base;
 using Omnius.Security;
-using Omnius.Utilities;
+using Omnius.Utils;
 
 namespace Amoeba.Service
 {
     partial class NetworkManager
     {
-        [DataContract(Name = nameof(Node<T>))]
-        struct Node<T> : IEquatable<Node<T>>
+        private readonly struct Node<T> : IEquatable<Node<T>>
         {
+            private readonly byte[] _id;
+            private readonly T _value;
+
             public Node(byte[] id, T value)
             {
-                this.Id = id;
-                this.Value = value;
+                _id = id;
+                _value = value;
             }
 
-            [DataMember(Name = nameof(Id))]
-            public byte[] Id { get; private set; }
+            public byte[] Id
+            {
+                get
+                {
+                    return _id;
+                }
+            }
 
-            [DataMember(Name = nameof(Value))]
-            public T Value { get; private set; }
+            public T Value
+            {
+                get
+                {
+                    return _value;
+                }
+            }
 
             public static bool operator ==(Node<T> x, Node<T> y)
             {

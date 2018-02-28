@@ -10,7 +10,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
 using Amoeba.Messages;
-using Amoeba.Service;
+using Amoeba.Rpc;
 using Omnius.Base;
 using Omnius.Configuration;
 using Omnius.Security;
@@ -22,7 +22,7 @@ namespace Amoeba.Interface
 {
     class ChatControlViewModel : ManagerBase
     {
-        private ServiceManager _serviceManager;
+        private AmoebaInterfaceManager _amoebaInterfaceManager;
         private MessageManager _messageManager;
         private TaskManager _watchTaskManager;
         private CancellationTokenSource _tokenSource = new CancellationTokenSource();
@@ -66,9 +66,9 @@ namespace Amoeba.Interface
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _isDisposed;
 
-        public ChatControlViewModel(ServiceManager serviceManager, MessageManager messageManager, DialogService dialogService)
+        public ChatControlViewModel(AmoebaInterfaceManager serviceManager, MessageManager messageManager, DialogService dialogService)
         {
-            _serviceManager = serviceManager;
+            _amoebaInterfaceManager = serviceManager;
             _messageManager = messageManager;
             _dialogService = dialogService;
 
@@ -163,7 +163,7 @@ namespace Amoeba.Interface
             }
 
             {
-                string configPath = Path.Combine(AmoebaEnvironment.Paths.ConfigPath, "View", nameof(ChatControl));
+                string configPath = Path.Combine(AmoebaEnvironment.Paths.ConfigDirectoryPath, "View", nameof(ChatControl));
                 if (!Directory.Exists(configPath)) Directory.CreateDirectory(configPath);
 
                 _settings = new Settings(configPath);
@@ -272,7 +272,7 @@ namespace Amoeba.Interface
                 {
                     if (token.IsCancellationRequested) return;
 
-                    var newMessages = new HashSet<MulticastMessage<ChatMessage>>(_serviceManager.GetChatMessages(chatThreadViewModel.Model.Tag, CancellationToken.None).Result);
+                    var newMessages = new HashSet<MulticastMessage<ChatMessage>>(_amoebaInterfaceManager.GetChatMessages(chatThreadViewModel.Model.Tag, CancellationToken.None).Result);
 
                     lock (chatThreadViewModel.Model.Messages.LockObject)
                     {
@@ -505,7 +505,7 @@ namespace Amoeba.Interface
                 sb.AppendLine(">> " + line);
             }
 
-            var viewModel = new ChatMessageEditWindowViewModel(chatViewModel.Model.Tag, sb.ToString(), _serviceManager, _messageManager, _tokenSource.Token);
+            var viewModel = new ChatMessageEditWindowViewModel(chatViewModel.Model.Tag, sb.ToString(), _amoebaInterfaceManager, _messageManager, _tokenSource.Token);
 
             _dialogService.ShowDialog(viewModel);
         }
@@ -515,7 +515,7 @@ namespace Amoeba.Interface
             var chatViewModel = this.TabSelectedItem.Value as ChatThreadViewModel;
             if (chatViewModel == null) return;
 
-            var viewModel = new ChatMessageEditWindowViewModel(chatViewModel.Model.Tag, "", _serviceManager, _messageManager, _tokenSource.Token);
+            var viewModel = new ChatMessageEditWindowViewModel(chatViewModel.Model.Tag, "", _amoebaInterfaceManager, _messageManager, _tokenSource.Token);
 
             _dialogService.ShowDialog(viewModel);
         }

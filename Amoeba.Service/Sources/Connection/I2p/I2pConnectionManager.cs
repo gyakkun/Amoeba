@@ -5,7 +5,7 @@ using Omnius.Base;
 using Omnius.Configuration;
 using Omnius.Net;
 using Omnius.Net.I2p;
-using Omnius.Utilities;
+using Omnius.Utils;
 
 namespace Amoeba.Service
 {

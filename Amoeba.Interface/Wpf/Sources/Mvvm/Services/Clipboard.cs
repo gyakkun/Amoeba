@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Amoeba.Messages;
+using Omnius.Base;
 using Omnius.Security;
 
 namespace Amoeba.Interface
@@ -17,15 +18,29 @@ namespace Amoeba.Interface
         {
             App.Current.MainWindow.Loaded += (sender, e) =>
             {
-                _monitor = new Monitor(App.Current.MainWindow);
-                _monitor.ClipboardChanged += Listener;
+                try
+                {
+                    _monitor = new Monitor(App.Current.MainWindow);
+                    _monitor.ClipboardChanged += Listener;
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex);
+                }
             };
 
             App.Current.Exit += (sender, e) =>
             {
-                _monitor.ClipboardChanged -= Listener;
-                _monitor.Dispose();
-                _monitor = null;
+                try
+                {
+                    _monitor.ClipboardChanged -= Listener;
+                    _monitor.Dispose();
+                    _monitor = null;
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex);
+                }
             };
 
             void Listener(object sender, EventArgs e)
@@ -49,7 +64,9 @@ namespace Amoeba.Interface
             catch (Exception)
             {
                 if (stream != null)
+                {
                     stream.Dispose();
+                }
             }
 
             return stream;

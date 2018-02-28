@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Threading;
@@ -11,11 +12,11 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 using Amoeba.Messages;
-using Amoeba.Service;
+using Amoeba.Rpc;
 using Omnius.Base;
 using Omnius.Configuration;
 using Omnius.Security;
-using Omnius.Utilities;
+using Omnius.Utils;
 using Omnius.Wpf;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
@@ -24,7 +25,7 @@ namespace Amoeba.Interface
 {
     class MainWindowViewModel : ManagerBase
     {
-        private ServiceManager _serviceManager;
+        private AmoebaInterfaceManager _amoebaInterfaceManager;
         private MessageManager _messageManager;
         private WatchManager _watchManager;
 
@@ -77,27 +78,33 @@ namespace Amoeba.Interface
             LanguagesManager.Instance.SetCurrentLanguage(SettingsManager.Instance.UseLanguage);
 
             {
-                string configPath = Path.Combine(AmoebaEnvironment.Paths.ConfigPath, "Service");
+                string configPath = Path.Combine(AmoebaEnvironment.Paths.ConfigDirectoryPath, "Service");
                 if (!Directory.Exists(configPath)) Directory.CreateDirectory(configPath);
 
-                _serviceManager = new ServiceManager(configPath, AmoebaEnvironment.Config.Cache.BlocksPath, BufferManager.Instance);
-                _serviceManager.Load();
-
-                if (_serviceManager.Config.Core.Download.BasePath == null)
+                _amoebaInterfaceManager = new AmoebaInterfaceManager();
                 {
-                    lock (_serviceManager.LockObject)
+                    var info = UriUtils.Parse(AmoebaEnvironment.Config.Communication.TargetUri);
+                    var endpoint = new IPEndPoint(IPAddress.Parse(info.GetValue<string>("Address")), info.GetValue<int>("Port"));
+
+                    _amoebaInterfaceManager.Connect(endpoint, CancellationToken.None);
+                    _amoebaInterfaceManager.Load();
+                }
+
+                if (_amoebaInterfaceManager.Config.Core.Download.BasePath == null)
+                {
+                    lock (_amoebaInterfaceManager.LockObject)
                     {
-                        var oldConfig = _serviceManager.Config;
-                        _serviceManager.SetConfig(new ServiceConfig(new CoreConfig(oldConfig.Core.Network, new DownloadConfig(AmoebaEnvironment.Paths.DownloadsPath, oldConfig.Core.Download.ProtectedPercentage)), oldConfig.Connection, oldConfig.Message));
+                        var oldConfig = _amoebaInterfaceManager.Config;
+                        _amoebaInterfaceManager.SetConfig(new ServiceConfig(new CoreConfig(oldConfig.Core.Network, new DownloadConfig(AmoebaEnvironment.Paths.DownloadsDirectoryPath, oldConfig.Core.Download.ProtectedPercentage)), oldConfig.Connection, oldConfig.Message));
                     }
                 }
             }
 
             {
-                string configPath = Path.Combine(AmoebaEnvironment.Paths.ConfigPath, "Control", "Message");
+                string configPath = Path.Combine(AmoebaEnvironment.Paths.ConfigDirectoryPath, "Control", "Message");
                 if (!Directory.Exists(configPath)) Directory.CreateDirectory(configPath);
 
-                _messageManager = new MessageManager(configPath, _serviceManager);
+                _messageManager = new MessageManager(configPath, _amoebaInterfaceManager);
                 _messageManager.Load();
             }
 
@@ -132,7 +139,7 @@ namespace Amoeba.Interface
             }
 
             {
-                string configPath = Path.Combine(AmoebaEnvironment.Paths.ConfigPath, "View", "MainWindow");
+                string configPath = Path.Combine(AmoebaEnvironment.Paths.ConfigDirectoryPath, "View", "MainWindow");
                 if (!Directory.Exists(configPath)) Directory.CreateDirectory(configPath);
 
                 _settings = new Settings(configPath);
@@ -143,17 +150,17 @@ namespace Amoeba.Interface
             }
 
             {
-                this.CloudControlViewModel = new CloudControlViewModel(_serviceManager, _dialogService);
-                this.ChatControlViewModel = new ChatControlViewModel(_serviceManager, _messageManager, _dialogService);
-                this.StoreControlViewModel = new StoreControlViewModel(_serviceManager, _dialogService);
-                this.StorePublishControlViewModel = new UploadControlViewModel(_serviceManager, _dialogService);
-                this.SearchControlViewModel = new SearchControlViewModel(_serviceManager, _messageManager, _dialogService);
-                this.DownloadControlViewModel = new DownloadControlViewModel(_serviceManager, _dialogService);
-                this.UploadControlViewModel = new UploadControlViewModel(_serviceManager, _dialogService);
+                this.CloudControlViewModel = new CloudControlViewModel(_amoebaInterfaceManager, _dialogService);
+                this.ChatControlViewModel = new ChatControlViewModel(_amoebaInterfaceManager, _messageManager, _dialogService);
+                this.StoreControlViewModel = new StoreControlViewModel(_amoebaInterfaceManager, _dialogService);
+                this.StorePublishControlViewModel = new UploadControlViewModel(_amoebaInterfaceManager, _dialogService);
+                this.SearchControlViewModel = new SearchControlViewModel(_amoebaInterfaceManager, _messageManager, _dialogService);
+                this.DownloadControlViewModel = new DownloadControlViewModel(_amoebaInterfaceManager, _dialogService);
+                this.UploadControlViewModel = new UploadControlViewModel(_amoebaInterfaceManager, _dialogService);
             }
 
             {
-                _watchManager = new WatchManager(_serviceManager, _dialogService);
+                _watchManager = new WatchManager(_amoebaInterfaceManager, _dialogService);
             }
 
             {
@@ -191,7 +198,7 @@ namespace Amoeba.Interface
                 {
                     if (token.WaitHandle.WaitOne(500)) return;
 
-                    var state = _serviceManager.State;
+                    var state = _amoebaInterfaceManager.State;
 
                     App.Current.Dispatcher.Invoke(DispatcherPriority.Send, new TimeSpan(0, 0, 1), new Action(() =>
                     {
@@ -241,8 +248,8 @@ namespace Amoeba.Interface
                     Thread.Sleep(((int)Math.Max(2, 1000 - sw.ElapsedMilliseconds)) / 2);
                     if (sw.ElapsedMilliseconds < 1000) continue;
 
-                    long receivedByteCount = _serviceManager.Report.Core.Network.TotalReceivedByteCount;
-                    long sentByteCount = _serviceManager.Report.Core.Network.TotalSentByteCount;
+                    long receivedByteCount = _amoebaInterfaceManager.Report.Core.Network.TotalReceivedByteCount;
+                    long sentByteCount = _amoebaInterfaceManager.Report.Core.Network.TotalSentByteCount;
 
                     lock (_sentInfomation.LockObject)
                     {
@@ -293,7 +300,7 @@ namespace Amoeba.Interface
 
             Task.Run(() =>
             {
-                var options = OptionsUtils.GetOptions(_serviceManager);
+                var options = OptionsUtils.GetOptions(_amoebaInterfaceManager);
 
                 ProgressDialog.Instance.Decrement();
 
@@ -306,7 +313,7 @@ namespace Amoeba.Interface
 
                         Task.Run(() =>
                         {
-                            OptionsUtils.SetOptions(result, _serviceManager, _dialogService);
+                            OptionsUtils.SetOptions(result, _amoebaInterfaceManager, _dialogService);
 
                             ProgressDialog.Instance.Decrement();
                         });
@@ -320,7 +327,7 @@ namespace Amoeba.Interface
 
         private static class OptionsUtils
         {
-            public static OptionsInfo GetOptions(ServiceManager serviceManager)
+            public static OptionsInfo GetOptions(AmoebaInterfaceManager serviceManager)
             {
                 var options = new OptionsInfo();
 
@@ -402,11 +409,11 @@ namespace Amoeba.Interface
                 return options;
             }
 
-            public static void SetOptions(OptionsInfo options, ServiceManager serviceManager, DialogService dialogService)
+            public static void SetOptions(OptionsInfo options, AmoebaInterfaceManager serviceManager, DialogService dialogService)
             {
                 {
                     bool uploadFlag = false;
-                    Exchange exchange = null;
+                    Agreement agreement = null;
 
                     App.Current.Dispatcher.Invoke(new Action(async () =>
                     {
@@ -416,11 +423,10 @@ namespace Amoeba.Interface
 
                             if (info.DigitalSignature != options.Account.DigitalSignature)
                             {
-                                await Task.Run(() =>
-                                {
-                                    exchange = new Exchange(ExchangeAlgorithm.Rsa4096);
-                                });
+                                info.Agreement = await Task.Run(() => new Agreement(AgreementAlgorithm.EcDhP521_Sha256));
                             }
+
+                            agreement = info.Agreement;
 
                             if (info.DigitalSignature != options.Account.DigitalSignature
                                 || info.Comment != options.Account.Comment
@@ -431,7 +437,6 @@ namespace Amoeba.Interface
                                 uploadFlag = true;
                             }
 
-                            info.Exchange = exchange;
                             info.DigitalSignature = options.Account.DigitalSignature;
                             info.Comment = options.Account.Comment;
                             info.TrustSignatures.Clear();
@@ -458,25 +463,21 @@ namespace Amoeba.Interface
 
                     if (uploadFlag)
                     {
-                        ProgressDialog.Instance.Increment();
-
-                        var task = serviceManager.SetProfile(
-                            new Profile(options.Account.Comment,
-                                exchange.GetExchangePublicKey(),
-                                options.Account.TrustSignatures,
-                                options.Account.UntrustSignatures,
-                                options.Account.Tags),
-                            options.Account.DigitalSignature,
-                            CancellationToken.None);
-
-                        task.ContinueWith((_) =>
+                        Task.Run(() =>
                         {
-                            ProgressDialog.Instance.Decrement();
+                            serviceManager.SetProfile(
+                                new Profile(options.Account.Comment,
+                                    agreement.GetAgreementPublicKey(),
+                                    options.Account.TrustSignatures,
+                                    options.Account.UntrustSignatures,
+                                    options.Account.Tags),
+                                options.Account.DigitalSignature,
+                                CancellationToken.None);
                         });
                     }
                 }
 
-                // ServiceManager
+                // AmoebaInterfaceManager
                 {
                     ServiceConfig serviceConfig;
                     {
@@ -554,7 +555,7 @@ namespace Amoeba.Interface
                     serviceManager.SetConfig(serviceConfig);
                 }
 
-                // ServiceManager (Resize)
+                // AmoebaInterfaceManager (Resize)
                 {
                     long orginalCacheSize = serviceManager.Size;
 
@@ -595,7 +596,7 @@ namespace Amoeba.Interface
             if (_isRunning_CheckBlocks) return;
             _isRunning_CheckBlocks = true;
 
-            var viewModel = new CheckBlocksWindowViewModel(_serviceManager);
+            var viewModel = new CheckBlocksWindowViewModel(_amoebaInterfaceManager);
             viewModel.CloseEvent += (sender, e) => _isRunning_CheckBlocks = false;
 
             _dialogService.Show(viewModel);
@@ -622,7 +623,7 @@ namespace Amoeba.Interface
 
             _messageManager.Save();
 
-            _serviceManager.Save();
+            _amoebaInterfaceManager.Save();
 
             SettingsManager.Instance.UseLanguage = LanguagesManager.Instance.CurrentLanguage;
             SettingsManager.Instance.Save();
@@ -645,7 +646,7 @@ namespace Amoeba.Interface
                 _trafficMonitorTaskManager.Stop();
                 _trafficMonitorTaskManager.Dispose();
 
-                _serviceManager.Stop();
+                _amoebaInterfaceManager.Stop();
 
                 this.Save();
 
@@ -661,7 +662,7 @@ namespace Amoeba.Interface
 
                 _messageManager.Dispose();
 
-                _serviceManager.Dispose();
+                _amoebaInterfaceManager.Dispose();
             }
         }
     }

@@ -10,10 +10,10 @@ using System.Text;
 using System.Threading;
 using System.Windows.Data;
 using Amoeba.Messages;
-using Amoeba.Service;
+using Amoeba.Rpc;
 using Omnius.Base;
 using Omnius.Configuration;
-using Omnius.Utilities;
+using Omnius.Utils;
 using Omnius.Wpf;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
@@ -22,7 +22,7 @@ namespace Amoeba.Interface
 {
     class CloudControlViewModel : ManagerBase
     {
-        private ServiceManager _serviceManager;
+        private AmoebaInterfaceManager _amoebaInterfaceManager;
         private TaskManager _watchTaskManager;
 
         private Settings _settings;
@@ -54,9 +54,9 @@ namespace Amoeba.Interface
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _isDisposed;
 
-        public CloudControlViewModel(ServiceManager serviceManager, DialogService dialogService)
+        public CloudControlViewModel(AmoebaInterfaceManager serviceManager, DialogService dialogService)
         {
-            _serviceManager = serviceManager;
+            _amoebaInterfaceManager = serviceManager;
             _dialogService = dialogService;
 
             this.Init();
@@ -85,7 +85,7 @@ namespace Amoeba.Interface
             }
 
             {
-                string configPath = Path.Combine(AmoebaEnvironment.Paths.ConfigPath, "View", nameof(CloudControl));
+                string configPath = Path.Combine(AmoebaEnvironment.Paths.ConfigDirectoryPath, "View", nameof(CloudControl));
                 if (!Directory.Exists(configPath)) Directory.CreateDirectory(configPath);
 
                 _settings = new Settings(configPath);
@@ -134,7 +134,7 @@ namespace Amoeba.Interface
                 {
                     var dic = new Dictionary<byte[], NetworkConnectionReport>(new ByteArrayEqualityComparer());
 
-                    foreach (var report in _serviceManager.GetNetworkConnectionReports())
+                    foreach (var report in _amoebaInterfaceManager.GetNetworkConnectionReports())
                     {
                         dic.Add(report.Id, report);
                     }
@@ -172,7 +172,7 @@ namespace Amoeba.Interface
                 }
 
                 {
-                    var location = _serviceManager.Report.Core.Network.MyLocation;
+                    var location = _amoebaInterfaceManager.Report.Core.Network.MyLocation;
 
                     App.Current.Dispatcher.InvokeAsync(() =>
                     {
@@ -190,7 +190,7 @@ namespace Amoeba.Interface
                 }
 
                 {
-                    var serviceReport = _serviceManager.Report;
+                    var serviceReport = _amoebaInterfaceManager.Report;
 
                     var tempList = new List<(string, object)>();
                     {
@@ -331,7 +331,7 @@ namespace Amoeba.Interface
 
         private void ConnectionPaste()
         {
-            _serviceManager.SetCloudLocations(Clipboard.GetLocations());
+            _amoebaInterfaceManager.SetCloudLocations(Clipboard.GetLocations());
         }
 
         private void Setting_Log()

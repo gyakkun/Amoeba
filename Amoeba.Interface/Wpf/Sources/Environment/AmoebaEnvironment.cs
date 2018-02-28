@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Runtime.Serialization;
 using System.Windows;
 using System.Windows.Media.Imaging;
 using Nett;
@@ -14,13 +15,13 @@ namespace Amoeba.Interface
         public static EnvironmentIcons Icons { get; private set; }
         public static EnvironmentImages Images { get; private set; }
 
-        public static EnvironmentConfig Config { get; private set; }
+        public static InterfaceConfig Config { get; private set; }
 
         static AmoebaEnvironment()
         {
             try
             {
-                Version = new Version(5, 0, 63);
+                Version = new Version(5, 1, 0);
                 Paths = new EnvironmentPaths();
                 Icons = new EnvironmentIcons();
                 Images = new EnvironmentImages();
@@ -35,7 +36,7 @@ namespace Amoeba.Interface
 
         private static void LoadConfig()
         {
-            string configPath = Path.Combine(Paths.ConfigPath, "Config.toml");
+            string configPath = Path.Combine(Paths.ConfigDirectoryPath, "Interface.toml");
 
             var tomlSettings = TomlSettings.Create(builder => builder
                 .ConfigureType<Version>(type => type
@@ -43,43 +44,45 @@ namespace Amoeba.Interface
                         .ToToml(tt => tt.ToString())
                         .FromToml(ft => Version.Parse(ft.Value)))));
 
-            var oldConfig = File.Exists(configPath) ? Toml.ReadFile<EnvironmentConfig>(configPath, tomlSettings) : null;
+            var oldConfig = File.Exists(configPath) ? Toml.ReadFile<InterfaceConfig>(configPath, tomlSettings) : null;
 
             var version = oldConfig?.Version ?? AmoebaEnvironment.Version;
-            var cache = oldConfig?.Cache ?? CreateDefaultCacheConfig();
+            var communication = oldConfig?.Communication ?? CreateDefaultCommunicationConfig();
 
-            Toml.WriteFile(new EnvironmentConfig(AmoebaEnvironment.Version, cache), configPath, tomlSettings);
-            Config = new EnvironmentConfig(version, cache);
+            Toml.WriteFile(new InterfaceConfig(AmoebaEnvironment.Version, communication), configPath, tomlSettings);
+            Config = new InterfaceConfig(version, communication);
 
-            EnvironmentConfig.CacheConfig CreateDefaultCacheConfig()
+            InterfaceConfig.CommunicationConfig CreateDefaultCommunicationConfig()
             {
-                return new EnvironmentConfig.CacheConfig("../Config/Cache.blocks");
+                return new InterfaceConfig.CommunicationConfig("tcp:127.0.0.1:4040");
             }
         }
 
         public class EnvironmentPaths
         {
-            public string BasePath { get; private set; }
-            public string TempPath { get; private set; }
-            public string ConfigPath { get; private set; }
-            public string DownloadsPath { get; private set; }
-            public string UpdatePath { get; private set; }
-            public string LogPath { get; private set; }
-            public string WorkPath { get; private set; }
-            public string LanguagesPath { get; private set; }
-            public string IconsPath { get; private set; }
+            public string BaseDirectoryPath { get; private set; }
+            public string TempDirectoryPath { get; private set; }
+            public string ConfigDirectoryPath { get; private set; }
+            public string DownloadsDirectoryPath { get; private set; }
+            public string UpdateDirectoryPath { get; private set; }
+            public string LogDirectoryPath { get; private set; }
+            public string WorkDirectoryPath { get; private set; }
+            public string DaemonDirectoryPath { get; private set; }
+            public string LanguagesDirectoryPath { get; private set; }
+            public string IconsDirectoryPath { get; private set; }
 
             public EnvironmentPaths()
             {
-                this.BasePath = "../";
-                this.TempPath = "../Temp";
-                this.ConfigPath = "../Config";
-                this.DownloadsPath = "../Downloads";
-                this.UpdatePath = "../Update";
-                this.LogPath = "../Log";
-                this.WorkPath = "../Work";
-                this.LanguagesPath = "./Resources/Languages";
-                this.IconsPath = "./Resources/Icons";
+                this.BaseDirectoryPath = "../../";
+                this.TempDirectoryPath = "../../Temp";
+                this.ConfigDirectoryPath = "../../Config";
+                this.DownloadsDirectoryPath = "../../Downloads";
+                this.UpdateDirectoryPath = "../../Update";
+                this.LogDirectoryPath = "../../Log";
+                this.WorkDirectoryPath = "../../Work";
+                this.DaemonDirectoryPath = "../Daemon";
+                this.LanguagesDirectoryPath = "./Resources/Languages";
+                this.IconsDirectoryPath = "./Resources/Icons";
             }
         }
 
@@ -149,29 +152,35 @@ namespace Amoeba.Interface
             }
         }
 
-        public class EnvironmentConfig
+        [DataContract]
+        public class InterfaceConfig
         {
-            public Version Version { get; private set; }
-            public CacheConfig Cache { get; private set; }
+            public InterfaceConfig() { }
 
-            public EnvironmentConfig() { }
-
-            public EnvironmentConfig(Version version, CacheConfig cache)
+            public InterfaceConfig(Version version, CommunicationConfig communication)
             {
                 this.Version = version;
-                this.Cache = cache;
+                this.Communication = communication;
             }
 
-            public class CacheConfig
+            [DataMember(Name = nameof(Version))]
+            public Version Version { get; private set; }
+
+            [DataMember(Name = nameof(Communication))]
+            public CommunicationConfig Communication { get; private set; }
+
+            [DataContract]
+            public class CommunicationConfig
             {
-                public string BlocksPath { get; private set; }
+                public CommunicationConfig() { }
 
-                public CacheConfig() { }
-
-                public CacheConfig(string blocksPath)
+                public CommunicationConfig(string targetUri)
                 {
-                    this.BlocksPath = blocksPath;
+                    this.TargetUri = targetUri;
                 }
+
+                [DataMember(Name = nameof(TargetUri))]
+                public string TargetUri { get; private set; }
             }
         }
     }

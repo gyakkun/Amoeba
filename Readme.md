@@ -19,7 +19,7 @@ Amoeba = (Freenet like network) + DHT + (Tcp, I2p, etc) + (WoT + PoW)
 
 ## Documentation
 
-[http://alliance-network.cloud/wordpress/amoeba/](http://alliance-network.cloud/wordpress/amoeba/)
+<https://alliance-network.cloud/wordpress/amoeba/>
 
 ## License
 

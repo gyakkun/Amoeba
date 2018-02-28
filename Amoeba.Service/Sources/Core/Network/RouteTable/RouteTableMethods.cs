@@ -106,16 +106,19 @@ namespace Amoeba.Service
                 return targetList.Take(count).TakeWhile(n => n.Node.HasValue).Select(n => n.Node.Value).ToList();
             }
 
-            private struct SortInfo<T>
+            private readonly struct SortInfo<T>
             {
+                private readonly Node<T>? _node;
+                private readonly byte[] _xor;
+
                 public SortInfo(Node<T>? node, byte[] xor)
                 {
-                    this.Node = node;
-                    this.Xor = xor;
+                    _node = node;
+                    _xor = xor;
                 }
 
-                public Node<T>? Node { get; private set; }
-                public byte[] Xor { get; private set; }
+                public Node<T>? Node => _node;
+                public byte[] Xor => _xor;
             }
         }
     }

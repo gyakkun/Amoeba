@@ -16,7 +16,7 @@ using Omnius.Correction;
 using Omnius.Io;
 using Omnius.Messaging;
 using Omnius.Security;
-using Omnius.Utilities;
+using Omnius.Utils;
 
 namespace Amoeba.Service
 {
@@ -35,7 +35,7 @@ namespace Amoeba.Service
             private long _size;
             private Dictionary<Hash, ClusterInfo> _clusterIndex;
 
-            private readonly ReaderWriterLockManager _lockManager = new ReaderWriterLockManager();
+            private ReaderWriterLockManager _lockManager = new ReaderWriterLockManager();
 
             private EventQueue<Hash> _addedBlockEventQueue = new EventQueue<Hash>(new TimeSpan(0, 0, 3));
             private EventQueue<Hash> _removedBlockEventQueue = new EventQueue<Hash>(new TimeSpan(0, 0, 3));
@@ -302,7 +302,7 @@ namespace Amoeba.Service
                 }
             }
 
-            public Task CheckBlocks(IProgress<CheckBlocksProgressReport> progress, CancellationToken token)
+            public Task CheckBlocks(Action<CheckBlocksProgressReport> progress, CancellationToken token)
             {
                 return Task.Run(() =>
                 {
@@ -349,7 +349,7 @@ namespace Amoeba.Service
 
                         token.ThrowIfCancellationRequested();
 
-                        progress.Report(new CheckBlocksProgressReport(badCount, checkedCount, blockCount));
+                        progress.Invoke(new CheckBlocksProgressReport(badCount, checkedCount, blockCount));
 
                         foreach (var hash in list)
                         {
@@ -388,11 +388,11 @@ namespace Amoeba.Service
 
                             if (checkedCount % 32 == 0)
                             {
-                                progress.Report(new CheckBlocksProgressReport(badCount, checkedCount, blockCount));
+                                progress.Invoke(new CheckBlocksProgressReport(badCount, checkedCount, blockCount));
                             }
                         }
 
-                        progress.Report(new CheckBlocksProgressReport(badCount, checkedCount, blockCount));
+                        progress.Invoke(new CheckBlocksProgressReport(badCount, checkedCount, blockCount));
                     }
                 }, token);
             }
@@ -735,6 +735,20 @@ namespace Amoeba.Service
                         }
 
                         _updateTimer = null;
+                    }
+
+                    if (_lockManager != null)
+                    {
+                        try
+                        {
+                            _lockManager.Dispose();
+                        }
+                        catch (Exception)
+                        {
+
+                        }
+
+                        _lockManager = null;
                     }
                 }
             }

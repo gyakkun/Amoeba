@@ -6,7 +6,7 @@ using System.Runtime.Serialization;
 using Omnius.Base;
 using Omnius.Security;
 using Omnius.Serialization;
-using Omnius.Utilities;
+using Omnius.Utils;
 
 namespace Amoeba.Messages
 {
@@ -16,14 +16,14 @@ namespace Amoeba.Messages
         private enum SerializeId
         {
             Comment = 0,
-            ExchangePublicKey = 1,
+            AgreementPublicKey = 5,
             TrustSignatures = 2,
             DeleteSignatures = 3,
             Tags = 4,
         }
 
         private string _comment;
-        private ExchangePublicKey _exchangePublicKey;
+        private AgreementPublicKey _agreemetPublicKey;
         private SignatureCollection _trustSignatures;
         private SignatureCollection _deleteSignatures;
         private TagCollection _tags = new TagCollection();
@@ -33,12 +33,12 @@ namespace Amoeba.Messages
         public static readonly int MaxDeleteSignatureCount = 1024;
         public static readonly int MaxTagCount = 1024;
 
-        public Profile(string comment, ExchangePublicKey exchangePublicKey,
+        public Profile(string comment, AgreementPublicKey agreementPublicKey,
             IEnumerable<Signature> trustSignatures, IEnumerable<Signature> deleteSignatures,
             IEnumerable<Tag> tags)
         {
             this.Comment = comment;
-            this.ExchangePublicKey = exchangePublicKey;
+            this.AgreementPublicKey = agreementPublicKey;
             if (trustSignatures != null) this.ProtectedTrustSignatures.AddRange(trustSignatures);
             if (deleteSignatures != null) this.ProtectedDeleteSignatures.AddRange(deleteSignatures);
             if (tags != null) this.ProtectedTags.AddRange(tags);
@@ -61,9 +61,9 @@ namespace Amoeba.Messages
                     {
                         this.Comment = reader.GetString();
                     }
-                    else if (id == (int)SerializeId.ExchangePublicKey)
+                    else if (id == (int)SerializeId.AgreementPublicKey)
                     {
-                        this.ExchangePublicKey = ExchangePublicKey.Import(reader.GetStream(), bufferManager);
+                        this.AgreementPublicKey = AgreementPublicKey.Import(reader.GetStream(), bufferManager);
                     }
                     else if (id == (int)SerializeId.TrustSignatures)
                     {
@@ -100,11 +100,11 @@ namespace Amoeba.Messages
                     writer.Write((uint)SerializeId.Comment);
                     writer.Write(this.Comment);
                 }
-                // ExchangePublicKey
-                if (this.ExchangePublicKey != null)
+                // AgreementPublicKey
+                if (this.AgreementPublicKey != null)
                 {
-                    writer.Write((uint)SerializeId.ExchangePublicKey);
-                    writer.Write(this.ExchangePublicKey.Export(bufferManager));
+                    writer.Write((uint)SerializeId.AgreementPublicKey);
+                    writer.Write(this.AgreementPublicKey.Export(bufferManager));
                 }
                 // TrustSignatures
                 if (this.ProtectedTrustSignatures.Count > 0)
@@ -146,8 +146,8 @@ namespace Amoeba.Messages
 
         public override int GetHashCode()
         {
-            if (this.ExchangePublicKey == null) return 0;
-            else return this.ExchangePublicKey.GetHashCode();
+            if (this.AgreementPublicKey == null) return 0;
+            else return this.AgreementPublicKey.GetHashCode();
         }
 
         public override bool Equals(object obj)
@@ -163,7 +163,7 @@ namespace Amoeba.Messages
             if (object.ReferenceEquals(this, other)) return true;
 
             if (this.Comment != other.Comment
-                || this.ExchangePublicKey != other.ExchangePublicKey
+                || this.AgreementPublicKey != other.AgreementPublicKey
                 || !CollectionUtils.Equals(this.TrustSignatures, other.TrustSignatures)
                 || !CollectionUtils.Equals(this.DeleteSignatures, other.DeleteSignatures)
                 || !CollectionUtils.Equals(this.Tags, other.Tags))
@@ -189,23 +189,21 @@ namespace Amoeba.Messages
                 {
                     throw new ArgumentException();
                 }
-                else
-                {
-                    _comment = value;
-                }
+
+                _comment = value;
             }
         }
 
-        [DataMember(Name = nameof(ExchangePublicKey))]
-        public ExchangePublicKey ExchangePublicKey
+        [DataMember(Name = nameof(AgreementPublicKey))]
+        public AgreementPublicKey AgreementPublicKey
         {
             get
             {
-                return _exchangePublicKey;
+                return _agreemetPublicKey;
             }
             private set
             {
-                _exchangePublicKey = value;
+                _agreemetPublicKey = value;
             }
         }
 

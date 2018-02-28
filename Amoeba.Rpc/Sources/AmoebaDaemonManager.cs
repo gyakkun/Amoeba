@@ -1,0 +1,371 @@
+﻿using System;
+using System.IO;
+using System.Net.Sockets;
+using System.Threading;
+using System.Threading.Tasks;
+using Amoeba.Messages;
+using Omnius.Base;
+using Omnius.Collections;
+using Omnius.Io;
+using Omnius.Security;
+using Omnius.Serialization;
+
+namespace Amoeba.Rpc
+{
+    public class AmoebaDaemonManager<TService> : ManagerBase
+        where TService : StateManagerBase, IService
+    {
+        private Socket _socket;
+        private TService _serviceManager;
+        private BufferManager _bufferManager;
+        private MessagingManager _messagingManager;
+
+        private CancellationTokenSource _tokenSource = new CancellationTokenSource();
+
+        private LockedHashDictionary<int, ResponseTask> _tasks = new LockedHashDictionary<int, ResponseTask>();
+
+        private readonly object _lockObject = new object();
+        private volatile bool _isDisposed;
+
+        public AmoebaDaemonManager(Socket socket, TService serviceManager, BufferManager bufferManager)
+        {
+            _socket = socket;
+            _serviceManager = serviceManager;
+            _bufferManager = bufferManager;
+            _messagingManager = new MessagingManager(_socket, _bufferManager);
+            _messagingManager.ReceiveEvent += _messagingManager_ReceiveEvent;
+        }
+
+        public void Watch()
+        {
+            _messagingManager.Run();
+            _messagingManager.Wait();
+
+            foreach (var responseTask in _tasks.Values)
+            {
+                try
+                {
+                    responseTask.Stop();
+                }
+                catch (Exception)
+                {
+
+                }
+            }
+        }
+
+        private void _messagingManager_ReceiveEvent(Stream requestStream)
+        {
+            using (var reader = new ItemStreamReader(new WrapperStream(requestStream), _bufferManager))
+            {
+                var type = (AmoebaFunctionType)reader.GetUInt32();
+                int id = (int)reader.GetUInt32();
+
+                if (type == AmoebaFunctionType.Exit)
+                {
+                    SendResponse(AmoebaFunctionResponseType.Result, id, (object)null);
+                    _messagingManager.Stop();
+                }
+                else if (type == AmoebaFunctionType.Cancel)
+                {
+                    if (_tasks.TryGetValue(id, out var responseTask))
+                    {
+                        responseTask.Stop();
+                    }
+                }
+                else
+                {
+                    var responseTask = ResponseTask.Create((token) =>
+                    {
+                        try
+                        {
+                            switch (type)
+                            {
+                                case AmoebaFunctionType.GetReport:
+                                    {
+                                        SendResponse(AmoebaFunctionResponseType.Result, id, _serviceManager.Report);
+                                        break;
+                                    }
+                                case AmoebaFunctionType.GetNetworkConnectionReports:
+                                    {
+                                        SendResponse(AmoebaFunctionResponseType.Result, id, _serviceManager.GetNetworkConnectionReports());
+                                        break;
+                                    }
+                                case AmoebaFunctionType.GetCacheContentReports:
+                                    {
+                                        SendResponse(AmoebaFunctionResponseType.Result, id, _serviceManager.GetCacheContentReports());
+                                        break;
+                                    }
+                                case AmoebaFunctionType.GetDownloadContentReports:
+                                    {
+                                        SendResponse(AmoebaFunctionResponseType.Result, id, _serviceManager.GetDownloadContentReports());
+                                        break;
+                                    }
+                                case AmoebaFunctionType.GetConfig:
+                                    {
+                                        SendResponse(AmoebaFunctionResponseType.Result, id, _serviceManager.Config);
+                                        break;
+                                    }
+                                case AmoebaFunctionType.SetConfig:
+                                    {
+                                        var config = JsonUtils.Load<ServiceConfig>(requestStream);
+                                        _serviceManager.SetConfig(config);
+                                        SendResponse(AmoebaFunctionResponseType.Result, id, (object)null);
+                                        break;
+                                    }
+                                case AmoebaFunctionType.SetCloudLocations:
+                                    {
+                                        var cloudLocations = JsonUtils.Load<Location[]>(requestStream);
+                                        _serviceManager.SetCloudLocations(cloudLocations);
+                                        SendResponse(AmoebaFunctionResponseType.Result, id, (object)null);
+                                        break;
+                                    }
+                                case AmoebaFunctionType.GetSize:
+                                    {
+                                        SendResponse(AmoebaFunctionResponseType.Result, id, _serviceManager.Size);
+                                        break;
+                                    }
+                                case AmoebaFunctionType.Resize:
+                                    {
+                                        long size = JsonUtils.Load<long>(requestStream);
+                                        _serviceManager.Resize(size);
+                                        SendResponse(AmoebaFunctionResponseType.Result, id, (object)null);
+                                        break;
+                                    }
+                                case AmoebaFunctionType.CheckBlocks:
+                                    {
+                                        _serviceManager.CheckBlocks(new Action<CheckBlocksProgressReport>((report) =>
+                                        {
+                                            SendResponse(AmoebaFunctionResponseType.Output, id, report);
+                                        }), token).Wait();
+
+                                        SendResponse(AmoebaFunctionResponseType.Result, id, (object)null);
+                                        break;
+                                    }
+                                case AmoebaFunctionType.AddContent:
+                                    {
+                                        var arguments = JsonUtils.Load<(string, DateTime)>(requestStream);
+                                        var result = _serviceManager.AddContent(arguments.Item1, arguments.Item2, token).Result;
+                                        SendResponse(AmoebaFunctionResponseType.Result, id, result);
+                                        break;
+                                    }
+                                case AmoebaFunctionType.RemoveContent:
+                                    {
+                                        string path = JsonUtils.Load<string>(requestStream);
+                                        _serviceManager.RemoveContent(path);
+                                        SendResponse(AmoebaFunctionResponseType.Result, id, (object)null);
+                                        break;
+                                    }
+                                case AmoebaFunctionType.Diffusion:
+                                    {
+                                        string path = JsonUtils.Load<string>(requestStream);
+                                        _serviceManager.DiffuseContent(path);
+                                        SendResponse(AmoebaFunctionResponseType.Result, id, (object)null);
+                                        break;
+                                    }
+                                case AmoebaFunctionType.AddDownload:
+                                    {
+                                        var arguments = JsonUtils.Load<(Metadata, string, long)>(requestStream);
+                                        _serviceManager.AddDownload(arguments.Item1, arguments.Item2, arguments.Item3);
+                                        SendResponse(AmoebaFunctionResponseType.Result, id, (object)null);
+                                        break;
+                                    }
+                                case AmoebaFunctionType.RemoveDownload:
+                                    {
+                                        var arguments = JsonUtils.Load<(Metadata, string)>(requestStream);
+                                        _serviceManager.RemoveDownload(arguments.Item1, arguments.Item2);
+                                        SendResponse(AmoebaFunctionResponseType.Result, id, (object)null);
+                                        break;
+                                    }
+                                case AmoebaFunctionType.ResetDownload:
+                                    {
+                                        var arguments = JsonUtils.Load<(Metadata, string)>(requestStream);
+                                        _serviceManager.ResetDownload(arguments.Item1, arguments.Item2);
+                                        SendResponse(AmoebaFunctionResponseType.Result, id, (object)null);
+                                        break;
+                                    }
+                                case AmoebaFunctionType.SetProfile:
+                                    {
+                                        var arguments = JsonUtils.Load<(Profile, DigitalSignature)>(requestStream);
+                                        _serviceManager.SetProfile(arguments.Item1, arguments.Item2, token).Wait();
+                                        SendResponse(AmoebaFunctionResponseType.Result, id, (object)null);
+                                        break;
+                                    }
+                                case AmoebaFunctionType.SetStore:
+                                    {
+                                        var arguments = JsonUtils.Load<(Store, DigitalSignature)>(requestStream);
+                                        _serviceManager.SetStore(arguments.Item1, arguments.Item2, token).Wait();
+                                        SendResponse(AmoebaFunctionResponseType.Result, id, (object)null);
+                                        break;
+                                    }
+                                case AmoebaFunctionType.SetMailMessage:
+                                    {
+                                        var arguments = JsonUtils.Load<(Signature, MailMessage, AgreementPublicKey, DigitalSignature)>(requestStream);
+                                        _serviceManager.SetMailMessage(arguments.Item1, arguments.Item2, arguments.Item3, arguments.Item4, token).Wait();
+                                        SendResponse(AmoebaFunctionResponseType.Result, id, (object)null);
+                                        break;
+                                    }
+                                case AmoebaFunctionType.SetChatMessage:
+                                    {
+                                        var arguments = JsonUtils.Load<(Tag, ChatMessage, DigitalSignature, TimeSpan)>(requestStream);
+                                        _serviceManager.SetChatMessage(arguments.Item1, arguments.Item2, arguments.Item3, arguments.Item4, token).Wait();
+                                        SendResponse(AmoebaFunctionResponseType.Result, id, (object)null);
+                                        break;
+                                    }
+                                case AmoebaFunctionType.GetProfile:
+                                    {
+                                        var signature = JsonUtils.Load<Signature>(requestStream);
+                                        var result = _serviceManager.GetProfile(signature, token).Result;
+                                        SendResponse(AmoebaFunctionResponseType.Result, id, result);
+                                        break;
+                                    }
+                                case AmoebaFunctionType.GetStore:
+                                    {
+                                        var signature = JsonUtils.Load<Signature>(requestStream);
+                                        var result = _serviceManager.GetStore(signature, token).Result;
+                                        SendResponse(AmoebaFunctionResponseType.Result, id, result);
+                                        break;
+                                    }
+                                case AmoebaFunctionType.GetMailMessages:
+                                    {
+                                        var arguments = JsonUtils.Load<(Signature, AgreementPrivateKey)>(requestStream);
+                                        var result = _serviceManager.GetMailMessages(arguments.Item1, arguments.Item2, token).Result;
+                                        SendResponse(AmoebaFunctionResponseType.Result, id, result);
+                                        break;
+                                    }
+                                case AmoebaFunctionType.GetChatMessages:
+                                    {
+                                        var tag = JsonUtils.Load<Tag>(requestStream);
+                                        var result = _serviceManager.GetChatMessages(tag, token).Result;
+                                        SendResponse(AmoebaFunctionResponseType.Result, id, result);
+                                        break;
+                                    }
+                                case AmoebaFunctionType.GetState:
+                                    {
+                                        SendResponse(AmoebaFunctionResponseType.Result, id, _serviceManager.State);
+                                        break;
+                                    }
+                                case AmoebaFunctionType.Start:
+                                    {
+                                        _serviceManager.Start();
+                                        SendResponse(AmoebaFunctionResponseType.Result, id, (object)null);
+                                        break;
+                                    }
+                                case AmoebaFunctionType.Stop:
+                                    {
+                                        _serviceManager.Stop();
+                                        SendResponse(AmoebaFunctionResponseType.Result, id, (object)null);
+                                        break;
+                                    }
+                                case AmoebaFunctionType.Load:
+                                    {
+                                        _serviceManager.Load();
+                                        SendResponse(AmoebaFunctionResponseType.Result, id, (object)null);
+                                        break;
+                                    }
+                                case AmoebaFunctionType.Save:
+                                    {
+                                        _serviceManager.Save();
+                                        SendResponse(AmoebaFunctionResponseType.Result, id, (object)null);
+                                        break;
+                                    }
+                            }
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            SendResponse(AmoebaFunctionResponseType.Cancel, id, (object)null);
+                        }
+                        catch (Exception e)
+                        {
+                            Log.Error(e);
+
+                            var argument = new AmoebaErrorMessage(e.GetType().ToString(), e.Message, e.StackTrace?.ToString());
+                            SendResponse(AmoebaFunctionResponseType.Error, id, argument);
+                        }
+                        finally
+                        {
+                            requestStream.Dispose();
+                            _tasks.Remove(id);
+                        }
+                    });
+
+                    _tasks.Add(id, responseTask);
+                    responseTask.Start();
+                }
+            }
+
+            void SendResponse<T>(AmoebaFunctionResponseType type, int id, T value)
+            {
+                using (var writer = new ItemStreamWriter(_bufferManager))
+                {
+                    writer.Write((uint)type);
+                    writer.Write((uint)id);
+
+                    Stream valueStream = null;
+
+                    if (value != null)
+                    {
+                        try
+                        {
+                            valueStream = new RecyclableMemoryStream(_bufferManager);
+                            JsonUtils.Save(valueStream, value);
+                        }
+                        catch (Exception)
+                        {
+                            if (valueStream != null)
+                            {
+                                valueStream.Dispose();
+                                valueStream = null;
+                            }
+
+                            return;
+                        }
+                    }
+
+                    _messagingManager.Send(new UniteStream(writer.GetStream(), valueStream));
+                }
+            }
+        }
+
+        public class ResponseTask
+        {
+            private CancellationTokenSource _tokenSource;
+            private Task _task;
+
+            private ResponseTask(Action<CancellationToken> action)
+            {
+                _tokenSource = new CancellationTokenSource();
+                _task = new Task(() => action(_tokenSource.Token));
+            }
+
+            public static ResponseTask Create(Action<CancellationToken> action)
+            {
+                return new ResponseTask(action);
+            }
+
+            public void Start()
+            {
+                _task.Start();
+            }
+
+            public void Stop()
+            {
+                _tokenSource.Cancel();
+                _task.Wait();
+            }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (_isDisposed) return;
+            _isDisposed = true;
+
+            if (disposing)
+            {
+                _socket.Dispose();
+                _serviceManager.Dispose();
+                _messagingManager.Dispose();
+            }
+        }
+    }
+}

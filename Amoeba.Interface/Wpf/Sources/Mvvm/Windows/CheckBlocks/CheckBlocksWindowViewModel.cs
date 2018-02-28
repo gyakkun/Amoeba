@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Omnius.Base;
 using Omnius.Configuration;
-using Amoeba.Service;
+using Amoeba.Rpc;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 using Amoeba.Messages;
@@ -16,7 +16,7 @@ namespace Amoeba.Interface
 {
     class CheckBlocksWindowViewModel : ManagerBase
     {
-        private ServiceManager _serviceManager;
+        private AmoebaInterfaceManager _amoebaInterfaceManager;
 
         private Settings _settings;
 
@@ -34,9 +34,9 @@ namespace Amoeba.Interface
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _isDisposed;
 
-        public CheckBlocksWindowViewModel(ServiceManager serviceManager)
+        public CheckBlocksWindowViewModel(AmoebaInterfaceManager serviceManager)
         {
-            _serviceManager = serviceManager;
+            _amoebaInterfaceManager = serviceManager;
 
             this.Init();
         }
@@ -51,7 +51,7 @@ namespace Amoeba.Interface
             }
 
             {
-                string configPath = System.IO.Path.Combine(AmoebaEnvironment.Paths.ConfigPath, "View", nameof(CheckBlocksWindow));
+                string configPath = System.IO.Path.Combine(AmoebaEnvironment.Paths.ConfigDirectoryPath, "View", nameof(CheckBlocksWindow));
                 if (!Directory.Exists(configPath)) Directory.CreateDirectory(configPath);
 
                 _settings = new Settings(configPath);
@@ -65,7 +65,7 @@ namespace Amoeba.Interface
             }
 
             {
-                var progress = new Progress<CheckBlocksProgressReport>(report =>
+                var progress = new Action<CheckBlocksProgressReport>(report =>
                 {
                     try
                     {
@@ -81,7 +81,7 @@ namespace Amoeba.Interface
                 });
 
                 _tokenSource = new CancellationTokenSource();
-                _task = _serviceManager.CheckBlocks(progress, _tokenSource.Token);
+                _task = _amoebaInterfaceManager.CheckBlocks(progress, _tokenSource.Token);
             }
         }
 

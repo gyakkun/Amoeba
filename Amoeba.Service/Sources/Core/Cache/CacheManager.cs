@@ -16,7 +16,7 @@ using Omnius.Correction;
 using Omnius.Io;
 using Omnius.Messaging;
 using Omnius.Security;
-using Omnius.Utilities;
+using Omnius.Utils;
 
 namespace Amoeba.Service
 {
@@ -30,7 +30,7 @@ namespace Amoeba.Service
 
         private WatchTimer _checkTimer;
 
-        private readonly ReaderWriterLockManager _lockManager = new ReaderWriterLockManager();
+        private ReaderWriterLockManager _lockManager = new ReaderWriterLockManager();
 
         private EventQueue<Hash> _removedBlockEventQueue = new EventQueue<Hash>(new TimeSpan(0, 0, 3));
 
@@ -165,7 +165,7 @@ namespace Amoeba.Service
             _blocksManager.Resize(size);
         }
 
-        public Task CheckBlocks(IProgress<CheckBlocksProgressReport> progress, CancellationToken token)
+        public Task CheckBlocks(Action<CheckBlocksProgressReport> progress, CancellationToken token)
         {
             return _blocksManager.CheckBlocks(progress, token);
         }
@@ -1157,6 +1157,20 @@ namespace Amoeba.Service
                     }
 
                     _checkTimer = null;
+                }
+
+                if (_lockManager != null)
+                {
+                    try
+                    {
+                        _lockManager.Dispose();
+                    }
+                    catch (Exception)
+                    {
+
+                    }
+
+                    _lockManager = null;
                 }
             }
         }

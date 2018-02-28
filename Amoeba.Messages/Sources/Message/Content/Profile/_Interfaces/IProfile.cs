@@ -6,7 +6,7 @@ namespace Amoeba.Messages
     interface IProfile
     {
         string Comment { get; }
-        ExchangePublicKey ExchangePublicKey { get; }
+        AgreementPublicKey AgreementPublicKey { get; }
         IEnumerable<Signature> TrustSignatures { get; }
         IEnumerable<Signature> DeleteSignatures { get; }
         IEnumerable<Tag> Tags { get; }

@@ -12,7 +12,7 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Threading;
 using Amoeba.Messages;
-using Amoeba.Service;
+using Amoeba.Rpc;
 using Omnius.Base;
 using Omnius.Collections;
 using Omnius.Configuration;
@@ -25,7 +25,7 @@ namespace Amoeba.Interface
 {
     class SearchControlViewModel : ManagerBase
     {
-        private ServiceManager _serviceManager;
+        private AmoebaInterfaceManager _amoebaInterfaceManager;
         private MessageManager _messageManager;
 
         private TaskManager _watchTaskManager;
@@ -71,9 +71,9 @@ namespace Amoeba.Interface
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _isDisposed;
 
-        public SearchControlViewModel(ServiceManager serviceManager, MessageManager messageManager, DialogService dialogService)
+        public SearchControlViewModel(AmoebaInterfaceManager serviceManager, MessageManager messageManager, DialogService dialogService)
         {
-            _serviceManager = serviceManager;
+            _amoebaInterfaceManager = serviceManager;
             _messageManager = messageManager;
             _dialogService = dialogService;
 
@@ -167,7 +167,7 @@ namespace Amoeba.Interface
             }
 
             {
-                string configPath = Path.Combine(AmoebaEnvironment.Paths.ConfigPath, "View", nameof(SearchControl));
+                string configPath = Path.Combine(AmoebaEnvironment.Paths.ConfigDirectoryPath, "View", nameof(SearchControl));
                 if (!Directory.Exists(configPath)) Directory.CreateDirectory(configPath);
 
                 _settings = new Settings(configPath);
@@ -383,7 +383,7 @@ namespace Amoeba.Interface
                     {
                         var signature = SettingsManager.Instance.AccountInfo.DigitalSignature.GetSignature();
 
-                        foreach (var seed in _serviceManager.GetCacheContentReports()
+                        foreach (var seed in _amoebaInterfaceManager.GetCacheContentReports()
                             .Select(n => new Seed(Path.GetFileName(n.Path), n.Length, n.CreationTime, n.Metadata)).ToArray())
                         {
                             seedInfos.Add((seed, signature));
@@ -391,7 +391,7 @@ namespace Amoeba.Interface
                         }
                     }
 
-                    downloadingMetadatas.UnionWith(_serviceManager.GetDownloadContentReports().Select(n => n.Metadata));
+                    downloadingMetadatas.UnionWith(_amoebaInterfaceManager.GetDownloadContentReports().Select(n => n.Metadata));
 
                     {
                         var downloadedSeeds = SettingsManager.Instance.DownloadedSeeds.ToArray();
@@ -743,11 +743,11 @@ namespace Amoeba.Interface
                 {
                     try
                     {
-                        foreach (var (metadata, path) in _serviceManager.GetCacheContentReports()
+                        foreach (var (metadata, path) in _amoebaInterfaceManager.GetCacheContentReports()
                             .Select(n => (n.Metadata, n.Path)).ToArray())
                         {
                             if (!hashSet.Contains(metadata)) continue;
-                            _serviceManager.RemoveContent(path);
+                            _amoebaInterfaceManager.RemoveContent(path);
                         }
                     }
                     catch (Exception)

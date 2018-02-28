@@ -5,7 +5,7 @@ using Amoeba.Messages;
 using Omnius.Base;
 using Omnius.Configuration;
 using Omnius.Net;
-using Omnius.Utilities;
+using Omnius.Utils;
 
 namespace Amoeba.Service
 {

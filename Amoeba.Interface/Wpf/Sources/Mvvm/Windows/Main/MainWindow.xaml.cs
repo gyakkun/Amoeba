@@ -24,7 +24,7 @@ namespace Amoeba.Interface
         {
             // NotifyIcon
             {
-                var amoebaIcon = new System.Drawing.Icon(System.IO.Path.Combine(AmoebaEnvironment.Paths.IconsPath, "Amoeba.ico"));
+                var amoebaIcon = new System.Drawing.Icon(System.IO.Path.Combine(AmoebaEnvironment.Paths.IconsDirectoryPath, "Amoeba.ico"));
                 _notifyIcon.Icon = new System.Drawing.Icon(amoebaIcon, new System.Drawing.Size(16, 16));
                 _notifyIcon.Visible = true;
             }
