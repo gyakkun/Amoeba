@@ -1,4 +1,0 @@
-Version = "5.1.0"
-
-[Communication]
-TargetUri = "tcp:127.0.0.1:4040"

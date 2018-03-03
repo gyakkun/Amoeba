@@ -164,7 +164,7 @@ namespace Amoeba.Interface
             }
 
             {
-                Backup.Instance.SaveEvent += this.Save;
+                EventHooks.Instance.SaveEvent += this.Save;
             }
 
             this.Setting_TrafficView();
@@ -329,107 +329,114 @@ namespace Amoeba.Interface
         {
             public static OptionsInfo GetOptions(AmoebaInterfaceManager serviceManager)
             {
-                var options = new OptionsInfo();
-
-                App.Current.Dispatcher.Invoke(new Action(() =>
+                try
                 {
-                    // Account
+                    var options = new OptionsInfo();
+
+                    App.Current.Dispatcher.Invoke(new Action(() =>
                     {
-                        var info = SettingsManager.Instance.AccountInfo;
-                        options.Account.DigitalSignature = info.DigitalSignature;
-                        options.Account.Comment = info.Comment;
-                        options.Account.TrustSignatures.AddRange(info.TrustSignatures);
-                        options.Account.UntrustSignatures.AddRange(info.UntrustSignatures);
-                        options.Account.Tags.AddRange(info.Tags);
+                        // Account
+                        {
+                            var info = SettingsManager.Instance.AccountInfo;
+                            options.Account.DigitalSignature = info.DigitalSignature;
+                            options.Account.Comment = info.Comment;
+                            options.Account.TrustSignatures.AddRange(info.TrustSignatures);
+                            options.Account.UntrustSignatures.AddRange(info.UntrustSignatures);
+                            options.Account.Tags.AddRange(info.Tags);
+                        }
+
+                        // View
+                        {
+                            options.View.Subscribe.Signatures.AddRange(SettingsManager.Instance.SubscribeSignatures);
+                        }
+
+                        // Update
+                        {
+                            var info = SettingsManager.Instance.UpdateInfo;
+                            options.Update.IsEnabled = info.IsEnabled;
+                            options.Update.Signature = info.Signature;
+                        }
+                    }));
+
+                    {
+                        var config = serviceManager.Config;
+                        var cacheSize = serviceManager.Size;
+
+                        // Connection
+                        {
+                            // Tcp
+                            {
+                                options.Connection.Tcp.ProxyUri = config.Connection.Tcp.ProxyUri;
+                                options.Connection.Tcp.Ipv4IsEnabled = config.Connection.Tcp.Type.HasFlag(TcpConnectionType.Ipv4);
+                                options.Connection.Tcp.Ipv4Port = config.Connection.Tcp.Ipv4Port;
+                                options.Connection.Tcp.Ipv6IsEnabled = config.Connection.Tcp.Type.HasFlag(TcpConnectionType.Ipv6);
+                                options.Connection.Tcp.Ipv6Port = config.Connection.Tcp.Ipv6Port;
+                            }
+
+                            // I2p
+                            {
+                                options.Connection.I2p.IsEnabled = config.Connection.I2p.IsEnabled;
+                                options.Connection.I2p.SamBridgeUri = config.Connection.I2p.SamBridgeUri;
+                            }
+
+                            // Custom
+                            {
+                                options.Connection.Custom.LocationUris.AddRange(config.Connection.Custom.LocationUris);
+                                options.Connection.Custom.ConnectionFilters.AddRange(config.Connection.Custom.ConnectionFilters);
+                                options.Connection.Custom.ListenUris.AddRange(config.Connection.Custom.ListenUris);
+                            }
+
+                            // Bandwidth
+                            {
+                                options.Connection.Bandwidth.ConnectionCountLimit = config.Core.Network.ConnectionCountLimit;
+                                options.Connection.Bandwidth.BandwidthLimit = config.Core.Network.BandwidthLimit;
+                            }
+                        }
+
+                        // Data
+                        {
+                            // Cache
+                            {
+                                options.Data.Cache.Size = cacheSize;
+                            }
+
+                            // Download
+                            {
+                                options.Data.Download.DirectoryPath = config.Core.Download.BasePath;
+                                options.Data.Download.ProtectedPercentage = config.Core.Download.ProtectedPercentage;
+                            }
+                        }
                     }
 
-                    // View
-                    {
-                        options.View.Subscribe.Signatures.AddRange(SettingsManager.Instance.SubscribeSignatures);
-                    }
-
-                    // Update
-                    {
-                        var info = SettingsManager.Instance.UpdateInfo;
-                        options.Update.IsEnabled = info.IsEnabled;
-                        options.Update.Signature = info.Signature;
-                    }
-                }));
-
-                {
-                    var config = serviceManager.Config;
-                    var cacheSize = serviceManager.Size;
-
-                    // Connection
-                    {
-                        // Tcp
-                        {
-                            options.Connection.Tcp.ProxyUri = config.Connection.Tcp.ProxyUri;
-                            options.Connection.Tcp.Ipv4IsEnabled = config.Connection.Tcp.Type.HasFlag(TcpConnectionType.Ipv4);
-                            options.Connection.Tcp.Ipv4Port = config.Connection.Tcp.Ipv4Port;
-                            options.Connection.Tcp.Ipv6IsEnabled = config.Connection.Tcp.Type.HasFlag(TcpConnectionType.Ipv6);
-                            options.Connection.Tcp.Ipv6Port = config.Connection.Tcp.Ipv6Port;
-                        }
-
-                        // I2p
-                        {
-                            options.Connection.I2p.IsEnabled = config.Connection.I2p.IsEnabled;
-                            options.Connection.I2p.SamBridgeUri = config.Connection.I2p.SamBridgeUri;
-                        }
-
-                        // Custom
-                        {
-                            options.Connection.Custom.LocationUris.AddRange(config.Connection.Custom.LocationUris);
-                            options.Connection.Custom.ConnectionFilters.AddRange(config.Connection.Custom.ConnectionFilters);
-                            options.Connection.Custom.ListenUris.AddRange(config.Connection.Custom.ListenUris);
-                        }
-
-                        // Bandwidth
-                        {
-                            options.Connection.Bandwidth.ConnectionCountLimit = config.Core.Network.ConnectionCountLimit;
-                            options.Connection.Bandwidth.BandwidthLimit = config.Core.Network.BandwidthLimit;
-                        }
-                    }
-
-                    // Data
-                    {
-                        // Cache
-                        {
-                            options.Data.Cache.Size = cacheSize;
-                        }
-
-                        // Download
-                        {
-                            options.Data.Download.DirectoryPath = config.Core.Download.BasePath;
-                            options.Data.Download.ProtectedPercentage = config.Core.Download.ProtectedPercentage;
-                        }
-                    }
+                    return options;
                 }
+                catch (Exception e)
+                {
+                    Log.Error(e);
 
-                return options;
+                    throw e;
+                }
             }
 
             public static void SetOptions(OptionsInfo options, AmoebaInterfaceManager serviceManager, DialogService dialogService)
             {
+                try
                 {
                     bool uploadFlag = false;
-                    Agreement agreement = null;
 
-                    App.Current.Dispatcher.Invoke(new Action(async () =>
+                    App.Current.Dispatcher.Invoke(new Action(() =>
                     {
                         // AccountInfo
                         {
                             var info = SettingsManager.Instance.AccountInfo;
 
-                            if (info.DigitalSignature != options.Account.DigitalSignature)
+                            if (info.Agreement == null || info.DigitalSignature != options.Account.DigitalSignature)
                             {
-                                info.Agreement = await Task.Run(() => new Agreement(AgreementAlgorithm.EcDhP521_Sha256));
+                                info.Agreement = new Agreement(AgreementAlgorithm.EcDhP521_Sha256);
+
+                                uploadFlag = true;
                             }
-
-                            agreement = info.Agreement;
-
-                            if (info.DigitalSignature != options.Account.DigitalSignature
-                                || info.Comment != options.Account.Comment
+                            else if (info.Comment != options.Account.Comment
                                 || !CollectionUtils.Equals(info.TrustSignatures, options.Account.TrustSignatures)
                                 || !CollectionUtils.Equals(info.UntrustSignatures, options.Account.UntrustSignatures)
                                 || !CollectionUtils.Equals(info.Tags, options.Account.Tags))
@@ -463,128 +470,138 @@ namespace Amoeba.Interface
 
                     if (uploadFlag)
                     {
-                        Task.Run(() =>
-                        {
-                            serviceManager.SetProfile(
-                                new Profile(options.Account.Comment,
-                                    agreement.GetAgreementPublicKey(),
-                                    options.Account.TrustSignatures,
-                                    options.Account.UntrustSignatures,
-                                    options.Account.Tags),
-                                options.Account.DigitalSignature,
-                                CancellationToken.None);
-                        });
-                    }
-                }
+                        var info = SettingsManager.Instance.AccountInfo;
 
-                // AmoebaInterfaceManager
-                {
-                    ServiceConfig serviceConfig;
-                    {
-                        ConnectionConfig connectionConfig;
-                        {
-                            TcpConnectionConfig tcpConnectionConfig;
-                            {
-                                var type = TcpConnectionType.None;
-                                if (options.Connection.Tcp.Ipv4IsEnabled) type |= TcpConnectionType.Ipv4;
-                                if (options.Connection.Tcp.Ipv6IsEnabled) type |= TcpConnectionType.Ipv6;
-
-                                tcpConnectionConfig = new TcpConnectionConfig(
-                                    type,
-                                    options.Connection.Tcp.Ipv4Port,
-                                    options.Connection.Tcp.Ipv6Port,
-                                    options.Connection.Tcp.ProxyUri);
-                            }
-
-                            I2pConnectionConfig i2PConnectionConfig;
-                            {
-                                i2PConnectionConfig = new I2pConnectionConfig(
-                                    options.Connection.I2p.IsEnabled,
-                                    options.Connection.I2p.SamBridgeUri);
-                            }
-
-                            CustomConnectionConfig customConnectionConfig;
-                            {
-                                customConnectionConfig = new CustomConnectionConfig(
-                                    options.Connection.Custom.LocationUris,
-                                    options.Connection.Custom.ConnectionFilters,
-                                    options.Connection.Custom.ListenUris);
-                            }
-
-                            CatharsisConfig catharsisConfig;
-                            {
-                                var catharsisIpv4Config = new CatharsisIpv4Config(null, null);
-
-                                catharsisConfig = new CatharsisConfig(catharsisIpv4Config);
-                            }
-
-                            connectionConfig = new ConnectionConfig(
-                                tcpConnectionConfig,
-                                i2PConnectionConfig,
-                                customConnectionConfig,
-                                catharsisConfig);
-                        }
-
-                        CoreConfig coreConfig;
-                        {
-                            NetworkConfig networkConfig;
-                            {
-                                networkConfig = new NetworkConfig(
-                                    options.Connection.Bandwidth.ConnectionCountLimit,
-                                    options.Connection.Bandwidth.BandwidthLimit);
-                            }
-
-                            DownloadConfig downloadConfig;
-                            {
-                                downloadConfig = new DownloadConfig(
-                                    options.Data.Download.DirectoryPath,
-                                    options.Data.Download.ProtectedPercentage);
-                            }
-
-                            coreConfig = new CoreConfig(networkConfig, downloadConfig);
-                        }
-
-                        MessageConfig messageConfig;
-                        {
-                            messageConfig = new MessageConfig(options.View.Subscribe.Signatures);
-                        }
-
-                        serviceConfig = new ServiceConfig(coreConfig, connectionConfig, messageConfig);
-                    }
-
-                    serviceManager.SetConfig(serviceConfig);
-                }
-
-                // AmoebaInterfaceManager (Resize)
-                {
-                    long orginalCacheSize = serviceManager.Size;
-
-                    if (options.Data.Cache.Size < orginalCacheSize)
-                    {
-                        App.Current.Dispatcher.Invoke(new Action(() =>
-                        {
-                            if (dialogService.ShowDialog(LanguagesManager.Instance.DataOptionsControl_CacheResize_Message,
-                                MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.Cancel) == MessageBoxResult.OK)
-                            {
-                                Task.Run(() =>
-                                {
-                                    ProgressDialog.Instance.Increment();
-
-                                    serviceManager.Resize(options.Data.Cache.Size);
-
-                                    ProgressDialog.Instance.Decrement();
-                                });
-                            }
-                        }));
-                    }
-                    else if (options.Data.Cache.Size > orginalCacheSize)
-                    {
                         ProgressDialog.Instance.Increment();
 
-                        serviceManager.Resize(options.Data.Cache.Size);
+                        var task = serviceManager.SetProfile(
+                            new Profile(info.Comment,
+                                info.Agreement.GetAgreementPublicKey(),
+                                info.TrustSignatures,
+                                info.UntrustSignatures,
+                                info.Tags),
+                            info.DigitalSignature,
+                            CancellationToken.None);
 
-                        ProgressDialog.Instance.Decrement();
+                        task.ContinueWith((_) =>
+                        {
+                            ProgressDialog.Instance.Decrement();
+                        });
                     }
+
+                    // AmoebaInterfaceManager
+                    {
+                        ServiceConfig serviceConfig;
+                        {
+                            ConnectionConfig connectionConfig;
+                            {
+                                TcpConnectionConfig tcpConnectionConfig;
+                                {
+                                    var type = TcpConnectionType.None;
+                                    if (options.Connection.Tcp.Ipv4IsEnabled) type |= TcpConnectionType.Ipv4;
+                                    if (options.Connection.Tcp.Ipv6IsEnabled) type |= TcpConnectionType.Ipv6;
+
+                                    tcpConnectionConfig = new TcpConnectionConfig(
+                                        type,
+                                        options.Connection.Tcp.Ipv4Port,
+                                        options.Connection.Tcp.Ipv6Port,
+                                        options.Connection.Tcp.ProxyUri);
+                                }
+
+                                I2pConnectionConfig i2PConnectionConfig;
+                                {
+                                    i2PConnectionConfig = new I2pConnectionConfig(
+                                        options.Connection.I2p.IsEnabled,
+                                        options.Connection.I2p.SamBridgeUri);
+                                }
+
+                                CustomConnectionConfig customConnectionConfig;
+                                {
+                                    customConnectionConfig = new CustomConnectionConfig(
+                                        options.Connection.Custom.LocationUris,
+                                        options.Connection.Custom.ConnectionFilters,
+                                        options.Connection.Custom.ListenUris);
+                                }
+
+                                CatharsisConfig catharsisConfig;
+                                {
+                                    var catharsisIpv4Config = new CatharsisIpv4Config(null, null);
+
+                                    catharsisConfig = new CatharsisConfig(catharsisIpv4Config);
+                                }
+
+                                connectionConfig = new ConnectionConfig(
+                                    tcpConnectionConfig,
+                                    i2PConnectionConfig,
+                                    customConnectionConfig,
+                                    catharsisConfig);
+                            }
+
+                            CoreConfig coreConfig;
+                            {
+                                NetworkConfig networkConfig;
+                                {
+                                    networkConfig = new NetworkConfig(
+                                        options.Connection.Bandwidth.ConnectionCountLimit,
+                                        options.Connection.Bandwidth.BandwidthLimit);
+                                }
+
+                                DownloadConfig downloadConfig;
+                                {
+                                    downloadConfig = new DownloadConfig(
+                                        options.Data.Download.DirectoryPath,
+                                        options.Data.Download.ProtectedPercentage);
+                                }
+
+                                coreConfig = new CoreConfig(networkConfig, downloadConfig);
+                            }
+
+                            MessageConfig messageConfig;
+                            {
+                                messageConfig = new MessageConfig(options.View.Subscribe.Signatures);
+                            }
+
+                            serviceConfig = new ServiceConfig(coreConfig, connectionConfig, messageConfig);
+                        }
+
+                        serviceManager.SetConfig(serviceConfig);
+                    }
+
+                    // AmoebaInterfaceManager (Resize)
+                    {
+                        long orginalCacheSize = serviceManager.Size;
+
+                        if (options.Data.Cache.Size < orginalCacheSize)
+                        {
+                            App.Current.Dispatcher.Invoke(new Action(() =>
+                            {
+                                if (dialogService.ShowDialog(LanguagesManager.Instance.DataOptionsControl_CacheResize_Message,
+                                    MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.Cancel) == MessageBoxResult.OK)
+                                {
+                                    Task.Run(() =>
+                                    {
+                                        ProgressDialog.Instance.Increment();
+
+                                        serviceManager.Resize(options.Data.Cache.Size);
+
+                                        ProgressDialog.Instance.Decrement();
+                                    });
+                                }
+                            }));
+                        }
+                        else if (options.Data.Cache.Size > orginalCacheSize)
+                        {
+                            ProgressDialog.Instance.Increment();
+
+                            serviceManager.Resize(options.Data.Cache.Size);
+
+                            ProgressDialog.Instance.Decrement();
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    Log.Error(e);
                 }
             }
         }
@@ -636,7 +653,7 @@ namespace Amoeba.Interface
 
             if (isDisposing)
             {
-                Backup.Instance.SaveEvent -= this.Save;
+                EventHooks.Instance.SaveEvent -= this.Save;
 
                 _watchManager.Dispose();
 

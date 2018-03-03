@@ -108,7 +108,7 @@
     </Compile>
     <Compile Include="Sources\Mvvm\Services\DialogService.cs" />
     <Compile Include="Sources\Mvvm\Services\ProgressDialog.cs" />
-    <Compile Include="Sources\Mvvm\Services\Backup.cs" />
+    <Compile Include="Sources\Mvvm\Services\EventHooks.cs" />
     <Compile Include="Sources\Mvvm\Services\Clipboard.cs" />
     <Compile Include="Sources\Mvvm\Services\Clipboard.Monitor.cs" />
     <Compile Include="Sources\Mvvm\Utils\CustomSortComparer.cs" />

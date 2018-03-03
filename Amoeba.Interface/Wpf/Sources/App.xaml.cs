@@ -1,3 +1,4 @@
+using Omnius.Base;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -21,7 +22,12 @@ namespace Amoeba.Interface
     {
         public App()
         {
+            this.DispatcherUnhandledException += this.App_DispatcherUnhandledException;
+        }
 
+        private void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        {
+            Log.Error(e.Exception);
         }
     }
 }

@@ -51,7 +51,7 @@ namespace Amoeba.Interface
                 Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
 
                 // ハンドルしていない例外をログ出力させる。
-                Thread.GetDomain().UnhandledException += Program_UnhandledException;
+                Thread.GetDomain().UnhandledException += this.Program_UnhandledException;
 
                 string sessionId = NetworkConverter.ToHexString(Sha256.Compute(Path.GetFullPath(Assembly.GetEntryAssembly().Location)));
 

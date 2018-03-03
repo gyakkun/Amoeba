@@ -42,7 +42,7 @@
                         HorizontalAlignment="Left"
                         VerticalAlignment="Top"
                         VerticalContentAlignment="Center"
-                        Content="Copyright © Lyrise 2009-2017" />
+                        Content="Copyright © Lyrise 2009-2018" />
                 </StackPanel>
                 <Image
                     Width="256"

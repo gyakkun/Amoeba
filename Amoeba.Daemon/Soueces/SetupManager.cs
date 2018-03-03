@@ -25,7 +25,7 @@ namespace Amoeba.Daemon
             Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
 
             // ハンドルしていない例外をログ出力させる。
-            Thread.GetDomain().UnhandledException += Program_UnhandledException;
+            Thread.GetDomain().UnhandledException += this.Program_UnhandledException;
 
             // コマンドライン引数を解析。
             var options = CommandLine.Parser.Default.ParseArguments<Options>(Environment.GetCommandLineArgs())

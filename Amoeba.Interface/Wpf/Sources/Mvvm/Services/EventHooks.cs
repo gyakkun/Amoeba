@@ -2,15 +2,15 @@
 
 namespace Amoeba.Interface
 {
-    class Backup
+    class EventHooks
     {
         public event Action SaveEvent;
 
-        public static Backup Instance { get; } = new Backup();
+        public static EventHooks Instance { get; } = new EventHooks();
 
-        private Backup() { }
+        private EventHooks() { }
 
-        public void Run()
+        public void OnSave()
         {
             this.SaveEvent?.Invoke();
         }

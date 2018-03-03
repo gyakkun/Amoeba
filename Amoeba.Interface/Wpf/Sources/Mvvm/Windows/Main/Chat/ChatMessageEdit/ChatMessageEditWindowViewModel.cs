@@ -67,7 +67,7 @@ namespace Amoeba.Interface
             }
 
             {
-                Backup.Instance.SaveEvent += this.Save;
+                EventHooks.Instance.SaveEvent += this.Save;
             }
         }
 
@@ -108,7 +108,7 @@ namespace Amoeba.Interface
 
             if (isDisposing)
             {
-                Backup.Instance.SaveEvent -= this.Save;
+                EventHooks.Instance.SaveEvent -= this.Save;
 
                 this.Save();
 

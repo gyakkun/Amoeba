@@ -328,7 +328,6 @@ namespace Amoeba.Rpc
             {
                 queue.Dispose();
                 _queueMap.Remove(id);
-
             }
         }
 

@@ -86,6 +86,13 @@ namespace Amoeba.Messages
                             this.ProtectedTags.Add(Tag.Import(reader.GetStream(), bufferManager));
                         }
                     }
+                    else
+                    {
+                        if (id == 1) // ExchangePublicKey
+                        {
+                            ExchangePublicKey.Import(reader.GetStream(), bufferManager);
+                        }
+                    }
                 }
             }
         }

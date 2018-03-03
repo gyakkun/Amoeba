@@ -158,7 +158,7 @@ namespace Amoeba.Interface
 
                     try
                     {
-                        Backup.Instance.Run();
+                        EventHooks.Instance.OnSave();
                         this.GarbageCollect();
                     }
                     catch (Exception e)

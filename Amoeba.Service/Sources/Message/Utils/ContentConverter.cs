@@ -465,8 +465,10 @@ namespace Amoeba.Service
                 {
                     return AddVersion(Compress(message.Export(_bufferManager)), version);
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
+                    Log.Debug(e);
+
                     return null;
                 }
             }
@@ -480,8 +482,10 @@ namespace Amoeba.Service
                 {
                     return ItemBase<T>.Import(Decompress(RemoveVersion(stream, version)), _bufferManager);
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
+                    Log.Debug(e);
+
                     return null;
                 }
             }
@@ -497,8 +501,10 @@ namespace Amoeba.Service
                     throw new NotImplementedException();
                     //return AddVersion(AddHash(Encrypt(AddPadding(Compress(message.Export(_bufferManager)), paddingSize), publicKey)), version);
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
+                    Log.Debug(e);
+
                     return null;
                 }
             }
@@ -514,8 +520,10 @@ namespace Amoeba.Service
                     throw new NotImplementedException();
                     //return ItemBase<T>.Import(Decompress(RemovePadding(RemoveHash(Decrypt(RemoveVersion(stream, version), privateKey)))), _bufferManager);
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
+                    Log.Debug(e);
+
                     return null;
                 }
             }
