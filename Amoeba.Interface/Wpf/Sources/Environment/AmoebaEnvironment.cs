@@ -61,6 +61,7 @@ namespace Amoeba.Interface
         public class EnvironmentPaths
         {
             public string BaseDirectoryPath { get; private set; }
+            public string CoreDirectoryPath { get; private set; }
             public string TempDirectoryPath { get; private set; }
             public string ConfigDirectoryPath { get; private set; }
             public string DownloadsDirectoryPath { get; private set; }
@@ -68,12 +69,14 @@ namespace Amoeba.Interface
             public string LogDirectoryPath { get; private set; }
             public string WorkDirectoryPath { get; private set; }
             public string DaemonDirectoryPath { get; private set; }
+            public string InterfaceDirectoryPath { get; private set; }
             public string LanguagesDirectoryPath { get; private set; }
             public string IconsDirectoryPath { get; private set; }
 
             public EnvironmentPaths()
             {
                 this.BaseDirectoryPath = "../../";
+                this.CoreDirectoryPath = "../../Core";
                 this.TempDirectoryPath = "../../Temp";
                 this.ConfigDirectoryPath = "../../Config";
                 this.DownloadsDirectoryPath = "../../Downloads";
@@ -81,6 +84,7 @@ namespace Amoeba.Interface
                 this.LogDirectoryPath = "../../Log";
                 this.WorkDirectoryPath = "../../Work";
                 this.DaemonDirectoryPath = "../Daemon";
+                this.InterfaceDirectoryPath = "../Interface";
                 this.LanguagesDirectoryPath = "./Resources/Languages";
                 this.IconsDirectoryPath = "./Resources/Icons";
             }

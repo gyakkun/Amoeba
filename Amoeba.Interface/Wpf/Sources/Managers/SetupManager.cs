@@ -170,9 +170,9 @@ namespace Amoeba.Interface
                             startInfo.FileName = Path.GetFullPath(tempUpdateExeFilePath);
                             startInfo.Arguments = string.Format("\"{0}\" \"{1}\" \"{2}\" \"{3}\"",
                                 sessionId,
-                                Path.Combine(tempUpdateDirectoryPath, "Core"),
-                                Directory.GetCurrentDirectory(),
-                                Path.Combine(Directory.GetCurrentDirectory(), "Amoeba.Interface.exe"));
+                                Path.GetFullPath(Path.Combine(tempUpdateDirectoryPath, "Core")),
+                                Path.GetFullPath(AmoebaEnvironment.Paths.CoreDirectoryPath),
+                                Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "Amoeba.Interface.exe")));
                             startInfo.WorkingDirectory = Path.GetFullPath(Path.GetDirectoryName(tempUpdateExeFilePath));
 
                             Process.Start(startInfo);
