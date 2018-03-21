@@ -25,7 +25,7 @@ namespace Amoeba.Interface
 
         private DialogService _dialogService;
 
-        public AccountOptionsInfo Options { get; }
+        public OptionsInfo.AccountInfo Options { get; }
 
         public ReactiveProperty<string> SelectedItem { get; private set; }
 
@@ -66,7 +66,7 @@ namespace Amoeba.Interface
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _isDisposed;
 
-        public AccountOptionsControlViewModel(AccountOptionsInfo options, DialogService dialogService)
+        public AccountOptionsControlViewModel(OptionsInfo.AccountInfo options, DialogService dialogService)
         {
             _dialogService = dialogService;
 
@@ -139,7 +139,7 @@ namespace Amoeba.Interface
                 _trustSignaturesSortInfo = _settings.Load("TrustSignaturesSortInfo", () => new ListSortInfo() { Direction = ListSortDirection.Ascending, PropertyName = "Signature" });
                 _untrustSignaturesSortInfo = _settings.Load("UntrustSignaturesSortInfo", () => new ListSortInfo() { Direction = ListSortDirection.Ascending, PropertyName = "Signature" });
                 _tagsSortInfo = _settings.Load("TagsSortInfo", () => new ListSortInfo() { Direction = ListSortDirection.Ascending, PropertyName = "Name" });
-                this.DynamicOptions.SetProperties(_settings.Load(nameof(DynamicOptions), () => Array.Empty<DynamicOptions.DynamicPropertyInfo>()));
+                this.DynamicOptions.SetProperties(_settings.Load(nameof(this.DynamicOptions), () => Array.Empty<DynamicOptions.DynamicPropertyInfo>()));
             }
 
             {
@@ -490,7 +490,7 @@ namespace Amoeba.Interface
                 _settings.Save("TrustSignaturesSortInfo", _trustSignaturesSortInfo);
                 _settings.Save("UntrustSignaturesSortInfo", _untrustSignaturesSortInfo);
                 _settings.Save("TagsSortInfo", _tagsSortInfo);
-                _settings.Save(nameof(DynamicOptions), this.DynamicOptions.GetProperties(), true);
+                _settings.Save(nameof(this.DynamicOptions), this.DynamicOptions.GetProperties(), true);
             });
         }
 

@@ -88,7 +88,7 @@ namespace Amoeba.Interface
                 int version = _settings.Load("Version", () => 0);
 
                 _sortInfo = _settings.Load("SortInfo", () => new ListSortInfo() { Direction = ListSortDirection.Ascending, PropertyName = "Contains" });
-                this.DynamicOptions.SetProperties(_settings.Load(nameof(DynamicOptions), () => Array.Empty<DynamicOptions.DynamicPropertyInfo>()));
+                this.DynamicOptions.SetProperties(_settings.Load(nameof(this.DynamicOptions), () => Array.Empty<DynamicOptions.DynamicPropertyInfo>()));
             }
 
             {
@@ -179,7 +179,7 @@ namespace Amoeba.Interface
             {
                 _settings.Save("Version", 0);
                 _settings.Save("SortInfo", _sortInfo);
-                _settings.Save(nameof(DynamicOptions), this.DynamicOptions.GetProperties(), true);
+                _settings.Save(nameof(this.DynamicOptions), this.DynamicOptions.GetProperties(), true);
             });
         }
 

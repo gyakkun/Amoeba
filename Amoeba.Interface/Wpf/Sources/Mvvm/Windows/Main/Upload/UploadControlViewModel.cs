@@ -14,6 +14,7 @@ using System.Windows.Data;
 using System.Windows.Threading;
 using Amoeba.Messages;
 using Amoeba.Rpc;
+using Newtonsoft.Json;
 using Omnius.Base;
 using Omnius.Collections;
 using Omnius.Configuration;
@@ -243,7 +244,7 @@ namespace Amoeba.Interface
                 _uploadItemsInfo = _settings.Load<UploadItemsInfo>("UploadItemsInfo2", () => null);
 
                 _sortInfo = _settings.Load("SortInfo", () => new ListSortInfo() { Direction = ListSortDirection.Ascending, PropertyName = "Name" });
-                this.DynamicOptions.SetProperties(_settings.Load(nameof(DynamicOptions), () => Array.Empty<DynamicOptions.DynamicPropertyInfo>()));
+                this.DynamicOptions.SetProperties(_settings.Load(nameof(this.DynamicOptions), () => Array.Empty<DynamicOptions.DynamicPropertyInfo>()));
             }
 
             {
@@ -663,11 +664,11 @@ namespace Amoeba.Interface
                 try
                 {
                     DigitalSignature digitalSignature = null;
-                    Store store = null;
+                    StoreContent store = null;
 
                     App.Current.Dispatcher.Invoke(() =>
                     {
-                        digitalSignature = SettingsManager.Instance.AccountInfo.DigitalSignature;
+                        digitalSignature = SettingsManager.Instance.AccountSetting.DigitalSignature;
                         store = StoreBuilder.Create(this.TabViewModel.Value.Model);
                     }, DispatcherPriority.Background, token);
 
@@ -723,7 +724,7 @@ namespace Amoeba.Interface
 
         private static class StoreBuilder
         {
-            public static Store Create(UploadStoreInfo uploadStoreInfo)
+            public static StoreContent Create(UploadStoreInfo uploadStoreInfo)
             {
                 var tempBoxes = new List<Box>();
 
@@ -737,7 +738,7 @@ namespace Amoeba.Interface
                     tempBoxes.Add(CreateBox(directoryInfo));
                 }
 
-                return new Store(tempBoxes);
+                return new StoreContent(tempBoxes);
             }
 
             private static Box CreateBox(UploadCategoryInfo rootCategoryInfo)
@@ -804,7 +805,7 @@ namespace Amoeba.Interface
 
         private async void Sync()
         {
-            var digitalSignature = SettingsManager.Instance.AccountInfo.DigitalSignature;
+            var digitalSignature = SettingsManager.Instance.AccountSetting.DigitalSignature;
             if (digitalSignature == null) return;
 
             var directoryPaths = new HashSet<string>();
@@ -1382,59 +1383,29 @@ namespace Amoeba.Interface
                 _settings.Save("UploadStoreInfo", this.TabViewModel.Value.Model);
                 _settings.Save("UploadItemsInfo2", _uploadItemsInfo);
                 _settings.Save("SortInfo", _sortInfo);
-                _settings.Save(nameof(DynamicOptions), this.DynamicOptions.GetProperties(), true);
+                _settings.Save(nameof(this.DynamicOptions), this.DynamicOptions.GetProperties(), true);
             });
         }
 
-        [DataContract(Name = nameof(UploadItemsInfo))]
+        [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
         private class UploadItemsInfo
         {
+            [JsonConstructor]
             public UploadItemsInfo(DateTime creationTime, DigitalSignature digitalSignature, IReadOnlyDictionary<string, string[]> map)
             {
                 this.CreationTime = creationTime;
                 this.DigitalSignature = digitalSignature;
-
-                if (map != null)
-                {
-                    foreach (var (key, value) in map)
-                    {
-                        this.ProtectedMap.Add(key, value);
-                    }
-                }
+                this.Map = map;
             }
 
-            [DataMember(Name = nameof(CreationTime))]
-            public DateTime CreationTime { get; private set; }
+            [JsonProperty]
+            public DateTime CreationTime { get; }
 
-            [DataMember(Name = nameof(DigitalSignature))]
-            public DigitalSignature DigitalSignature { get; private set; }
+            [JsonProperty]
+            public DigitalSignature DigitalSignature { get; }
 
-            private volatile ReadOnlyDictionary<string, string[]> _readOnlyMap;
-
-            public IReadOnlyDictionary<string, string[]> Map
-            {
-                get
-                {
-                    if (_readOnlyMap == null)
-                        _readOnlyMap = new ReadOnlyDictionary<string, string[]>(this.ProtectedMap);
-
-                    return _readOnlyMap;
-                }
-            }
-
-            private Dictionary<string, string[]> _map;
-
-            [DataMember(Name = nameof(Map))]
-            private Dictionary<string, string[]> ProtectedMap
-            {
-                get
-                {
-                    if (_map == null)
-                        _map = new Dictionary<string, string[]>();
-
-                    return _map;
-                }
-            }
+            [JsonProperty]
+            public IReadOnlyDictionary<string, string[]> Map { get; }
         }
 
         protected override void Dispose(bool isDisposing)

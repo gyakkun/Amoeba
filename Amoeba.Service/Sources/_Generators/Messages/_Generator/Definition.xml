@@ -1,0 +1,159 @@
+﻿<Config>
+
+    <Class Modifier="internal" Name="Group">
+        <Properties>
+            <Varint Name="CorrectionAlgorithm" Id="0" Type="CorrectionAlgorithm" />
+            <Varint Name="Length" Id="1" Type="long" />
+            <Array Name="Hashes" Id="2" MaxLength="1024 * 1024">
+                <Element>
+                    <Message Type="Hash" />
+                </Element>
+            </Array>
+        </Properties>
+    </Class>
+
+    <Class Modifier="internal" Name="Index">
+        <Properties>
+            <Array Name="Groups" Id="0" MaxLength="1024 * 1024">
+                <Element>
+                    <Message Type="Group" />
+                </Element>
+            </Array>
+        </Properties>
+    </Class>
+
+    <Class Modifier="internal" Name="ProfilePacket">
+        <Properties>
+            <Bytes Name="Id" Id="0" />
+            <Message Name="Location" Id="1" Type="Location" />
+        </Properties>
+    </Class>
+
+    <Class Modifier="internal" Name="LocationsPacket">
+        <Properties>
+            <Array Name="Locations" Id="0" MaxLength="1024 * 256">
+                <Element>
+                    <Message Type="Location" />
+                </Element>
+            </Array>
+        </Properties>
+    </Class>
+
+    <Class Modifier="internal" Name="BroadcastMetadata">
+        <Properties>
+            <String Name="Type" Id="0" MaxLength="256" />
+            <DateTime Name="CreationTime" Id="1" />
+            <Message Name="Metadata" Id="2" Type="Metadata" />
+            <Message Name="Certificate" Id="3" Type="Certificate" IsNullable="true" />
+        </Properties>
+    </Class>
+
+    <Class Modifier="internal" Name="MulticastMetadata">
+        <Properties>
+            <String Name="Type" Id="0" MaxLength="256" />
+            <Message Name="Tag" Id="1" Type="Tag" />
+            <DateTime Name="CreationTime" Id="2" />
+            <Message Name="Metadata" Id="3" Type="Metadata" />
+            <Message Name="Cash" Id="4" Type="Cash" IsNullable="true" />
+            <Message Name="Certificate" Id="5" Type="Certificate" IsNullable="true" />
+        </Properties>
+    </Class>
+
+    <Class Modifier="internal" Name="UnicastMetadata">
+        <Properties>
+            <String Name="Type" Id="0" MaxLength="256" />
+            <Message Name="Signature" Id="1" Type="Signature" />
+            <DateTime Name="CreationTime" Id="2" />
+            <Message Name="Metadata" Id="3" Type="Metadata" />
+            <Message Name="Certificate" Id="4" Type="Certificate" IsNullable="true" />
+        </Properties>
+    </Class>
+
+    <Class Modifier="internal" Name="BlockResultPacket">
+        <Properties>
+            <Message Name="Hash" Id="0" Type="Hash" />
+            <Bytes Name="Value" Id="1" IsRecycled="true" />
+        </Properties>
+    </Class>
+
+    <Class Modifier="internal" Name="BlocksLinkPacket">
+        <Properties>
+            <Array Name="Hashes" Id="0" MaxLength="1024 * 256">
+                <Element>
+                    <Message Type="Hash" />
+                </Element>
+            </Array>
+        </Properties>
+    </Class>
+
+    <Class Modifier="internal" Name="BlocksRequestPacket">
+        <Properties>
+            <Array Name="Hashes" Id="0" MaxLength="1024 * 256">
+                <Element>
+                    <Message Type="Hash" />
+                </Element>
+            </Array>
+        </Properties>
+    </Class>
+
+    <Class Modifier="internal" Name="BroadcastMetadatasRequestPacket">
+        <Properties>
+            <Array Name="Signatures" Id="0" MaxLength="1024 * 256">
+                <Element>
+                    <Message Type="Signature" />
+                </Element>
+            </Array>
+        </Properties>
+    </Class>
+
+    <Class Modifier="internal" Name="BroadcastMetadatasResultPacket">
+        <Properties>
+            <Array Name="BroadcastMetadatas" Id="0" MaxLength="1024 * 256">
+                <Element>
+                    <Message Type="BroadcastMetadata" />
+                </Element>
+            </Array>
+        </Properties>
+    </Class>
+
+    <Class Modifier="internal" Name="MulticastMetadatasRequestPacket">
+        <Properties>
+            <Array Name="Tags" Id="0" MaxLength="1024 * 256">
+                <Element>
+                    <Message Type="Tag" />
+                </Element>
+            </Array>
+        </Properties>
+    </Class>
+
+    <Class Modifier="internal" Name="MulticastMetadatasResultPacket">
+        <Properties>
+            <Array Name="MulticastMetadatas" Id="0" MaxLength="1024 * 256">
+                <Element>
+                    <Message Type="MulticastMetadata" />
+                </Element>
+            </Array>
+        </Properties>
+    </Class>
+
+    <Class Modifier="internal" Name="UnicastMetadatasRequestPacket">
+        <Properties>
+            <Array Name="Signatures" Id="0" MaxLength="1024 * 256">
+                <Element>
+                    <Message Type="Signature" />
+                </Element>
+            </Array>
+        </Properties>
+    </Class>
+
+    <Class Modifier="internal" Name="UnicastMetadatasResultPacket">
+        <Properties>
+            <Array Name="UnicastMetadatas" Id="0" MaxLength="1024 * 256">
+                <Element>
+                    <Message Type="UnicastMetadata" />
+                </Element>
+            </Array>
+        </Properties>
+    </Class>
+
+</Config>

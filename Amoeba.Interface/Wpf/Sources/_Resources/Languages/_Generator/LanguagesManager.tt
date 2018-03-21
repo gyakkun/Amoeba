@@ -32,7 +32,7 @@ using (var reader = new XmlTextReader(stream))
             if (reader.LocalName == "Property")
             {
 #>
-        public string <#= reader.GetAttribute("Name") #> { get { return this.Translate("<#= reader.GetAttribute("Name") #>"); } }
+        public string <#= reader.GetAttribute("Name") #> => this.Translate("<#= reader.GetAttribute("Name") #>");
 <#
             }
         }

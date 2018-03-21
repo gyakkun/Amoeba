@@ -76,6 +76,7 @@ namespace Amoeba.Service
             {
                 lock (_lockObject)
                 {
+                    if (_config == config) return;
                     _config = config;
                 }
 
@@ -202,9 +203,9 @@ namespace Amoeba.Service
                 catch (SocketException)
                 {
                     if (socket != null) socket.Dispose();
-                }
 
-                throw new Exception();
+                    throw;
+                }
             }
 
             public Cap ConnectCap(string uri)
@@ -236,7 +237,7 @@ namespace Amoeba.Service
                         if (!IPAddress.TryParse(address, out ipAddress)) return null;
 
 #if !DEBUG
-                    if (!IsGlobalIpAddress(ipAddress)) return null;
+                        if (!IsGlobalIpAddress(ipAddress)) return null;
 #endif
 
                         if (!config.Type.HasFlag(TcpConnectionType.Ipv4)

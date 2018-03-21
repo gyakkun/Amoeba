@@ -457,7 +457,7 @@ namespace Amoeba.Service
             }
 
             public static Stream ToStream<T>(T message, int version)
-                where T : ItemBase<T>
+                where T : MessageBase<T>
             {
                 if (message == null) throw new ArgumentNullException(nameof(message));
 
@@ -474,13 +474,13 @@ namespace Amoeba.Service
             }
 
             public static T FromStream<T>(Stream stream, int version)
-                where T : ItemBase<T>
+                where T : MessageBase<T>
             {
                 if (stream == null) throw new ArgumentException("stream", nameof(stream));
 
                 try
                 {
-                    return ItemBase<T>.Import(Decompress(RemoveVersion(stream, version)), _bufferManager);
+                    return MessageBase<T>.Import(Decompress(RemoveVersion(stream, version)), _bufferManager);
                 }
                 catch (Exception e)
                 {
@@ -491,7 +491,7 @@ namespace Amoeba.Service
             }
 
             public static Stream ToCryptoStream<T>(T message, int paddingSize, AgreementPublicKey publicKey, int version)
-                where T : ItemBase<T>
+                where T : MessageBase<T>
             {
                 if (message == null) throw new ArgumentNullException(nameof(message));
                 if (publicKey == null) throw new ArgumentNullException(nameof(publicKey));
@@ -510,7 +510,7 @@ namespace Amoeba.Service
             }
 
             public static T FromCryptoStream<T>(Stream stream, AgreementPrivateKey privateKey, int version)
-                where T : ItemBase<T>
+                where T : MessageBase<T>
             {
                 if (stream == null) throw new ArgumentException("stream", nameof(stream));
                 if (privateKey == null) throw new ArgumentNullException(nameof(privateKey));
@@ -518,7 +518,7 @@ namespace Amoeba.Service
                 try
                 {
                     throw new NotImplementedException();
-                    //return ItemBase<T>.Import(Decompress(RemovePadding(RemoveHash(Decrypt(RemoveVersion(stream, version), privateKey)))), _bufferManager);
+                    //return MessageBase<T>.Import(Decompress(RemovePadding(RemoveHash(Decrypt(RemoveVersion(stream, version), privateKey)))), _bufferManager);
                 }
                 catch (Exception e)
                 {

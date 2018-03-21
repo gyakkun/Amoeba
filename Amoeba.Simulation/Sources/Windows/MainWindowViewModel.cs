@@ -1,20 +1,20 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
-using System.Reactive.Disposables;
-using System.Threading.Tasks;
 using System.Linq;
+using System.Net;
+using System.Reactive.Disposables;
+using System.Threading;
+using System.Threading.Tasks;
+using Amoeba.Messages;
 using Omnius.Base;
+using Omnius.Collections;
 using Omnius.Configuration;
 using Omnius.Wpf;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
-using System.Collections.Generic;
-using Amoeba.Messages;
-using Omnius.Collections;
-using System.Threading;
-using System.Net;
 
 namespace Amoeba.Simulation
 {
@@ -50,7 +50,7 @@ namespace Amoeba.Simulation
                 _settings = new Settings(configPath);
                 int version = _settings.Load("Version", () => 0);
 
-                this.WindowSettings.Value = _settings.Load(nameof(WindowSettings), () => new WindowSettings());
+                this.WindowSettings.Value = _settings.Load(nameof(this.WindowSettings), () => new WindowSettings());
             }
         }
 
@@ -180,7 +180,7 @@ namespace Amoeba.Simulation
             if (isDisposing)
             {
                 _settings.Save("Version", 0);
-                _settings.Save(nameof(WindowSettings), this.WindowSettings.Value);
+                _settings.Save(nameof(this.WindowSettings), this.WindowSettings.Value);
 
                 _disposable.Dispose();
             }

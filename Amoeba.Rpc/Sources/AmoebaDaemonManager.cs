@@ -12,7 +12,7 @@ using Omnius.Serialization;
 
 namespace Amoeba.Rpc
 {
-    public class AmoebaDaemonManager<TService> : ManagerBase
+    public sealed class AmoebaDaemonManager<TService> : ManagerBase
         where TService : StateManagerBase, IService
     {
         private Socket _socket;
@@ -33,7 +33,7 @@ namespace Amoeba.Rpc
             _serviceManager = serviceManager;
             _bufferManager = bufferManager;
             _messagingManager = new MessagingManager(_socket, _bufferManager);
-            _messagingManager.ReceiveEvent += _messagingManager_ReceiveEvent;
+            _messagingManager.ReceiveEvent += this._messagingManager_ReceiveEvent;
         }
 
         public void Watch()
@@ -56,10 +56,10 @@ namespace Amoeba.Rpc
 
         private void _messagingManager_ReceiveEvent(Stream requestStream)
         {
-            using (var reader = new ItemStreamReader(new WrapperStream(requestStream), _bufferManager))
+            var reader = new MessageStreamReader(new WrapperStream(requestStream), _bufferManager);
             {
-                var type = (AmoebaFunctionType)reader.GetUInt32();
-                int id = (int)reader.GetUInt32();
+                var type = (AmoebaFunctionType)reader.GetUInt64();
+                int id = (int)reader.GetUInt64();
 
                 if (type == AmoebaFunctionType.Exit)
                 {
@@ -186,29 +186,29 @@ namespace Amoeba.Rpc
                                     }
                                 case AmoebaFunctionType.SetProfile:
                                     {
-                                        var arguments = JsonUtils.Load<(Profile, DigitalSignature)>(requestStream);
+                                        var arguments = JsonUtils.Load<(ProfileContent, DigitalSignature)>(requestStream);
                                         _serviceManager.SetProfile(arguments.Item1, arguments.Item2, token).Wait();
                                         SendResponse(AmoebaFunctionResponseType.Result, id, (object)null);
                                         break;
                                     }
                                 case AmoebaFunctionType.SetStore:
                                     {
-                                        var arguments = JsonUtils.Load<(Store, DigitalSignature)>(requestStream);
+                                        var arguments = JsonUtils.Load<(StoreContent, DigitalSignature)>(requestStream);
                                         _serviceManager.SetStore(arguments.Item1, arguments.Item2, token).Wait();
                                         SendResponse(AmoebaFunctionResponseType.Result, id, (object)null);
                                         break;
                                     }
-                                case AmoebaFunctionType.SetMailMessage:
+                                case AmoebaFunctionType.SetUnicastCommentMessage:
                                     {
-                                        var arguments = JsonUtils.Load<(Signature, MailMessage, AgreementPublicKey, DigitalSignature)>(requestStream);
-                                        _serviceManager.SetMailMessage(arguments.Item1, arguments.Item2, arguments.Item3, arguments.Item4, token).Wait();
+                                        var arguments = JsonUtils.Load<(Signature, CommentContent, AgreementPublicKey, DigitalSignature)>(requestStream);
+                                        _serviceManager.SetUnicastCommentMessage(arguments.Item1, arguments.Item2, arguments.Item3, arguments.Item4, token).Wait();
                                         SendResponse(AmoebaFunctionResponseType.Result, id, (object)null);
                                         break;
                                     }
-                                case AmoebaFunctionType.SetChatMessage:
+                                case AmoebaFunctionType.SetMulticastCommentMessage:
                                     {
-                                        var arguments = JsonUtils.Load<(Tag, ChatMessage, DigitalSignature, TimeSpan)>(requestStream);
-                                        _serviceManager.SetChatMessage(arguments.Item1, arguments.Item2, arguments.Item3, arguments.Item4, token).Wait();
+                                        var arguments = JsonUtils.Load<(Tag, CommentContent, DigitalSignature, TimeSpan)>(requestStream);
+                                        _serviceManager.SetMulticastCommentMessage(arguments.Item1, arguments.Item2, arguments.Item3, arguments.Item4, token).Wait();
                                         SendResponse(AmoebaFunctionResponseType.Result, id, (object)null);
                                         break;
                                     }
@@ -226,17 +226,17 @@ namespace Amoeba.Rpc
                                         SendResponse(AmoebaFunctionResponseType.Result, id, result);
                                         break;
                                     }
-                                case AmoebaFunctionType.GetMailMessages:
+                                case AmoebaFunctionType.GetUnicastCommentMessages:
                                     {
                                         var arguments = JsonUtils.Load<(Signature, AgreementPrivateKey)>(requestStream);
-                                        var result = _serviceManager.GetMailMessages(arguments.Item1, arguments.Item2, token).Result;
+                                        var result = _serviceManager.GetUnicastCommentMessages(arguments.Item1, arguments.Item2, token).Result;
                                         SendResponse(AmoebaFunctionResponseType.Result, id, result);
                                         break;
                                     }
-                                case AmoebaFunctionType.GetChatMessages:
+                                case AmoebaFunctionType.GetMulticastCommentMessages:
                                     {
                                         var tag = JsonUtils.Load<Tag>(requestStream);
-                                        var result = _serviceManager.GetChatMessages(tag, token).Result;
+                                        var result = _serviceManager.GetMulticastCommentMessages(tag, token).Result;
                                         SendResponse(AmoebaFunctionResponseType.Result, id, result);
                                         break;
                                     }
@@ -277,6 +277,7 @@ namespace Amoeba.Rpc
                         }
                         catch (Exception e)
                         {
+                            Log.Error(string.Format("Rpc Error: {0}", type.ToString()));
                             Log.Error(e);
 
                             var argument = new AmoebaErrorMessage(e.GetType().ToString(), e.Message, e.StackTrace?.ToString());
@@ -296,34 +297,35 @@ namespace Amoeba.Rpc
 
             void SendResponse<T>(AmoebaFunctionResponseType type, int id, T value)
             {
-                using (var writer = new ItemStreamWriter(_bufferManager))
+                var messageStream = new RecyclableMemoryStream(_bufferManager);
+                var writer = new MessageStreamWriter(messageStream, _bufferManager);
+
+                writer.Write((ulong)type);
+                writer.Write((ulong)id);
+
+                Stream valueStream = null;
+
+                if (value != null)
                 {
-                    writer.Write((uint)type);
-                    writer.Write((uint)id);
-
-                    Stream valueStream = null;
-
-                    if (value != null)
+                    try
                     {
-                        try
-                        {
-                            valueStream = new RecyclableMemoryStream(_bufferManager);
-                            JsonUtils.Save(valueStream, value);
-                        }
-                        catch (Exception)
-                        {
-                            if (valueStream != null)
-                            {
-                                valueStream.Dispose();
-                                valueStream = null;
-                            }
-
-                            return;
-                        }
+                        valueStream = new RecyclableMemoryStream(_bufferManager);
+                        JsonUtils.Save(valueStream, value);
                     }
+                    catch (Exception)
+                    {
+                        if (valueStream != null)
+                        {
+                            valueStream.Dispose();
+                            valueStream = null;
+                        }
 
-                    _messagingManager.Send(new UniteStream(writer.GetStream(), valueStream));
+                        return;
+                    }
                 }
+
+                messageStream.Seek(0, SeekOrigin.Begin);
+                _messagingManager.Send(new UniteStream(messageStream, valueStream));
             }
         }
 

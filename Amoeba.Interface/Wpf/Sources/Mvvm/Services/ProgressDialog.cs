@@ -1,16 +1,16 @@
 ﻿namespace Amoeba.Interface
 {
-    class ProgressDialog
+    class ProgressCircleService
     {
         private int _value = 0;
         private readonly object _lockObject = new object();
 
-        private ProgressDialog()
+        private ProgressCircleService()
         {
 
         }
 
-        public static ProgressDialog Instance { get; } = new ProgressDialog();
+        public static ProgressCircleService Instance { get; } = new ProgressCircleService();
 
         public void Increment()
         {

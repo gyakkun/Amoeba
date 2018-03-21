@@ -42,7 +42,7 @@ namespace Amoeba.Service
         private readonly object _lockObject = new object();
         private volatile bool _isDisposed;
 
-        private readonly int _threadCount = Math.Max(2, Math.Min(System.Environment.ProcessorCount, 32) / 2);
+        private readonly int _threadCount = 2;
 
         public DownloadManager(string configPath, NetworkManager networkManager, CacheManager cacheManager, BufferManager bufferManager)
         {
@@ -89,7 +89,7 @@ namespace Amoeba.Service
                     int parityBlockCount;
                     {
                         if (info.Depth == 0) blockCount = 1;
-                        else blockCount = info.Index.Groups.Sum(n => n.Hashes.Count());
+                        else blockCount = info.Index.Groups.Sum(n => n.Hashes.Count);
 
                         if (info.State == DownloadState.Downloading || info.State == DownloadState.Decoding || info.State == DownloadState.ParityDecoding)
                         {
@@ -304,7 +304,7 @@ namespace Amoeba.Service
             }
         }
 
-        LockedHashSet<DownloadItemInfo> _workingItems = new LockedHashSet<DownloadItemInfo>();
+        LockedHashSet<Metadata> _workingItems = new LockedHashSet<Metadata>();
 
         private void DecodingThread(CancellationToken token)
         {
@@ -317,7 +317,7 @@ namespace Amoeba.Service
                 lock (_lockObject)
                 {
                     item = CollectionUtils.Unite(_volatileDownloadItemInfoManager, _downloadItemInfoManager)
-                        .Where(n => !_workingItems.Contains(n))
+                        .Where(n => !_workingItems.Contains(n.Metadata))
                         .Where(n => n.State == DownloadState.Decoding || n.State == DownloadState.ParityDecoding)
                         .OrderBy(n => (n.Depth == n.Metadata.Depth) ? 0 : 1)
                         .OrderBy(n => (n.State == DownloadState.Decoding) ? 0 : 1)
@@ -325,7 +325,7 @@ namespace Amoeba.Service
 
                     if (item != null)
                     {
-                        _workingItems.Add(item);
+                        _workingItems.Add(item.Metadata);
                     }
                 }
 
@@ -340,8 +340,8 @@ namespace Amoeba.Service
                     }
                     else
                     {
-                        var hashes = new HashCollection();
-                        var totalHashes = new HashCollection();
+                        var hashes = new List<Hash>();
+                        var totalHashes = new List<Hash>();
 
                         if (item.Depth == 0)
                         {
@@ -484,7 +484,7 @@ namespace Amoeba.Service
                 }
                 finally
                 {
-                    _workingItems.Remove(item);
+                    _workingItems.Remove(item.Metadata);
                 }
             }
         }
@@ -573,10 +573,7 @@ namespace Amoeba.Service
 
                 if (info == null)
                 {
-                    info = new DownloadItemInfo(metadata, null);
-                    info.State = DownloadState.Downloading;
-                    info.MaxLength = maxLength;
-
+                    info = new DownloadItemInfo(metadata, null, maxLength, 0, null, DownloadState.Downloading, Array.Empty<Hash>());
                     _volatileDownloadItemInfoManager.Add(info);
                 }
                 else
@@ -618,10 +615,7 @@ namespace Amoeba.Service
             {
                 if (_downloadItemInfoManager.Contains(metadata, path)) return;
 
-                var info = new DownloadItemInfo(metadata, path);
-                info.MaxLength = maxLength;
-                info.State = DownloadState.Downloading;
-
+                var info = new DownloadItemInfo(metadata, path, maxLength, 0, null, DownloadState.Downloading, Array.Empty<Hash>());
                 _downloadItemInfoManager.Add(info);
             }
         }
@@ -934,118 +928,6 @@ namespace Amoeba.Service
             #endregion
         }
 
-        [DataContract(Name = nameof(DownloadItemInfo))]
-        private class DownloadItemInfo
-        {
-            private Metadata _metadata;
-            private string _path;
-
-            private long _maxLength;
-
-            private int _depth;
-            private Index _index;
-
-            private DownloadState _state;
-
-            private HashCollection _resultHashes;
-
-            public DownloadItemInfo(Metadata metadata, string path)
-            {
-                this.Metadata = metadata;
-                this.Path = path;
-            }
-
-            [DataMember(Name = nameof(Metadata))]
-            public Metadata Metadata
-            {
-                get
-                {
-                    return _metadata;
-                }
-                private set
-                {
-                    _metadata = value;
-                }
-            }
-
-            [DataMember(Name = nameof(Path))]
-            public string Path
-            {
-                get
-                {
-                    return _path;
-                }
-                private set
-                {
-                    _path = value;
-                }
-            }
-
-            [DataMember(Name = nameof(MaxLength))]
-            public long MaxLength
-            {
-                get
-                {
-                    return _maxLength;
-                }
-                set
-                {
-                    _maxLength = value;
-                }
-            }
-
-            [DataMember(Name = nameof(Depth))]
-            public int Depth
-            {
-                get
-                {
-                    return _depth;
-                }
-                set
-                {
-                    _depth = value;
-                }
-            }
-
-            [DataMember(Name = nameof(Index))]
-            public Index Index
-            {
-                get
-                {
-                    return _index;
-                }
-                set
-                {
-                    _index = value;
-                }
-            }
-
-            [DataMember(Name = nameof(State))]
-            public DownloadState State
-            {
-                get
-                {
-                    return _state;
-                }
-                set
-                {
-                    _state = value;
-                }
-            }
-
-            [DataMember(Name = nameof(ResultHashes))]
-            public HashCollection ResultHashes
-            {
-                get
-                {
-                    if (_resultHashes == null)
-                        _resultHashes = new HashCollection();
-
-                    return _resultHashes;
-                }
-            }
-        }
-
         private class ProtectedCacheInfoManager : ManagerBase, IEnumerable<ProtectedCacheInfo>
         {
             private CacheManager _cacheManager;
@@ -1158,57 +1040,6 @@ namespace Amoeba.Service
             }
 
             #endregion
-        }
-
-        [DataContract(Name = nameof(ProtectedCacheInfo))]
-        private class ProtectedCacheInfo
-        {
-            private DateTime _creationTime;
-            private HashCollection _hashes;
-
-            public ProtectedCacheInfo(DateTime creationTime, IEnumerable<Hash> hashes)
-            {
-                this.CreationTime = creationTime;
-                if (hashes != null) this.ProtectedHashs.AddRange(hashes);
-            }
-
-            [DataMember(Name = nameof(CreationTime))]
-            public DateTime CreationTime
-            {
-                get
-                {
-                    return _creationTime;
-                }
-                private set
-                {
-                    _creationTime = value;
-                }
-            }
-
-            private volatile ReadOnlyCollection<Hash> _readOnlyHashs;
-
-            public IEnumerable<Hash> Hashes
-            {
-                get
-                {
-                    if (_readOnlyHashs == null)
-                        _readOnlyHashs = new ReadOnlyCollection<Hash>(this.ProtectedHashs);
-
-                    return _readOnlyHashs;
-                }
-            }
-
-            [DataMember(Name = nameof(Hashes))]
-            private HashCollection ProtectedHashs
-            {
-                get
-                {
-                    if (_hashes == null)
-                        _hashes = new HashCollection();
-
-                    return _hashes;
-                }
-            }
         }
 
         protected override void Dispose(bool isDisposing)

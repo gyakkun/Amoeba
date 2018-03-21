@@ -12,300 +12,70 @@ using Omnius.Utils;
 
 namespace Amoeba.Service
 {
-    [DataContract(Name = nameof(MulticastMetadata))]
-    sealed class MulticastMetadata : CashItemBase<MulticastMetadata>, IMulticastMetadata
+    sealed partial class MulticastMetadata : MessageBase<MulticastMetadata>
     {
-        private enum SerializeId
-        {
-            Type = 0,
-            Tag = 1,
-            CreationTime = 2,
-            Metadata = 3,
-
-            Cash = 4,
-            Certificate = 5,
-        }
-
-        private string _type;
-        private Tag _tag;
-        private DateTime _creationTime;
-        private Metadata _metadata;
-
-        private Cash _cash;
-        private Certificate _certificate;
-
-        private int _hashCode;
-
-        public static readonly int MaxTypeLength = 256;
-
         public MulticastMetadata(string type, Tag tag, DateTime creationTime, Metadata metadata, DigitalSignature digitalSignature, Miner miner, CancellationToken token)
         {
             this.Type = type;
             this.Tag = tag;
             this.CreationTime = creationTime;
             this.Metadata = metadata;
-
-            this.CreateCash(miner, digitalSignature?.ToString(), token);
-            this.CreateCertificate(digitalSignature);
+            this.Cash = miner.Create(this.GetCashStream(digitalSignature.ToString()), token).Result;
+            this.Certificate = new Certificate(digitalSignature, this.GetCertificateStream());
         }
 
-        protected override void Initialize()
+        public Stream GetCashStream(string signature)
         {
-            using (var stream = this.Export(BufferManager.Instance))
+            var bufferManager = BufferManager.Instance;
+
+            var signatureStream = new RecyclableMemoryStream(bufferManager);
             {
-                _hashCode = ItemUtils.GetHashCode(stream);
-            }
-        }
+                var writer = new MessageStreamWriter(signatureStream, bufferManager);
+                writer.Write((ulong)5);
+                writer.Write(signature);
 
-        protected override void ProtectedImport(Stream stream, BufferManager bufferManager, int depth)
-        {
-            using (var reader = new ItemStreamReader(stream, bufferManager))
-            {
-                while (reader.Available > 0)
-                {
-                    int id = (int)reader.GetUInt32();
-
-                    if (id == (int)SerializeId.Type)
-                    {
-                        this.Type = reader.GetString();
-                    }
-                    else if (id == (int)SerializeId.Tag)
-                    {
-                        this.Tag = Tag.Import(reader.GetStream(), bufferManager);
-                    }
-                    else if (id == (int)SerializeId.CreationTime)
-                    {
-                        this.CreationTime = reader.GetDateTime();
-                    }
-                    else if (id == (int)SerializeId.Metadata)
-                    {
-                        this.Metadata = Metadata.Import(reader.GetStream(), bufferManager);
-                    }
-
-                    else if (id == (int)SerializeId.Cash)
-                    {
-                        this.Cash = Cash.Import(reader.GetStream(), bufferManager);
-                    }
-                    else if (id == (int)SerializeId.Certificate)
-                    {
-                        this.Certificate = Certificate.Import(reader.GetStream(), bufferManager);
-                    }
-                }
-            }
-        }
-
-        protected override Stream Export(BufferManager bufferManager, int depth)
-        {
-            using (var writer = new ItemStreamWriter(bufferManager))
-            {
-                // Type
-                if (this.Type != null)
-                {
-                    writer.Write((uint)SerializeId.Type);
-                    writer.Write(this.Type);
-                }
-                // Tag
-                if (this.Tag != null)
-                {
-                    writer.Write((uint)SerializeId.Tag);
-                    writer.Write(this.Tag.Export(bufferManager));
-                }
-                // CreationTime
-                if (this.CreationTime != DateTime.MinValue)
-                {
-                    writer.Write((uint)SerializeId.CreationTime);
-                    writer.Write(this.CreationTime);
-                }
-                // Metadata
-                if (this.Metadata != null)
-                {
-                    writer.Write((uint)SerializeId.Metadata);
-                    writer.Write(this.Metadata.Export(bufferManager));
-                }
-
-                // Cash
-                if (this.Cash != null)
-                {
-                    writer.Write((uint)SerializeId.Cash);
-                    writer.Write(this.Cash.Export(bufferManager));
-                }
-                // Certificate
-                if (this.Certificate != null)
-                {
-                    writer.Write((uint)SerializeId.Certificate);
-                    writer.Write(this.Certificate.Export(bufferManager));
-                }
-
-                return writer.GetStream();
-            }
-        }
-
-        public override int GetHashCode()
-        {
-            return _hashCode;
-        }
-
-        public override bool Equals(object obj)
-        {
-            if ((object)obj == null || !(obj is MulticastMetadata)) return false;
-
-            return this.Equals((MulticastMetadata)obj);
-        }
-
-        public override bool Equals(MulticastMetadata other)
-        {
-            if ((object)other == null) return false;
-            if (object.ReferenceEquals(this, other)) return true;
-
-            if (this.Type != other.Type
-                || this.Tag != other.Tag
-                || this.CreationTime != other.CreationTime
-                || this.Metadata != other.Metadata
-
-                || this.Cash != other.Cash
-                || this.Certificate != other.Certificate)
-            {
-                return false;
+                signatureStream.Seek(0, SeekOrigin.Begin);
             }
 
-            return true;
+            var target = new MulticastMetadata(this.Type, this.Tag, this.CreationTime, this.Metadata, (Cash)null, (Certificate)null);
+
+            return new UniteStream(target.Export(bufferManager), signatureStream);
         }
 
-        protected override Stream GetCashStream(string signature)
+        public Stream GetCertificateStream()
         {
-            var tempCertificate = this.Certificate;
-            this.Certificate = null;
-
-            var tempCash = this.Cash;
-            this.Cash = null;
-
-            try
-            {
-                var bufferManager = BufferManager.Instance;
-                var streams = new List<Stream>();
-
-                streams.Add(this.Export(bufferManager));
-
-                using (var writer = new ItemStreamWriter(bufferManager))
-                {
-                    writer.Write((uint)SerializeId.Certificate);
-                    writer.Write(signature);
-
-                    streams.Add(writer.GetStream());
-                }
-
-                return new UniteStream(streams);
-            }
-            finally
-            {
-                this.Certificate = tempCertificate;
-                this.Cash = tempCash;
-            }
+            var target = new MulticastMetadata(this.Type, this.Tag, this.CreationTime, this.Metadata, this.Cash, (Certificate)null);
+            return target.Export(BufferManager.Instance);
         }
 
-        [DataMember(Name = nameof(Cash))]
-        protected override Cash Cash
+        public bool VerifyCertificate()
+        {
+            return this.Certificate.Verify(this.GetCertificateStream());
+        }
+
+        private volatile Cost _cost;
+
+        public Cost Cost
         {
             get
             {
-                return _cash;
-            }
-            set
-            {
-                _cash = value;
-            }
-        }
-
-        protected override Stream GetCertificateStream()
-        {
-            var temp = this.Certificate;
-            this.Certificate = null;
-
-            try
-            {
-                return this.Export(BufferManager.Instance);
-            }
-            finally
-            {
-                this.Certificate = temp;
-            }
-        }
-
-        [DataMember(Name = nameof(Certificate))]
-        public override Certificate Certificate
-        {
-            get
-            {
-                return _certificate;
-            }
-            protected set
-            {
-                _certificate = value;
-            }
-        }
-
-        #region IMulticastMetadata
-
-        [DataMember(Name = nameof(Type))]
-        public string Type
-        {
-            get
-            {
-                return _type;
-            }
-            private set
-            {
-                if (value != null && value.Length > MulticastMetadata.MaxTypeLength)
+                if (_cost == null)
                 {
-                    throw new ArgumentException();
+                    if (this.Cash == null || this.Certificate == null)
+                    {
+                        _cost = new Cost(CashAlgorithm.None, 0);
+                    }
+                    else
+                    {
+                        using (var stream = this.GetCashStream(this.Certificate.ToString()))
+                        {
+                            _cost = Miner.Verify(this.Cash, stream);
+                        }
+                    }
                 }
-                else
-                {
-                    _type = value;
-                }
+
+                return _cost;
             }
         }
-
-        [DataMember(Name = nameof(Tag))]
-        public Tag Tag
-        {
-            get
-            {
-                return _tag;
-            }
-            private set
-            {
-                _tag = value;
-            }
-        }
-
-        [DataMember(Name = nameof(CreationTime))]
-        public DateTime CreationTime
-        {
-            get
-            {
-                return _creationTime;
-            }
-            private set
-            {
-                var utc = value.ToUniversalTime();
-                _creationTime = utc.AddTicks(-(utc.Ticks % TimeSpan.TicksPerSecond));
-            }
-        }
-
-        [DataMember(Name = nameof(Metadata))]
-        public Metadata Metadata
-        {
-            get
-            {
-                return _metadata;
-            }
-            private set
-            {
-                _metadata = value;
-            }
-        }
-
-        #endregion
     }
 }

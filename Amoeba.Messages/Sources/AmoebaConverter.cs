@@ -22,8 +22,8 @@ namespace Amoeba.Messages
         private static readonly BufferManager _bufferManager = BufferManager.Instance;
         private static readonly Regex _base64Regex = new Regex(@"^([a-zA-Z0-9\-_]*).*?$", RegexOptions.Compiled | RegexOptions.Singleline);
 
-        private static Stream ToStream<T>(int version, ItemBase<T> item)
-                where T : ItemBase<T>
+        private static Stream ToStream<T>(int version, MessageBase<T> item)
+                where T : MessageBase<T>
         {
             Stream stream = null;
 
@@ -109,7 +109,7 @@ namespace Amoeba.Messages
         }
 
         private static T FromStream<T>(int version, Stream stream)
-            where T : ItemBase<T>
+            where T : MessageBase<T>
         {
             try
             {
@@ -140,7 +140,7 @@ namespace Amoeba.Messages
                 {
                     if (type == (int)ConvertCompressionAlgorithm.None)
                     {
-                        return ItemBase<T>.Import(dataStream, _bufferManager);
+                        return MessageBase<T>.Import(dataStream, _bufferManager);
                     }
                     else if (type == (int)ConvertCompressionAlgorithm.Deflate)
                     {
@@ -161,7 +161,7 @@ namespace Amoeba.Messages
 
                             deflateBufferStream.Seek(0, SeekOrigin.Begin);
 
-                            return ItemBase<T>.Import(deflateBufferStream, _bufferManager);
+                            return MessageBase<T>.Import(deflateBufferStream, _bufferManager);
                         }
                     }
                     else

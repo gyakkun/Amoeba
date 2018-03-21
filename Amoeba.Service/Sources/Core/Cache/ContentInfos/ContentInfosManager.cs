@@ -9,6 +9,7 @@ using Omnius.Collections;
 using Omnius.Base;
 using System.Runtime.Serialization;
 using System.Collections.ObjectModel;
+using Newtonsoft.Json;
 
 namespace Amoeba.Service
 {
@@ -218,210 +219,34 @@ namespace Amoeba.Service
                 }
             }
         }
+    }
 
-        [DataContract(Name = nameof(ContentInfo))]
-        sealed class ContentInfo
+    sealed partial class ShareInfo
+    {
+        #region Hash to Index
+
+        private Dictionary<Hash, int> _hashMap = null;
+
+        public int GetIndex(Hash hash)
         {
-            private DateTime _creationTime;
-            private TimeSpan _lifeSpan;
-
-            private Metadata _metadata;
-            private HashCollection _lockedHashes;
-            private ShareInfo _shareInfo;
-
-            public ContentInfo(DateTime creationTime, TimeSpan lifeTime, Metadata metadata, IEnumerable<Hash> lockedHashes, ShareInfo shareInfo)
+            if (_hashMap == null)
             {
-                this.CreationTime = creationTime;
-                this.LifeSpan = lifeTime;
+                _hashMap = new Dictionary<Hash, int>();
 
-                this.Metadata = metadata;
-                if (lockedHashes != null) this.ProtectedLockedHashes.AddRange(lockedHashes);
-                this.ShareInfo = shareInfo;
-            }
-
-            [DataMember(Name = nameof(CreationTime))]
-            public DateTime CreationTime
-            {
-                get
+                for (int i = 0; i < this.Hashes.Count; i++)
                 {
-                    return _creationTime;
-                }
-                private set
-                {
-                    _creationTime = value;
+                    _hashMap[this.Hashes[i]] = i;
                 }
             }
 
-            [DataMember(Name = nameof(LifeSpan))]
-            public TimeSpan LifeSpan
             {
-                get
-                {
-                    return _lifeSpan;
-                }
-                private set
-                {
-                    _lifeSpan = value;
-                }
-            }
+                int result;
+                if (!_hashMap.TryGetValue(hash, out result)) return -1;
 
-            [DataMember(Name = nameof(Metadata))]
-            public Metadata Metadata
-            {
-                get
-                {
-                    return _metadata;
-                }
-                private set
-                {
-                    _metadata = value;
-                }
-            }
-
-            private volatile ReadOnlyCollection<Hash> _readOnlyLockedHashes;
-
-            public IEnumerable<Hash> LockedHashes
-            {
-                get
-                {
-                    if (_readOnlyLockedHashes == null)
-                        _readOnlyLockedHashes = new ReadOnlyCollection<Hash>(this.ProtectedLockedHashes);
-
-                    return _readOnlyLockedHashes;
-                }
-            }
-
-            [DataMember(Name = nameof(LockedHashes))]
-            private HashCollection ProtectedLockedHashes
-            {
-                get
-                {
-                    if (_lockedHashes == null)
-                        _lockedHashes = new HashCollection();
-
-                    return _lockedHashes;
-                }
-            }
-
-            [DataMember(Name = nameof(ShareInfo))]
-            public ShareInfo ShareInfo
-            {
-                get
-                {
-                    return _shareInfo;
-                }
-                private set
-                {
-                    _shareInfo = value;
-                }
+                return result;
             }
         }
 
-        [DataContract(Name = nameof(ShareInfo))]
-        sealed class ShareInfo
-        {
-            private string _path;
-            private long _fileLength;
-            private int _blockLength;
-            private HashCollection _hashes;
-
-            public ShareInfo(string path, long fileLength, int blockLength, IEnumerable<Hash> hashes)
-            {
-                this.Path = path;
-                this.FileLength = fileLength;
-                this.BlockLength = blockLength;
-                if (hashes != null) this.ProtectedHashes.AddRange(hashes);
-            }
-
-            [DataMember(Name = nameof(Path))]
-            public string Path
-            {
-                get
-                {
-                    return _path;
-                }
-                private set
-                {
-                    _path = value;
-                }
-            }
-
-            [DataMember(Name = nameof(FileLength))]
-            public long FileLength
-            {
-                get
-                {
-                    return _fileLength;
-                }
-                private set
-                {
-                    _fileLength = value;
-                }
-            }
-
-            [DataMember(Name = nameof(BlockLength))]
-            public int BlockLength
-            {
-                get
-                {
-                    return _blockLength;
-                }
-                private set
-                {
-                    _blockLength = value;
-                }
-            }
-
-            private volatile ReadOnlyCollection<Hash> _readOnlyHashes;
-
-            public IEnumerable<Hash> Hashes
-            {
-                get
-                {
-                    if (_readOnlyHashes == null)
-                        _readOnlyHashes = new ReadOnlyCollection<Hash>(this.ProtectedHashes);
-
-                    return _readOnlyHashes;
-                }
-            }
-
-            [DataMember(Name = nameof(Hashes))]
-            private HashCollection ProtectedHashes
-            {
-                get
-                {
-                    if (_hashes == null)
-                        _hashes = new HashCollection();
-
-                    return _hashes;
-                }
-            }
-
-            #region Hash to Index
-
-            private Dictionary<Hash, int> _hashMap = null;
-
-            public int GetIndex(Hash hash)
-            {
-                if (_hashMap == null)
-                {
-                    _hashMap = new Dictionary<Hash, int>();
-
-                    for (int i = 0; i < this.ProtectedHashes.Count; i++)
-                    {
-                        _hashMap[this.ProtectedHashes[i]] = i;
-                    }
-                }
-
-                {
-                    int result;
-                    if (!_hashMap.TryGetValue(hash, out result)) return -1;
-
-                    return result;
-                }
-            }
-
-            #endregion
-        }
+        #endregion
     }
 }

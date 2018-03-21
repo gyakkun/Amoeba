@@ -924,7 +924,7 @@ namespace Amoeba.Service
                             }
                             catch (Exception e)
                             {
-                                Debug.WriteLine(e);
+                                Log.Debug(e);
 
                                 using (_connectionLockManager.WriteLock())
                                 {
@@ -978,7 +978,7 @@ namespace Amoeba.Service
                             }
                             catch (Exception e)
                             {
-                                Debug.WriteLine(e);
+                                Log.Debug(e);
 
                                 using (_connectionLockManager.WriteLock())
                                 {
@@ -1044,7 +1044,7 @@ namespace Amoeba.Service
 
                     random.Shuffle(tempLocations);
 
-                    var packet = new LocationsPacket(tempLocations.Take(_maxLocationCount));
+                    var packet = new LocationsPacket(tempLocations.Take(_maxLocationCount).ToArray());
 
                     Stream typeStream = new RecyclableMemoryStream(_bufferManager);
                     Varint.SetUInt64(typeStream, (uint)SerializeId.Locations);
@@ -1063,7 +1063,7 @@ namespace Amoeba.Service
                     {
                         sessionInfo.Send.PushedBlockLinkFilter.AddRange(sessionInfo.Send.PushBlockLinkQueue);
 
-                        packet = new BlocksLinkPacket(sessionInfo.Send.PushBlockLinkQueue);
+                        packet = new BlocksLinkPacket(sessionInfo.Send.PushBlockLinkQueue.ToArray());
                         sessionInfo.Send.PushBlockLinkQueue.Clear();
                     }
 
@@ -1084,7 +1084,7 @@ namespace Amoeba.Service
                     {
                         sessionInfo.Send.PushedBlockRequestSet.UnionWith(sessionInfo.Send.PushBlockRequestQueue);
 
-                        packet = new BlocksRequestPacket(sessionInfo.Send.PushBlockRequestQueue);
+                        packet = new BlocksRequestPacket(sessionInfo.Send.PushBlockRequestQueue.ToArray());
                         sessionInfo.Send.PushBlockRequestQueue.Clear();
                     }
 
@@ -1159,7 +1159,7 @@ namespace Amoeba.Service
 
                     lock (sessionInfo.Send.PushBroadcastMetadataRequestQueue.LockObject)
                     {
-                        packet = new BroadcastMetadatasRequestPacket(sessionInfo.Send.PushBroadcastMetadataRequestQueue);
+                        packet = new BroadcastMetadatasRequestPacket(sessionInfo.Send.PushBroadcastMetadataRequestQueue.ToArray());
                         sessionInfo.Send.PushBroadcastMetadataRequestQueue.Clear();
                     }
 
@@ -1222,7 +1222,7 @@ namespace Amoeba.Service
 
                     lock (sessionInfo.Send.PushUnicastMetadataRequestQueue.LockObject)
                     {
-                        packet = new UnicastMetadatasRequestPacket(sessionInfo.Send.PushUnicastMetadataRequestQueue);
+                        packet = new UnicastMetadatasRequestPacket(sessionInfo.Send.PushUnicastMetadataRequestQueue.ToArray());
                         sessionInfo.Send.PushUnicastMetadataRequestQueue.Clear();
                     }
 
@@ -1285,7 +1285,7 @@ namespace Amoeba.Service
 
                     lock (sessionInfo.Send.PushMulticastMetadataRequestQueue.LockObject)
                     {
-                        packet = new MulticastMetadatasRequestPacket(sessionInfo.Send.PushMulticastMetadataRequestQueue);
+                        packet = new MulticastMetadatasRequestPacket(sessionInfo.Send.PushMulticastMetadataRequestQueue.ToArray());
                         sessionInfo.Send.PushMulticastMetadataRequestQueue.Clear();
                     }
 
@@ -1706,7 +1706,7 @@ namespace Amoeba.Service
 
                     this.SetConfig(new NetworkConfig(connectionCountLimit, bandwidthLimit));
                 }
-                this.SetMyLocation(_settings.Load<Location>("MyLocation", () => new Location(null)));
+                this.SetMyLocation(_settings.Load<Location>("MyLocation", () => new Location(Array.Empty<string>())));
                 this.SetCloudLocations(_settings.Load<IEnumerable<Location>>("CloudLocations", () => Array.Empty<Location>()));
 
                 // MetadataManager

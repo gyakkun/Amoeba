@@ -23,7 +23,7 @@ namespace Amoeba.Interface
         {
             this.Model = model;
 
-            this.Name = SettingsManager.Instance.AccountInfo.ObserveProperty(n => n.DigitalSignature).Select(n => n.ToString()).ToReactiveProperty().AddTo(_disposable);
+            this.Name = SettingsManager.Instance.AccountSetting.ObserveProperty(n => n.DigitalSignature).Select(n => n.ToString()).ToReactiveProperty().AddTo(_disposable);
             this.IsSelected = new ReactiveProperty<bool>().AddTo(_disposable);
             this.IsExpanded = model.ToReactivePropertyAsSynchronized(n => n.IsExpanded).AddTo(_disposable);
             this.IsUpdated = model.ToReactivePropertyAsSynchronized(n => n.IsUpdated).AddTo(_disposable);

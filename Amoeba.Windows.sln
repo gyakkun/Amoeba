@@ -52,6 +52,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Amoeba.Rpc", "Amoeba.Rpc\Am
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Omnius.Utils", "Omnius\Omnius.Utils\Omnius.Utils.shproj", "{EA43E2B5-9B8A-4003-8B5E-E8093E3E7708}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Amoeba.Emulation", "Amoeba.Emulation\Amoeba.Emulation.csproj", "{376B9A95-7220-490E-8AD7-717F1B79FECD}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Omnius\Omnius.Utilities\Omnius.Utilities.projitems*{0a55926d-70ce-41ba-a838-99937a3b219d}*SharedItemsImports = 4
@@ -143,6 +145,10 @@ Global
 		{ED9027E5-4CC7-4882-A9CD-C76872E2AF35}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ED9027E5-4CC7-4882-A9CD-C76872E2AF35}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ED9027E5-4CC7-4882-A9CD-C76872E2AF35}.Release|Any CPU.Build.0 = Release|Any CPU
+		{376B9A95-7220-490E-8AD7-717F1B79FECD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{376B9A95-7220-490E-8AD7-717F1B79FECD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{376B9A95-7220-490E-8AD7-717F1B79FECD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{376B9A95-7220-490E-8AD7-717F1B79FECD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -210,7 +210,7 @@ namespace Amoeba.Service
             }
         }
 
-        public Task SetProfile(Profile profile, DigitalSignature digitalSignature, CancellationToken token)
+        public Task SetProfile(ProfileContent profile, DigitalSignature digitalSignature, CancellationToken token)
         {
             this.Check();
 
@@ -220,7 +220,7 @@ namespace Amoeba.Service
             }
         }
 
-        public Task SetStore(Store store, DigitalSignature digitalSignature, CancellationToken token)
+        public Task SetStore(StoreContent store, DigitalSignature digitalSignature, CancellationToken token)
         {
             this.Check();
 
@@ -230,27 +230,27 @@ namespace Amoeba.Service
             }
         }
 
-        public Task SetMailMessage(Signature targetSignature, MailMessage mailMessage, AgreementPublicKey agreementPublicKey, DigitalSignature digitalSignature, CancellationToken token)
+        public Task SetUnicastCommentMessage(Signature targetSignature, CommentContent comment, AgreementPublicKey agreementPublicKey, DigitalSignature digitalSignature, CancellationToken token)
         {
             this.Check();
 
             lock (_lockObject)
             {
-                return _messageManager.Upload(targetSignature, mailMessage, agreementPublicKey, digitalSignature, token);
+                return _messageManager.Upload(targetSignature, comment, agreementPublicKey, digitalSignature, token);
             }
         }
 
-        public Task SetChatMessage(Tag tag, ChatMessage chatMessage, DigitalSignature digitalSignature, TimeSpan miningTime, CancellationToken token)
+        public Task SetMulticastCommentMessage(Tag tag, CommentContent comment, DigitalSignature digitalSignature, TimeSpan miningTime, CancellationToken token)
         {
             this.Check();
 
             lock (_lockObject)
             {
-                return _messageManager.Upload(tag, chatMessage, digitalSignature, miningTime, token);
+                return _messageManager.Upload(tag, comment, digitalSignature, miningTime, token);
             }
         }
 
-        public Task<BroadcastMessage<Profile>> GetProfile(Signature signature, CancellationToken token)
+        public Task<BroadcastProfileMessage> GetProfile(Signature signature, CancellationToken token)
         {
             this.Check();
 
@@ -260,7 +260,7 @@ namespace Amoeba.Service
             }
         }
 
-        public Task<BroadcastMessage<Store>> GetStore(Signature signature, CancellationToken token)
+        public Task<BroadcastStoreMessage> GetStore(Signature signature, CancellationToken token)
         {
             this.Check();
 
@@ -270,23 +270,23 @@ namespace Amoeba.Service
             }
         }
 
-        public Task<IEnumerable<UnicastMessage<MailMessage>>> GetMailMessages(Signature signature, AgreementPrivateKey agreementPrivateKey, CancellationToken token)
+        public Task<IEnumerable<UnicastCommentMessage>> GetUnicastCommentMessages(Signature signature, AgreementPrivateKey agreementPrivateKey, CancellationToken token)
         {
             this.Check();
 
             lock (_lockObject)
             {
-                return _messageManager.GetMailMessages(signature, agreementPrivateKey);
+                return _messageManager.GetUnicastCommentMessages(signature, agreementPrivateKey);
             }
         }
 
-        public Task<IEnumerable<MulticastMessage<ChatMessage>>> GetChatMessages(Tag tag, CancellationToken token)
+        public Task<IEnumerable<MulticastCommentMessage>> GetMulticastCommentMessages(Tag tag, CancellationToken token)
         {
             this.Check();
 
             lock (_lockObject)
             {
-                return _messageManager.GetChatMessages(tag);
+                return _messageManager.GetMulticastCommentMessages(tag);
             }
         }
 

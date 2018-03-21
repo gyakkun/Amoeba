@@ -143,7 +143,7 @@ namespace Amoeba.Interface
                 _trustSignaturesSortInfo = _settings.Load("TrustSignaturesSortInfo ", () => new ListSortInfo() { Direction = ListSortDirection.Ascending, PropertyName = "Signature" });
                 _untrustSignaturesSortInfo = _settings.Load("UntrustSignaturesSortInfo ", () => new ListSortInfo() { Direction = ListSortDirection.Ascending, PropertyName = "Signature" });
                 _tagsSortInfo = _settings.Load("TagsSortInfo", () => new ListSortInfo() { Direction = ListSortDirection.Ascending, PropertyName = "Name" });
-                this.DynamicOptions.SetProperties(_settings.Load(nameof(DynamicOptions), () => Array.Empty<DynamicOptions.DynamicPropertyInfo>()));
+                this.DynamicOptions.SetProperties(_settings.Load(nameof(this.DynamicOptions), () => Array.Empty<DynamicOptions.DynamicPropertyInfo>()));
             }
 
             {
@@ -509,7 +509,7 @@ namespace Amoeba.Interface
                 _settings.Save("TrustSignaturesSortInfo", _trustSignaturesSortInfo);
                 _settings.Save("UntrustSignaturesSortInfo", _untrustSignaturesSortInfo);
                 _settings.Save("TagsSortInfo", _tagsSortInfo);
-                _settings.Save(nameof(DynamicOptions), this.DynamicOptions.GetProperties(), true);
+                _settings.Save(nameof(this.DynamicOptions), this.DynamicOptions.GetProperties(), true);
             });
         }
 
@@ -619,7 +619,7 @@ namespace Amoeba.Interface
         {
             public int Ranking { get; set; }
             public Signature Signature { get; set; }
-            public BroadcastMessage<Profile> Model { get; set; }
+            public BroadcastProfileMessage Model { get; set; }
         }
 
         protected override void Dispose(bool isDisposing)

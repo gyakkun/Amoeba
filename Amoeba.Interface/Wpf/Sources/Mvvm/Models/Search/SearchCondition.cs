@@ -1,45 +1,23 @@
 ﻿using System;
 using System.Runtime.Serialization;
+using Newtonsoft.Json;
 
 namespace Amoeba.Interface
 {
-    [DataContract(Name = nameof(SearchCondition<T>))]
+    [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
     class SearchCondition<T> : IEquatable<SearchCondition<T>>
     {
-        private bool _isContains;
-        private T _value;
-
         public SearchCondition(bool isContains, T value)
         {
             this.IsContains = isContains;
             this.Value = value;
         }
 
-        [DataMember(Name = nameof(IsContains))]
-        public bool IsContains
-        {
-            get
-            {
-                return _isContains;
-            }
-            private set
-            {
-                _isContains = value;
-            }
-        }
+        [JsonProperty]
+        public bool IsContains { get; }
 
-        [DataMember(Name = nameof(Value))]
-        public T Value
-        {
-            get
-            {
-                return _value;
-            }
-            private set
-            {
-                _value = value;
-            }
-        }
+        [JsonProperty]
+        public T Value { get; }
 
         public override int GetHashCode()
         {
@@ -48,8 +26,7 @@ namespace Amoeba.Interface
 
         public override bool Equals(object obj)
         {
-            if ((object)obj == null || !(obj is SearchCondition<T>)) return false;
-
+            if (!(obj is SearchCondition<T>)) return false;
             return this.Equals((SearchCondition<T>)obj);
         }
 

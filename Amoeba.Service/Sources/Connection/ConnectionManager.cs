@@ -151,7 +151,6 @@ namespace Amoeba.Service
                 }
 
                 _watchTimer.Stop();
-                _coreManager.SetMyLocation(new Location(null));
 
                 _catharsisManager.Stop();
                 _tcpConnectionManager.Stop();

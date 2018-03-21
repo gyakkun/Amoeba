@@ -11,7 +11,7 @@
     <OldToolsVersion>2.0</OldToolsVersion>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
-    <AssemblyVersion>2018.3.3.194</AssemblyVersion>
+    <AssemblyVersion>2018.3.20.297</AssemblyVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="System.Threading.Thread" Version="4.3.0" />
@@ -30,6 +30,31 @@
     <ProjectReference Include="..\Omnius\Omnius.Net\Omnius.Net.csproj" />
     <ProjectReference Include="..\Omnius\Omnius.Security\Omnius.Security.csproj" />
     <ProjectReference Include="..\Omnius\Omnius.Serialization\Omnius.Serialization.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Sources\_Generators\Items\_Generator\Models.generated.cs">
+      <DependentUpon>Models.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Sources\_Generators\Messages\_Generator\Models.generated.cs">
+      <DependentUpon>Models.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Sources\_Generators\Items\_Generator\Models.tt">
+      <LastGenOutput>Models.generated.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="Sources\_Generators\Messages\_Generator\Models.tt">
+      <LastGenOutput>Models.generated.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
   </ItemGroup>
   <Import Project="..\Omnius\Omnius.Utils\Omnius.Utils.projitems" Label="Shared" />
 </Project>

@@ -208,7 +208,7 @@ namespace Amoeba.Interface
                 }
 
                 _sortInfo = _settings.Load("SortInfo", () => new ListSortInfo() { Direction = ListSortDirection.Ascending, PropertyName = "Name" });
-                this.DynamicOptions.SetProperties(_settings.Load(nameof(DynamicOptions), () => Array.Empty<DynamicOptions.DynamicPropertyInfo>()));
+                this.DynamicOptions.SetProperties(_settings.Load(nameof(this.DynamicOptions), () => Array.Empty<DynamicOptions.DynamicPropertyInfo>()));
             }
 
             {
@@ -823,6 +823,12 @@ namespace Amoeba.Interface
             {
                 this.Download(relativePath.ToString(), boxInfo);
             }
+
+            foreach (var boxInfo in this.SelectedItems.OfType<StoreListViewItemInfo>()
+                .Select(n => n.Model).OfType<StoreSignatureInfo>().ToArray())
+            {
+                this.Download(relativePath.ToString(), boxInfo);
+            }
         }
 
         private void Download(string basePath, StoreBoxInfo rootBoxinfo)
@@ -835,6 +841,14 @@ namespace Amoeba.Interface
             foreach (var boxInfo in rootBoxinfo.BoxInfos)
             {
                 this.Download(Path.Combine(basePath, rootBoxinfo.Name.Trim(' ')), boxInfo);
+            }
+        }
+
+        private void Download(string basePath, StoreSignatureInfo rootSignatureInfo)
+        {
+            foreach (var boxInfo in rootSignatureInfo.BoxInfos)
+            {
+                this.Download(Path.Combine(basePath, rootSignatureInfo.AuthorSignature.ToString().Trim(' ')), boxInfo);
             }
         }
 
@@ -855,7 +869,7 @@ namespace Amoeba.Interface
                 _settings.Save("Version", 0);
                 _settings.Save("StoreCategoryInfo", this.TabViewModel.Value.Model);
                 _settings.Save("SortInfo", _sortInfo);
-                _settings.Save(nameof(DynamicOptions), this.DynamicOptions.GetProperties(), true);
+                _settings.Save(nameof(this.DynamicOptions), this.DynamicOptions.GetProperties(), true);
             });
         }
 

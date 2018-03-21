@@ -109,7 +109,7 @@ namespace Amoeba.Interface
             }
 
             {
-                this.Title = SettingsManager.Instance.AccountInfo.ObserveProperty(n => n.DigitalSignature)
+                this.Title = SettingsManager.Instance.AccountSetting.ObserveProperty(n => n.DigitalSignature)
                     .Select(n => $"Amoeba {AmoebaEnvironment.Version} - {n.ToString()}").ToReadOnlyReactiveProperty().AddTo(_disposable);
 
                 this.RelationCommand = new ReactiveCommand().AddTo(_disposable);
@@ -145,8 +145,8 @@ namespace Amoeba.Interface
                 _settings = new Settings(configPath);
                 int version = _settings.Load("Version", () => 0);
 
-                this.WindowSettings.Value = _settings.Load(nameof(WindowSettings), () => new WindowSettings());
-                this.DynamicOptions.SetProperties(_settings.Load(nameof(DynamicOptions), () => Array.Empty<DynamicOptions.DynamicPropertyInfo>()));
+                this.WindowSettings.Value = _settings.Load(nameof(this.WindowSettings), () => new WindowSettings());
+                this.DynamicOptions.SetProperties(_settings.Load(nameof(this.DynamicOptions), () => Array.Empty<DynamicOptions.DynamicPropertyInfo>()));
             }
 
             {
@@ -296,26 +296,26 @@ namespace Amoeba.Interface
             if (_isRunning_Options) return;
             _isRunning_Options = true;
 
-            ProgressDialog.Instance.Increment();
+            ProgressCircleService.Instance.Increment();
 
             Task.Run(() =>
             {
                 var options = OptionsUtils.GetOptions(_amoebaInterfaceManager);
 
-                ProgressDialog.Instance.Decrement();
+                ProgressCircleService.Instance.Decrement();
 
                 App.Current.Dispatcher.Invoke(() =>
                 {
                     var viewModel = new OptionsWindowViewModel(options, _dialogService);
                     viewModel.Callback += (result) =>
                     {
-                        ProgressDialog.Instance.Increment();
+                        ProgressCircleService.Instance.Increment();
 
                         Task.Run(() =>
                         {
                             OptionsUtils.SetOptions(result, _amoebaInterfaceManager, _dialogService);
 
-                            ProgressDialog.Instance.Decrement();
+                            ProgressCircleService.Instance.Decrement();
                         });
                     };
                     viewModel.CloseEvent += (sender, e) => _isRunning_Options = false;
@@ -337,7 +337,7 @@ namespace Amoeba.Interface
                     {
                         // Account
                         {
-                            var info = SettingsManager.Instance.AccountInfo;
+                            var info = SettingsManager.Instance.AccountSetting;
                             options.Account.DigitalSignature = info.DigitalSignature;
                             options.Account.Comment = info.Comment;
                             options.Account.TrustSignatures.AddRange(info.TrustSignatures);
@@ -347,12 +347,12 @@ namespace Amoeba.Interface
 
                         // View
                         {
-                            options.View.Subscribe.Signatures.AddRange(SettingsManager.Instance.SubscribeSignatures);
+                            options.View.SubscribeSignatures.AddRange(SettingsManager.Instance.SubscribeSignatures);
                         }
 
                         // Update
                         {
-                            var info = SettingsManager.Instance.UpdateInfo;
+                            var info = SettingsManager.Instance.UpdateSetting;
                             options.Update.IsEnabled = info.IsEnabled;
                             options.Update.Signature = info.Signature;
                         }
@@ -428,7 +428,7 @@ namespace Amoeba.Interface
                     {
                         // AccountInfo
                         {
-                            var info = SettingsManager.Instance.AccountInfo;
+                            var info = SettingsManager.Instance.AccountSetting;
 
                             if (info.Agreement == null || info.DigitalSignature != options.Account.DigitalSignature)
                             {
@@ -456,7 +456,7 @@ namespace Amoeba.Interface
 
                         // UpdateInfo
                         {
-                            var info = SettingsManager.Instance.UpdateInfo;
+                            var info = SettingsManager.Instance.UpdateSetting;
                             info.IsEnabled = options.Update.IsEnabled;
                             info.Signature = options.Update.Signature;
                         }
@@ -464,28 +464,29 @@ namespace Amoeba.Interface
                         // SubscribeSignatures
                         {
                             SettingsManager.Instance.SubscribeSignatures.Clear();
-                            SettingsManager.Instance.SubscribeSignatures.UnionWith(options.View.Subscribe.Signatures);
+                            SettingsManager.Instance.SubscribeSignatures.UnionWith(options.View.SubscribeSignatures);
                         }
                     }));
 
                     if (uploadFlag)
                     {
-                        var info = SettingsManager.Instance.AccountInfo;
+                        var info = SettingsManager.Instance.AccountSetting;
 
-                        ProgressDialog.Instance.Increment();
+                        ProgressCircleService.Instance.Increment();
 
                         var task = serviceManager.SetProfile(
-                            new Profile(info.Comment,
-                                info.Agreement.GetAgreementPublicKey(),
+                            new ProfileContent(info.Comment,
+                                null,
                                 info.TrustSignatures,
                                 info.UntrustSignatures,
-                                info.Tags),
+                                info.Tags,
+                                info.Agreement.GetAgreementPublicKey()),
                             info.DigitalSignature,
                             CancellationToken.None);
 
                         task.ContinueWith((_) =>
                         {
-                            ProgressDialog.Instance.Decrement();
+                            ProgressCircleService.Instance.Decrement();
                         });
                     }
 
@@ -525,7 +526,7 @@ namespace Amoeba.Interface
 
                                 CatharsisConfig catharsisConfig;
                                 {
-                                    var catharsisIpv4Config = new CatharsisIpv4Config(null, null);
+                                    var catharsisIpv4Config = new CatharsisIpv4Config(Array.Empty<string>(), Array.Empty<string>());
 
                                     catharsisConfig = new CatharsisConfig(catharsisIpv4Config);
                                 }
@@ -558,7 +559,7 @@ namespace Amoeba.Interface
 
                             MessageConfig messageConfig;
                             {
-                                messageConfig = new MessageConfig(options.View.Subscribe.Signatures);
+                                messageConfig = new MessageConfig(options.View.SubscribeSignatures);
                             }
 
                             serviceConfig = new ServiceConfig(coreConfig, connectionConfig, messageConfig);
@@ -580,22 +581,22 @@ namespace Amoeba.Interface
                                 {
                                     Task.Run(() =>
                                     {
-                                        ProgressDialog.Instance.Increment();
+                                        ProgressCircleService.Instance.Increment();
 
                                         serviceManager.Resize(options.Data.Cache.Size);
 
-                                        ProgressDialog.Instance.Decrement();
+                                        ProgressCircleService.Instance.Decrement();
                                     });
                                 }
                             }));
                         }
                         else if (options.Data.Cache.Size > orginalCacheSize)
                         {
-                            ProgressDialog.Instance.Increment();
+                            ProgressCircleService.Instance.Increment();
 
                             serviceManager.Resize(options.Data.Cache.Size);
 
-                            ProgressDialog.Instance.Decrement();
+                            ProgressCircleService.Instance.Decrement();
                         }
                     }
                 }
@@ -634,8 +635,8 @@ namespace Amoeba.Interface
             App.Current.Dispatcher.Invoke(() =>
             {
                 _settings.Save("Version", 0);
-                _settings.Save(nameof(WindowSettings), this.WindowSettings.Value);
-                _settings.Save(nameof(DynamicOptions), this.DynamicOptions.GetProperties(), true);
+                _settings.Save(nameof(this.WindowSettings), this.WindowSettings.Value);
+                _settings.Save(nameof(this.DynamicOptions), this.DynamicOptions.GetProperties(), true);
             });
 
             _messageManager.Save();

@@ -89,7 +89,7 @@ namespace Amoeba.Interface
 
             if (_isSessionEnding) return;
 
-            if (ProgressDialog.Instance.Value != 0)
+            if (ProgressCircleService.Instance.Value != 0)
             {
                 e.Cancel = true;
                 return;

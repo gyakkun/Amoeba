@@ -19,7 +19,7 @@ namespace Amoeba.Interface
 
         private Settings _settings;
 
-        public DataOptionsInfo Options { get; }
+        public OptionsInfo.DataInfo Options { get; }
 
         public ReactiveProperty<string> SelectedItem { get; private set; }
 
@@ -32,7 +32,7 @@ namespace Amoeba.Interface
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _isDisposed;
 
-        public DataOptionsControlViewModel(DataOptionsInfo options, DialogService dialogService)
+        public DataOptionsControlViewModel(OptionsInfo.DataInfo options, DialogService dialogService)
         {
             _dialogService = dialogService;
 
@@ -59,7 +59,7 @@ namespace Amoeba.Interface
                 _settings = new Settings(configPath);
                 int version = _settings.Load("Version", () => 0);
 
-                this.DynamicOptions.SetProperties(_settings.Load(nameof(DynamicOptions), () => Array.Empty<DynamicOptions.DynamicPropertyInfo>()));
+                this.DynamicOptions.SetProperties(_settings.Load(nameof(this.DynamicOptions), () => Array.Empty<DynamicOptions.DynamicPropertyInfo>()));
             }
 
             {
@@ -87,7 +87,7 @@ namespace Amoeba.Interface
             App.Current.Dispatcher.Invoke(() =>
             {
                 _settings.Save("Version", 0);
-                _settings.Save(nameof(DynamicOptions), this.DynamicOptions.GetProperties(), true);
+                _settings.Save(nameof(this.DynamicOptions), this.DynamicOptions.GetProperties(), true);
             });
         }
 

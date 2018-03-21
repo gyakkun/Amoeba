@@ -22,7 +22,7 @@ namespace Amoeba.Interface
 
         private Settings _settings;
 
-        public ConnectionOptionsInfo Options { get; }
+        public OptionsInfo.ConnectionInfo Options { get; }
 
         public ReactiveProperty<string> SelectedItem { get; private set; }
 
@@ -66,7 +66,7 @@ namespace Amoeba.Interface
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _isDisposed;
 
-        public ConnectionOptionsControlViewModel(ConnectionOptionsInfo options, DialogService dialogService)
+        public ConnectionOptionsControlViewModel(OptionsInfo.ConnectionInfo options, DialogService dialogService)
         {
             _dialogService = dialogService;
 
@@ -157,7 +157,7 @@ namespace Amoeba.Interface
 
                 _locationUrisSortInfo = _settings.Load("LocationUrisSortInfo", () => new ListSortInfo() { Direction = ListSortDirection.Ascending, PropertyName = "Uri" });
                 _listenUrisSortInfo = _settings.Load("ListenUrisSortInfo", () => new ListSortInfo() { Direction = ListSortDirection.Ascending, PropertyName = "Uri" });
-                this.DynamicOptions.SetProperties(_settings.Load(nameof(DynamicOptions), () => Array.Empty<DynamicOptions.DynamicPropertyInfo>()));
+                this.DynamicOptions.SetProperties(_settings.Load(nameof(this.DynamicOptions), () => Array.Empty<DynamicOptions.DynamicPropertyInfo>()));
             }
 
             {
@@ -379,7 +379,7 @@ namespace Amoeba.Interface
                 _settings.Save("Version", 0);
                 _settings.Save("LocationUrisSortInfo", _locationUrisSortInfo);
                 _settings.Save("ListenUrisSortInfo", _listenUrisSortInfo);
-                _settings.Save(nameof(DynamicOptions), this.DynamicOptions.GetProperties(), true);
+                _settings.Save(nameof(this.DynamicOptions), this.DynamicOptions.GetProperties(), true);
             });
         }
 

@@ -1,0 +1,1079 @@
+﻿<#@ template debug="true" hostspecific="true" language="C#" #>
+<#@ output encoding="UTF-8" extension=".generated.cs" #>
+<#@ assembly name="System" #>
+<#@ assembly name="System.Core" #>
+<#@ assembly name="System.Xml" #>
+<#@ assembly name="System.Xml.Linq" #>
+<#@ assembly name="Microsoft.CSharp" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Xml" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Text.RegularExpressions" #>
+<#@ import namespace="System.Dynamic" #>
+using Newtonsoft.Json;
+using System;
+using System.ComponentModel;
+using System.Collections.Generic;
+using Omnius.Serialization;
+using Omnius.Utils;
+using Omnius.Base;
+using System.IO;
+using System.Runtime.Serialization;
+using Omnius.Security;
+using System.Collections.ObjectModel;
+
+namespace Amoeba.Messages
+{
+<#= Generator.GetString(this.Host.ResolvePath("Definition.xml")) #>
+}
+<#+
+    public static class Generator
+    {
+        public static string GetString(string filePath)
+        {
+            return GenerateUtils.Generate(filePath);
+        }
+
+        private static class GenerateUtils
+        {
+            public static string Generate(string filePath)
+            {
+                var w = new Writer();
+
+                foreach (var cd in ParseUtils.Load(filePath))
+                {
+                    w.PushIndent();
+
+                    Write_Class(w, cd);
+
+                    w.PopIndent();
+                }
+
+                return w.ToString();
+            }
+
+            private static void Write_Class(Writer w, ClassDef cd)
+            {
+                foreach (var a in cd.Attributes)
+                {
+                    w.WriteLine(a);
+                }
+
+                w.WriteLine("[JsonObject(MemberSerialization = MemberSerialization.OptIn)]");
+                w.WriteLine("{0} sealed partial class {1} : MessageBase<{1}>", cd.Modifier, cd.Name);
+                w.WriteLine("{");
+
+                w.PushIndent();
+
+                Write_Class_StaticConstructor(w, cd);
+                Write_Class_Constructor(w, cd);
+                Write_Class_Properties(w, cd);
+                Write_Class_Equals(w, cd);
+                Write_Class_GetHashCode(w, cd);
+                Write_Class_GetMessageSize(w, cd);
+                Write_Class_Formatter(w, cd);
+
+                w.PopIndent();
+
+                w.WriteLine("}");
+            }
+
+            private static void Write_Class_StaticConstructor(Writer w, ClassDef cd)
+            {
+                w.WriteLine("static {0}()", cd.Name);
+                w.WriteLine("{");
+
+                w.PushIndent();
+
+                w.WriteLine("{0}.Formatter = new CustomFormatter();", cd.Name);
+
+                w.PopIndent();
+
+                w.WriteLine("}");
+            }
+
+            private static void Write_Class_Constructor(Writer w, ClassDef cd)
+            {
+                var parameter = string.Join(", ", cd.Properties
+                    .Select(pd =>
+                    {
+                        if (pd.SerializeType == SerializeType.Array)
+                        {
+                            return string.Format("IList<{0}>", pd.State.ElementProperty.Type) + " " + GetLocalName(pd.Name);
+                        }
+                        else
+                        {
+                            return pd.Type + " " + GetLocalName(pd.Name);
+                        }
+                    }));
+
+                foreach (var pd in cd.Properties)
+                {
+                    Write_Class_Constructor_Define_MaxLength(w, pd);
+                }
+
+                w.WriteLine("[JsonConstructor]");
+                w.WriteLine("public {0}({1})", cd.Name, parameter);
+                w.WriteLine("{");
+
+                w.PushIndent();
+
+                foreach (var pd in cd.Properties)
+                {
+                    Write_Class_Constructor_CheckNull(w, GetLocalName(pd.Name), pd);
+                }
+
+                foreach (var pd in cd.Properties)
+                {
+                    Write_Class_Constructor_CheckLength(w, GetLocalName(pd.Name), pd);
+                }
+
+                foreach (var pd in cd.Properties)
+                {
+                    if (pd.SerializeType == SerializeType.Array)
+                    {
+                        w.WriteLine("for (int i = 0; i < {0}.Count; i++)", GetLocalName(pd.Name));
+                        w.WriteLine("{");
+
+                        w.PushIndent();
+
+                        {
+                            Write_Class_Constructor_CheckNull(w, string.Format("{0}[i]", GetLocalName(pd.Name)), pd.State.ElementProperty);
+                            Write_Class_Constructor_CheckElementLength(w, string.Format("{0}[i]", GetLocalName(pd.Name)), pd.State.ElementProperty);
+                        }
+
+                        w.PopIndent();
+
+                        w.WriteLine("}");
+                    }
+                }
+
+                foreach (var pd in cd.Properties)
+                {
+                    if (pd.SerializeType == SerializeType.Array)
+                    {
+                        w.WriteLine("this.{0} = new ReadOnlyCollection<{1}>({2});", pd.Name, pd.State.ElementProperty.Type, GetLocalName(pd.Name));
+                    }
+                    else
+                    {
+                        w.WriteLine("this.{0} = {1};", pd.Name, GetLocalName(pd.Name));
+                    }
+                }
+
+                w.WriteLine("this.Initialize();");
+
+                w.PopIndent();
+
+                w.WriteLine("}");
+            }
+
+            private static void Write_Class_Constructor_CheckNull(Writer w, string name, PropertyDef pd)
+            {
+                if (pd.SerializeType == SerializeType.Bytes)
+                {
+                    if (pd.State.IsNullable) return;
+                    w.WriteLine("if ({0} == null) throw new ArgumentNullException(\"{0}\");", name);
+                }
+                else if (pd.SerializeType == SerializeType.String)
+                {
+                    if (pd.State.IsNullable) return;
+                    w.WriteLine("if ({0} == null) throw new ArgumentNullException(\"{0}\");", name);
+                }
+                else if (pd.SerializeType == SerializeType.Message)
+                {
+                    if (pd.State.IsNullable) return;
+                    w.WriteLine("if ({0} == null) throw new ArgumentNullException(\"{0}\");", name);
+                }
+                else if (pd.SerializeType == SerializeType.Array)
+                {
+                    if (pd.State.IsNullable) return;
+                    w.WriteLine("if ({0} == null) throw new ArgumentNullException(\"{0}\");", name);
+                }
+            }
+
+            private static void Write_Class_Constructor_Define_MaxLength(Writer w, PropertyDef pd)
+            {
+                if (pd.SerializeType == SerializeType.Bytes)
+                {
+                    if (pd.State.MaxLength == null) return;
+                    w.WriteLine("public static readonly int Max{0}Length = {1};", pd.Name, pd.State.MaxLength);
+                }
+                else if (pd.SerializeType == SerializeType.String)
+                {
+                    if (pd.State.MaxLength == null) return;
+                    w.WriteLine("public static readonly int Max{0}Length = {1};", pd.Name, pd.State.MaxLength);
+                }
+                else if (pd.SerializeType == SerializeType.Array)
+                {
+                    if (pd.State.MaxLength == null) return;
+                    w.WriteLine("public static readonly int Max{0}Count = {1};", pd.Name, pd.State.MaxLength);
+                }
+            }
+
+            private static void Write_Class_Constructor_CheckLength(Writer w, string name, PropertyDef pd)
+            {
+                if (pd.SerializeType == SerializeType.Bytes || pd.SerializeType == SerializeType.String)
+                {
+                    if (pd.State.MaxLength == null) return;
+
+                    if(pd.State.IsNullable)
+                    {
+                        w.WriteLine("if ({0} != null && {0}.Length > Max{1}Length) throw new ArgumentOutOfRangeException(\"{0}\");", name, pd.Name);
+                    }
+                    else
+                    {
+                        w.WriteLine("if ({0}.Length > Max{1}Length) throw new ArgumentOutOfRangeException(\"{0}\");", name, pd.Name);
+                    }
+                }
+                else if (pd.SerializeType == SerializeType.Array)
+                {
+                    if (pd.State.MaxLength == null) return;
+                                        
+                    if(pd.State.IsNullable)
+                    {
+                        w.WriteLine("if ({0} != null && {0}.Count > Max{1}Count) throw new ArgumentOutOfRangeException(\"{0}\");", name, pd.Name);
+                    }
+                    else
+                    {
+                        w.WriteLine("if ({0}.Count > Max{1}Count) throw new ArgumentOutOfRangeException(\"{0}\");", name, pd.Name);
+                    }
+                }
+            }
+
+            private static void Write_Class_Constructor_CheckElementLength(Writer w, string name, PropertyDef pd)
+            {
+                if (pd.SerializeType == SerializeType.Bytes || pd.SerializeType == SerializeType.String)
+                {
+                    if (pd.State.MaxLength == null) return;
+
+                    if(pd.State.IsNullable)
+                    {
+                        w.WriteLine("if ({0} != null && {0}.Length > {1}) throw new ArgumentOutOfRangeException(\"{0}\");", name, pd.State.MaxLength);
+                    }
+                    else
+                    {
+                        w.WriteLine("if ({0}.Length > {1}) throw new ArgumentOutOfRangeException(\"{0}\");", name, pd.State.MaxLength);
+                    }
+                }
+            }
+
+            private static void Write_Class_Equals(Writer w, ClassDef cd)
+            {
+                w.WriteLine("public override bool Equals({0} target)", cd.Name);
+                w.WriteLine("{");
+
+                w.PushIndent();
+
+                {
+                    w.WriteLine("if ((object)target == null) return false;");
+                    w.WriteLine("if (Object.ReferenceEquals(this, target)) return true;");
+
+                    foreach (var pd in cd.Properties)
+                    {
+                        if (pd.SerializeType == SerializeType.Bool)
+                        {
+                            w.WriteLine("if (this.{0} != target.{0}) return false;", pd.Name);
+                        }
+                        else if (pd.SerializeType == SerializeType.Varint)
+                        {
+                            if (pd.State.IsSigned)
+                            {
+                                w.WriteLine("if (this.{0} != target.{0}) return false;", pd.Name);
+                            }
+                            else
+                            {
+                                w.WriteLine("if (this.{0} != target.{0}) return false;", pd.Name);
+                            }
+                        }
+                        else if (pd.SerializeType == SerializeType.Bytes)
+                        {
+                            if (pd.State.IsRecycled)
+                            {
+                                w.WriteLine("if ((this.{0}.Array == null) != (target.{0}.Array == null)) return false;", pd.Name);
+                                w.WriteLine("if ((this.{0}.Array != null && target.{0}.Array != null)", pd.Name);
+
+                                w.PushIndent();
+
+                                w.WriteLine("&& (this.{0}.Count != target.{0}.Count", pd.Name);
+                                w.WriteLine("&& !Unsafe.Equals(this.{0}.Array, this.{0}.Offset, target.{0}.Array, target.{0}.Offset, this.{0}.Count))) return false;", pd.Name);
+
+                                w.PopIndent();
+                            }
+                            else
+                            {
+                                w.WriteLine("if ((this.{0} == null) != (target.{0} == null)) return false;", pd.Name);
+                                w.WriteLine("if ((this.{0} != null && target.{0} != null)", pd.Name);
+
+                                w.PushIndent();
+
+                                w.WriteLine("&& !Unsafe.Equals(this.{0}, target.{0})) return false;", pd.Name);
+
+                                w.PopIndent();
+                            }
+                        }
+                        else if (pd.SerializeType == SerializeType.String)
+                        {
+                            w.WriteLine("if (this.{0} != target.{0}) return false;", pd.Name);
+                        }
+                        else if (pd.SerializeType == SerializeType.DateTime)
+                        {
+                            w.WriteLine("if (this.{0} != target.{0}) return false;", pd.Name);
+                        }
+                        else if (pd.SerializeType == SerializeType.Message)
+                        {
+                            w.WriteLine("if (this.{0} != target.{0}) return false;", pd.Name);
+                        }
+                        else if (pd.SerializeType == SerializeType.Array)
+                        {
+                            w.WriteLine("if (!CollectionUtils.Equals(this.{0}, target.{0})) return false;", pd.Name);
+                        }
+                    }
+                }
+
+                w.WriteLine("return true;");
+
+                w.PopIndent();
+
+                w.WriteLine("}");
+            }
+
+            private static void Write_Class_GetHashCode(Writer w, ClassDef cd)
+            {
+                w.WriteLine("private int? _hashCode;");
+                w.WriteLine("public override int GetHashCode()");
+                w.WriteLine("{");
+
+                w.PushIndent();
+
+                {
+
+                    w.WriteLine("if (!_hashCode.HasValue)");
+                    w.WriteLine("{");
+
+                    w.PushIndent();
+
+                    {
+                        w.WriteLine("int h = 0;");
+
+                        foreach (var pd in cd.Properties)
+                        {
+                            if (pd.SerializeType == SerializeType.Bool)
+                            {
+                                w.WriteLine("if (this.{0} != default({1})) h ^= this.{0}.GetHashCode();", pd.Name, pd.Type);
+                            }
+                            else if (pd.SerializeType == SerializeType.Varint)
+                            {
+                                if (pd.State.IsSigned)
+                                {
+                                    w.WriteLine("if (this.{0} != default({1})) h ^= this.{0}.GetHashCode();", pd.Name, pd.Type);
+                                }
+                                else
+                                {
+                                    w.WriteLine("if (this.{0} != default({1})) h ^= this.{0}.GetHashCode();", pd.Name, pd.Type);
+                                }
+                            }
+                            else if (pd.SerializeType == SerializeType.Bytes)
+                            {
+                                if (pd.State.IsRecycled)
+                                {
+                                    w.WriteLine("if (this.{0} != default({1})) h ^= MessageUtils.GetHashCode(this.{0});", pd.Name, pd.Type);
+                                }
+                                else
+                                {
+                                    w.WriteLine("if (this.{0} != default({1})) h ^= MessageUtils.GetHashCode(this.{0});", pd.Name, pd.Type);
+                                }
+                            }
+                            else if (pd.SerializeType == SerializeType.String)
+                            {
+                                w.WriteLine("if (this.{0} != default({1})) h ^= this.{0}.GetHashCode();", pd.Name, pd.Type);
+                            }
+                            else if (pd.SerializeType == SerializeType.DateTime)
+                            {
+                                w.WriteLine("if (this.{0} != default({1})) h ^= this.{0}.GetHashCode();", pd.Name, pd.Type);
+                            }
+                            else if (pd.SerializeType == SerializeType.Message)
+                            {
+                                w.WriteLine("if (this.{0} != default({1})) h ^= this.{0}.GetHashCode();", pd.Name, pd.Type);
+                            }
+                            else if (pd.SerializeType == SerializeType.Array)
+                            {
+                                string indexString = "i";
+
+                                w.WriteLine("for (int {0} = 0; {0} < {1}.Count; {0}++)", indexString, pd.Name);
+                                w.WriteLine("{");
+
+                                w.PushIndent();
+
+                                w.WriteLine("h ^= this.{0}[{1}].GetHashCode();", pd.Name, indexString);
+
+                                w.PopIndent();
+
+                                w.WriteLine("}");
+                            }
+                        }
+
+                        w.WriteLine("_hashCode = h;");
+                    }
+
+                    w.PopIndent();
+
+                    w.WriteLine("}");
+                    w.WriteLine("return _hashCode.Value;");
+                }
+
+                w.PopIndent();
+
+                w.WriteLine("}");
+            }
+
+            private static void Write_Class_Properties(Writer w, ClassDef cd)
+            {
+                foreach (var pd in cd.Properties.OrderBy(n => n.Id))
+                {
+                    foreach (var a in pd.Attributes)
+                    {
+                        w.WriteLine(a);
+                    }
+
+                    w.WriteLine("[JsonProperty]", pd.Modifier, pd.Type, pd.Name, "{ get; }");
+                    w.WriteLine("{0} {1} {2} {3}", pd.Modifier, pd.Type, pd.Name, "{ get; }");
+                }
+            }
+
+            private static void Write_Class_GetMessageSize(Writer w, ClassDef cd)
+            {
+                w.WriteLine("public override long GetMessageSize()", cd.Name);
+                w.WriteLine("{");
+
+                w.PushIndent();
+
+                {
+                    w.WriteLine("long s = 0;");
+
+                    foreach (var pd in cd.Properties)
+                    {
+                        w.WriteLine("// {0}", pd.Name);
+
+                        if (pd.SerializeType == SerializeType.Array)
+                        {
+                            w.WriteLine("if ({0}.Count != 0)", "this." + pd.Name);
+                        }
+                        else
+                        {
+                            w.WriteLine("if ({0} != default({1}))", "this." + pd.Name, pd.Type);
+                        }
+
+                        w.WriteLine("{");
+
+                        w.PushIndent();
+
+                        w.WriteLine("s += MessageSizeComputer.GetSize((ulong){0});", pd.Id);
+
+                        Write_Class_GetMessageSize_PropertyDef(w, "this." + pd.Name, pd, 0);
+
+                        w.PopIndent();
+
+                        w.WriteLine("}");
+                    }
+                }
+
+                w.WriteLine("return s;");
+
+                w.PopIndent();
+
+                w.WriteLine("}");
+            }
+
+            private static void Write_Class_GetMessageSize_PropertyDef(Writer w, string name, PropertyDef pd, int rank)
+            {
+                if (pd.SerializeType == SerializeType.Bool)
+                {
+                    w.WriteLine("s += MessageSizeComputer.GetSize({0});", name);
+                }
+                else if (pd.SerializeType == SerializeType.Varint)
+                {
+                    if (pd.State.IsSigned)
+                    {
+                        w.WriteLine("s += MessageSizeComputer.GetSize((long){0});", name);
+                    }
+                    else
+                    {
+                        w.WriteLine("s += MessageSizeComputer.GetSize((ulong){0});", name);
+                    }
+                }
+                else if (pd.SerializeType == SerializeType.Bytes)
+                {
+                    if (pd.State.IsRecycled)
+                    {
+                        w.WriteLine("s += MessageSizeComputer.GetSize({0});", name);
+                    }
+                    else
+                    {
+                        w.WriteLine("s += MessageSizeComputer.GetSize({0});", name);
+                    }
+                }
+                else if (pd.SerializeType == SerializeType.String)
+                {
+                    w.WriteLine("s += MessageSizeComputer.GetSize({0});", name);
+                }
+                else if (pd.SerializeType == SerializeType.DateTime)
+                {
+                    w.WriteLine("s += MessageSizeComputer.GetSize({0});", name);
+                }
+                else if (pd.SerializeType == SerializeType.Message)
+                {
+                    string sizeString = (rank == 0) ? "size" : "size_" + rank;
+
+                    w.WriteLine("var {0} = {1}.GetMessageSize();", sizeString, name);
+                    w.WriteLine("s += MessageSizeComputer.GetSize((ulong){0});", sizeString);
+                    w.WriteLine("s += {0};", sizeString);
+                }
+                else if (pd.SerializeType == SerializeType.Array)
+                {
+                    string indexString = (rank == 0) ? "i" : "i_" + rank;
+                    string lengthString = name + ".Count";
+
+                    w.WriteLine("s += MessageSizeComputer.GetSize((ulong){0});", lengthString);
+
+                    w.WriteLine("for (int {0} = 0; {0} < {1}; {0}++)", indexString, lengthString);
+                    w.WriteLine("{");
+
+                    w.PushIndent();
+
+                    Write_Class_GetMessageSize_PropertyDef(w, string.Format("{0}[{1}]", name, indexString), pd.State.ElementProperty, rank + 1);
+
+                    w.PopIndent();
+
+                    w.WriteLine("}");
+                }
+            }
+
+            private static void Write_Class_Formatter(Writer w, ClassDef cd)
+            {
+                w.WriteLine("private sealed class CustomFormatter : IMessageFormatter<{0}>", cd.Name);
+                w.WriteLine("{");
+
+                w.PushIndent();
+
+                {
+                    w.WriteLine("public void Serialize(MessageStreamWriter w, {0} value, int rank)", cd.Name);
+                    w.WriteLine("{");
+
+                    w.PushIndent();
+
+                    w.WriteLine("if (rank > 256) throw new FormatException();");
+
+                    foreach (var pd in cd.Properties)
+                    {
+                        w.WriteLine("// {0}", pd.Name);
+
+                        if (pd.SerializeType == SerializeType.Array)
+                        {
+                            w.WriteLine("if ({0}.Count != 0)", "value." + pd.Name, pd.State.ElementProperty.Type);
+                        }
+                        else
+                        {
+                            w.WriteLine("if ({0} != default({1}))", "value." + pd.Name, pd.Type);
+                        }
+
+                        w.WriteLine("{");
+
+                        w.PushIndent();
+
+                        w.WriteLine("w.Write((ulong){0});", pd.Id);
+                        Write_Class_Formatter_Serialize_PropertyDef(w, "value." + pd.Name, pd, 0);
+
+                        w.PopIndent();
+
+                        w.WriteLine("}");
+                    }
+
+                    w.PopIndent();
+
+                    w.WriteLine("}");
+                }
+
+                {
+                    w.WriteLine("public {0} Deserialize(MessageStreamReader r, int rank)", cd.Name);
+                    w.WriteLine("{");
+
+                    w.PushIndent();
+
+                    w.WriteLine("if (rank > 256) throw new FormatException();");
+
+                    foreach (var pd in cd.Properties)
+                    {
+                        if (pd.SerializeType == SerializeType.Array)
+                        {
+                            w.WriteLine("{0}[] p_{1} = Array.Empty<{0}>();", pd.State.ElementProperty.Type, GetLocalName(pd.Name));
+                        }
+                        else
+                        {
+                            w.WriteLine("{0} p_{1} = default({0});", pd.Type, GetLocalName(pd.Name));
+                        }
+                    }
+
+                    w.WriteLine("while (r.Available > 0)");
+                    w.WriteLine("{");
+
+                    w.PushIndent();
+
+                    w.WriteLine("int id = (int)r.GetUInt64();");
+                    w.WriteLine("switch (id)");
+                    w.WriteLine("{");
+
+                    w.PushIndent();
+
+                    foreach (var pd in cd.Properties)
+                    {
+                        w.WriteLine("case {0}: //{1}", pd.Id, pd.Name);
+
+                        w.PushIndent();
+
+                        {
+                            w.WriteLine("{");
+
+                            w.PushIndent();
+
+                            Write_Class_Formatter_Deserialize_PropertyDef(w, "p_" + GetLocalName(pd.Name), pd, 0);
+
+                            w.WriteLine("break;");
+
+                            w.PopIndent();
+
+                            w.WriteLine("}");
+                        }
+                        w.PopIndent();
+                    }
+
+                    w.PopIndent();
+
+                    w.WriteLine("}");
+
+                    w.PopIndent();
+
+                    w.WriteLine("}");
+
+                    w.WriteLine("return new {0}({1});", cd.Name, string.Join(", ", cd.Properties.Select(n => "p_" + GetLocalName(n.Name))));
+
+                    w.PopIndent();
+
+                    w.WriteLine("}");
+                }
+
+                w.PopIndent();
+
+                w.WriteLine("}");
+            }
+
+            private static void Write_Class_Formatter_Serialize_PropertyDef(Writer w, string name, PropertyDef pd, int rank)
+            {
+                if (pd.SerializeType == SerializeType.Bool)
+                {
+                    w.WriteLine("w.Write({0});", name);
+                }
+                else if (pd.SerializeType == SerializeType.Varint)
+                {
+                    if (pd.State.IsSigned)
+                    {
+                        w.WriteLine("w.Write((long){0});", name);
+                    }
+                    else
+                    {
+                        w.WriteLine("w.Write((ulong){0});", name);
+                    }
+                }
+                else if (pd.SerializeType == SerializeType.Bytes)
+                {
+                    if (pd.State.IsRecycled)
+                    {
+                        w.WriteLine("w.Write({0}.Array, {0}.Offset, {0}.Count);", name);
+                    }
+                    else
+                    {
+                        w.WriteLine("w.Write({0});", name);
+                    }
+                }
+                else if (pd.SerializeType == SerializeType.String)
+                {
+                    w.WriteLine("w.Write({0});", name);
+                }
+                else if (pd.SerializeType == SerializeType.DateTime)
+                {
+                    w.WriteLine("w.Write({0});", name);
+                }
+                else if (pd.SerializeType == SerializeType.Message)
+                {
+                    w.WriteLine("w.Write((ulong){0}.GetMessageSize());", name);
+                    w.WriteLine("{1}.Formatter.Serialize(w, {0}, rank + 1);", name, pd.Type);
+                }
+                else if (pd.SerializeType == SerializeType.Array)
+                {
+                    string indexString = "i";
+
+                    w.WriteLine("w.Write((ulong){0}.Count);", name);
+
+                    w.WriteLine("for (int {1} = 0; {1} < {0}.Count; {1}++)", name, indexString);
+                    w.WriteLine("{");
+
+                    w.PushIndent();
+
+                    Write_Class_Formatter_Serialize_PropertyDef(w, string.Format("{0}[{1}]", name, indexString), pd.State.ElementProperty, rank + 1);
+
+                    w.PopIndent();
+
+                    w.WriteLine("}");
+                }
+            }
+
+            private static void Write_Class_Formatter_Deserialize_PropertyDef(Writer w, string name, PropertyDef pd, int rank)
+            {
+                if (pd.SerializeType == SerializeType.Bool)
+                {
+                    w.WriteLine("{0} = r.GetBoolean();", name);
+                }
+                else if (pd.SerializeType == SerializeType.Varint)
+                {
+                    if (pd.State.IsSigned)
+                    {
+                        w.WriteLine("{0} = ({1})r.GetInt64();", name, pd.Type);
+                    }
+                    else
+                    {
+                        w.WriteLine("{0} = ({1})r.GetUInt64();", name, pd.Type);
+                    }
+                }
+                else if (pd.SerializeType == SerializeType.Bytes)
+                {
+                    if (pd.State.IsRecycled)
+                    {
+                        w.WriteLine("{0} = r.GetRecycleBytesSegment();", name);
+                    }
+                    else
+                    {
+                        w.WriteLine("{0} = r.GetBytes();", name);
+                    }
+                }
+                else if (pd.SerializeType == SerializeType.String)
+                {
+                    w.WriteLine("{0} = r.GetString();", name);
+                }
+                else if (pd.SerializeType == SerializeType.DateTime)
+                {
+                    w.WriteLine("{0} = r.GetDateTime();", name);
+                }
+                else if (pd.SerializeType == SerializeType.Message)
+                {
+                    string sizeString = (rank == 0) ? "size" : "element_size";
+
+                    w.WriteLine("var {0} = (long)r.GetUInt64();", sizeString);
+                    w.WriteLine("{0} = {1}.Formatter.Deserialize(r.GetRange({2}), rank + 1);", name, pd.Type, sizeString);
+                }
+                else if (pd.SerializeType == SerializeType.Array && rank == 0)
+                {
+                    string indexString = "i";
+                    string lengthString = "length";
+
+                    w.WriteLine("var {0} = (long)r.GetUInt64();", lengthString);
+                    w.WriteLine("{0} = new {1}[Math.Min({2}, {3})];", name, pd.State.ElementProperty.Type, lengthString, pd.State.MaxLength);
+
+                    w.WriteLine("for (int {0} = 0; {0} < {1}.Length; {0}++)", indexString, name);
+                    w.WriteLine("{");
+
+                    w.PushIndent();
+
+                    Write_Class_Formatter_Deserialize_PropertyDef(w, string.Format("{0}[{1}]", name, indexString), pd.State.ElementProperty, rank + 1);
+
+                    w.PopIndent();
+
+                    w.WriteLine("}");
+                }
+            }
+
+            private static string GetLocalName(string name)
+            {
+                return name[0].ToString().ToLower() + name.Substring(1);
+            }
+
+            private class Writer
+            {
+                private StringBuilder _sb = new StringBuilder();
+                private int _indentDepth = 0;
+                private bool _wroteIndent = false;
+
+                public Writer()
+                {
+
+                }
+
+                private bool TryWriteIndent()
+                {
+                    if (_wroteIndent) return false;
+                    _wroteIndent = true;
+
+                    for (int i = 0; i < _indentDepth; i++)
+                    {
+                        _sb.Append("    ");
+                    }
+
+                    return true;
+                }
+
+                public void WriteLine()
+                {
+                    this.TryWriteIndent();
+                    _sb.AppendLine();
+                    _wroteIndent = false;
+                }
+
+                public void WriteLine(string value)
+                {
+                    this.TryWriteIndent();
+                    _sb.AppendLine(value);
+                    _wroteIndent = false;
+                }
+
+                public void WriteLine(string format, params object[] args)
+                {
+                    this.TryWriteIndent();
+                    _sb.AppendFormat(format, args);
+                    _sb.AppendLine();
+                    _wroteIndent = false;
+                }
+
+                public void PushIndent()
+                {
+                    _indentDepth++;
+                }
+
+                public void PopIndent()
+                {
+                    _indentDepth--;
+                }
+
+                public override string ToString()
+                {
+                    return _sb.ToString();
+                }
+            }
+        }
+
+        private static class ParseUtils
+        {
+            public static IEnumerable<ClassDef> Load(string xmlFilePath)
+            {
+                var classDefs = new List<ClassDef>();
+
+                using (var streamReader = new StreamReader(xmlFilePath))
+                using (var reader = XmlReader.Create(streamReader))
+                {
+                    while (reader.Read())
+                    {
+                        if (reader.NodeType != XmlNodeType.Element) continue;
+
+                        if (reader.Name == "Class")
+                        {
+                            var modifier = reader.GetAttribute("Modifier") ?? "public";
+                            var attributes = new List<string>();
+                            var name = reader.GetAttribute("Name") ?? null;
+                            var properties = new List<PropertyDef>();
+
+                            using (var subReader = reader.ReadSubtree())
+                            {
+                                while (subReader.Read())
+                                {
+                                    if (subReader.NodeType != XmlNodeType.Element) continue;
+
+                                    if (subReader.Name == "Attributes")
+                                    {
+                                        using (var subReader2 = subReader.ReadSubtree())
+                                        {
+                                            subReader2.Read();
+
+                                            while (subReader2.Read())
+                                            {
+                                                if (subReader2.NodeType != XmlNodeType.Element) continue;
+
+                                                attributes.Add(ReadAttribute(subReader2));
+                                            }
+                                        }
+                                    }
+                                    else if (subReader.Name == "Properties")
+                                    {
+                                        using (var subReader2 = subReader.ReadSubtree())
+                                        {
+                                            subReader2.Read();
+
+                                            while (subReader2.Read())
+                                            {
+                                                if (subReader2.NodeType != XmlNodeType.Element) continue;
+
+                                                properties.Add(ReadProperty(subReader2, 0));
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            var result = new ClassDef();
+                            if (modifier != null) result.Modifier = modifier;
+                            result.Attributes = attributes;
+                            result.Name = name;
+                            result.Properties = properties;
+
+                            classDefs.Add(result);
+                        }
+                    }
+                }
+
+                return classDefs;
+            }
+
+            private static string ReadAttribute(XmlReader reader)
+            {
+                if (reader.Name == "Attribute")
+                {
+                    return reader.GetAttribute("Value");
+                }
+
+                return null;
+            }
+
+            private static PropertyDef ReadProperty(XmlReader reader, int rank)
+            {
+                SerializeType serializeType = 0;
+                string modifier = reader.GetAttribute("Modifier") ?? "public";
+                var attributes = new List<string>();
+                int id = int.Parse(reader.GetAttribute("Id") ?? "0");
+                string name = reader.GetAttribute("Name") ?? null;
+                string type = reader.GetAttribute("Type") ?? null;
+
+                bool isSigned = bool.Parse(reader.GetAttribute("IsSigned") ?? "false");
+                bool isRecycled = bool.Parse(reader.GetAttribute("IsRecycled") ?? "false");
+                string maxLength = reader.GetAttribute("MaxLength") ?? null;
+                bool isNullable = bool.Parse(reader.GetAttribute("IsNullable") ?? "false");
+                PropertyDef elementProrerty = null;
+
+                using (var subReader = reader.ReadSubtree())
+                {
+                    while (subReader.Read())
+                    {
+                        if (subReader.NodeType != XmlNodeType.Element) continue;
+
+                        if (subReader.Name == "Attributes")
+                        {
+                            using (var subReader2 = subReader.ReadSubtree())
+                            {
+                                subReader2.Read();
+
+                                while (subReader2.Read())
+                                {
+                                    if (subReader2.NodeType != XmlNodeType.Element) continue;
+
+                                    attributes.Add(ReadAttribute(subReader2));
+                                }
+                            }
+                        }
+                        else if (subReader.Name == "Element" && rank == 0)
+                        {
+                            using (var subReader2 = subReader.ReadSubtree())
+                            {
+                                subReader2.Read();
+
+                                while (subReader2.Read())
+                                {
+                                    if (subReader2.NodeType != XmlNodeType.Element) continue;
+
+                                    elementProrerty = ReadProperty(subReader2, rank + 1);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (reader.Name == "Bool")
+                {
+                    serializeType = SerializeType.Bool;
+                    type = "bool";
+                }
+                else if (reader.Name == "Varint")
+                {
+                    serializeType = SerializeType.Varint;
+                }
+                else if (reader.Name == "Bytes")
+                {
+                    serializeType = SerializeType.Bytes;
+                    type = isRecycled ? "ArraySegment<byte>" : "byte[]";
+                }
+                else if (reader.Name == "String")
+                {
+                    serializeType = SerializeType.String;
+                    type = "string";
+                }
+                else if (reader.Name == "DateTime")
+                {
+                    serializeType = SerializeType.DateTime;
+                    type = "DateTime";
+                }
+                else if (reader.Name == "Message")
+                {
+                    serializeType = SerializeType.Message;
+                }
+                else if (reader.Name == "Array")
+                {
+                    serializeType = SerializeType.Array;
+                    type = string.Format("IReadOnlyList<{0}>", elementProrerty.Type);
+                }
+
+                var result = new PropertyDef();
+                result.Modifier = modifier;
+                result.Attributes = attributes;
+                result.Id = id;
+                result.Name = name;
+                result.Type = type;
+                result.SerializeType = serializeType;
+                result.State = new ExpandoObject();
+                result.State.IsSigned = isSigned;
+                result.State.IsRecycled = isRecycled;
+                result.State.IsNullable = isNullable;
+                result.State.MaxLength = maxLength;
+                result.State.ElementProperty = elementProrerty;
+
+                return result;
+            }
+        }
+
+        private class ClassDef
+        {
+            public string Modifier { get; set; }
+            public List<string> Attributes { get; set; }
+            public string Name { get; set; }
+            public List<PropertyDef> Properties { get; set; }
+        }
+
+        private enum SerializeType
+        {
+            Bool,
+            Varint,
+            Bytes,
+            String,
+            DateTime,
+            Message,
+            Array,
+        }
+
+        private class PropertyDef
+        {
+            public SerializeType SerializeType { get; set; }
+            public string Modifier { get; set; }
+            public List<string> Attributes { get; set; }
+            public int Id { get; set; }
+            public string Name { get; set; }
+            public string Type { get; set; }
+            public dynamic State { get; set; }
+        }
+    }
+#>

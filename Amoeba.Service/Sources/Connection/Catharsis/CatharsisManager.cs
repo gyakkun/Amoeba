@@ -9,6 +9,7 @@ using System.Net.Sockets;
 using System.Runtime.Serialization;
 using System.Text;
 using Amoeba.Messages;
+using Newtonsoft.Json;
 using Omnius.Base;
 using Omnius.Collections;
 using Omnius.Configuration;
@@ -284,7 +285,7 @@ namespace Amoeba.Service
                 {
                     int version = _settings.Load("Version", () => 0);
 
-                    _config = _settings.Load("Config", () => new CatharsisConfig(new CatharsisIpv4Config(null, null)));
+                    _config = _settings.Load("Config", () => new CatharsisConfig(new CatharsisIpv4Config(Array.Empty<string>(), Array.Empty<string>())));
 
                     _ipv4RangeSet = _settings.Load("Ipv4RangeSet", () => new HashSet<SearchRange<Ipv4>>());
                 }
@@ -304,29 +305,23 @@ namespace Amoeba.Service
 
             #endregion
 
-            [DataContract(Name = nameof(Ipv4))]
-            struct Ipv4 : IComparable<Ipv4>, IEquatable<Ipv4>
+            [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
+            readonly struct Ipv4 : IComparable<Ipv4>, IEquatable<Ipv4>
             {
-                private uint _value;
+                [JsonConstructor]
+                public Ipv4(uint value)
+                {
+                    this.Value = value;
+                }
 
                 public Ipv4(IPAddress ipAddress)
                 {
                     if (ipAddress.AddressFamily != AddressFamily.InterNetwork) throw new ArgumentException(nameof(ipAddress));
-                    _value = NetworkConverter.ToUInt32(ipAddress.GetAddressBytes());
+                    this.Value = NetworkConverter.ToUInt32(ipAddress.GetAddressBytes());
                 }
 
-                [DataMember(Name = nameof(Value))]
-                private uint Value
-                {
-                    get
-                    {
-                        return _value;
-                    }
-                    set
-                    {
-                        _value = value;
-                    }
-                }
+                [JsonProperty]
+                private uint Value { get; }
 
                 public override int GetHashCode()
                 {
@@ -335,8 +330,7 @@ namespace Amoeba.Service
 
                 public override bool Equals(object obj)
                 {
-                    if ((object)obj == null || !(obj is Ipv4)) return false;
-
+                    if (!(obj is Ipv4)) return false;
                     return this.Equals((Ipv4)obj);
                 }
 
@@ -361,44 +355,22 @@ namespace Amoeba.Service
                 }
             }
 
-            [DataContract(Name = nameof(SearchRange<T>))]
-            struct SearchRange<T> : IEquatable<SearchRange<T>>
+            [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
+            readonly struct SearchRange<T> : IEquatable<SearchRange<T>>
                 where T : IComparable<T>, IEquatable<T>
             {
-                private T _min;
-                private T _max;
-
+                [JsonConstructor]
                 public SearchRange(T min, T max)
                 {
-                    _min = min;
-                    _max = (max.CompareTo(_min) < 0) ? _min : max;
+                    this.Min = min;
+                    this.Max = (max.CompareTo(this.Min) < 0) ? this.Min : max;
                 }
 
-                [DataMember(Name = nameof(Min))]
-                public T Min
-                {
-                    get
-                    {
-                        return _min;
-                    }
-                    private set
-                    {
-                        _min = value;
-                    }
-                }
+                [JsonProperty]
+                public T Min { get; }
 
-                [DataMember(Name = nameof(Max))]
-                public T Max
-                {
-                    get
-                    {
-                        return _max;
-                    }
-                    private set
-                    {
-                        _max = value;
-                    }
-                }
+                [JsonProperty]
+                public T Max { get; }
 
                 public bool Verify(T value)
                 {
@@ -419,8 +391,7 @@ namespace Amoeba.Service
 
                 public override bool Equals(object obj)
                 {
-                    if ((object)obj == null || !(obj is SearchRange<T>)) return false;
-
+                    if (!(obj is SearchRange<T>)) return false;
                     return this.Equals((SearchRange<T>)obj);
                 }
 

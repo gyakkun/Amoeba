@@ -21,11 +21,11 @@ namespace Amoeba.Interface
 
         private Settings _settings;
 
-        public ViewOptionsInfo Options { get; }
+        public OptionsInfo.ViewInfo Options { get; }
 
         public ReactiveProperty<string> SelectedItem { get; private set; }
 
-        public ListCollectionView SubscribeSignaturesView => (ListCollectionView)CollectionViewSource.GetDefaultView(this.Options.Subscribe.Signatures);
+        public ListCollectionView SubscribeSignaturesView => (ListCollectionView)CollectionViewSource.GetDefaultView(this.Options.SubscribeSignatures);
         public ObservableCollection<object> SelectedSubscribeSignatureItems { get; } = new ObservableCollection<object>();
         private ListSortInfo _subscribeSignaturesSortInfo;
         public ReactiveCommand<string> SubscribeSignaturesSortCommand { get; private set; }
@@ -39,7 +39,7 @@ namespace Amoeba.Interface
         private CompositeDisposable _disposable = new CompositeDisposable();
         private volatile bool _isDisposed;
 
-        public ViewOptionsControlViewModel(ViewOptionsInfo options, DialogService dialogService)
+        public ViewOptionsControlViewModel(OptionsInfo.ViewInfo options, DialogService dialogService)
         {
             _dialogService = dialogService;
 
@@ -74,7 +74,7 @@ namespace Amoeba.Interface
                 int version = _settings.Load("Version", () => 0);
 
                 _subscribeSignaturesSortInfo = _settings.Load("SubscribeSignaturesSortInfo", () => new ListSortInfo() { Direction = ListSortDirection.Ascending, PropertyName = "Signature" });
-                this.DynamicOptions.SetProperties(_settings.Load(nameof(DynamicOptions), () => Array.Empty<DynamicOptions.DynamicPropertyInfo>()));
+                this.DynamicOptions.SetProperties(_settings.Load(nameof(this.DynamicOptions), () => Array.Empty<DynamicOptions.DynamicPropertyInfo>()));
             }
 
             {
@@ -156,7 +156,7 @@ namespace Amoeba.Interface
         {
             foreach (var item in this.SelectedSubscribeSignatureItems.OfType<Signature>().ToArray())
             {
-                this.Options.Subscribe.Signatures.Remove(item);
+                this.Options.SubscribeSignatures.Remove(item);
             }
         }
 
@@ -169,9 +169,9 @@ namespace Amoeba.Interface
         {
             foreach (var item in Clipboard.GetSignatures())
             {
-                if (this.Options.Subscribe.Signatures.Contains(item)) continue;
+                if (this.Options.SubscribeSignatures.Contains(item)) continue;
 
-                this.Options.Subscribe.Signatures.Add(item);
+                this.Options.SubscribeSignatures.Add(item);
             }
         }
 
@@ -181,7 +181,7 @@ namespace Amoeba.Interface
             {
                 _settings.Save("Version", 0);
                 _settings.Save("SubscribeSignaturesSortInfo", _subscribeSignaturesSortInfo);
-                _settings.Save(nameof(DynamicOptions), this.DynamicOptions.GetProperties(), true);
+                _settings.Save(nameof(this.DynamicOptions), this.DynamicOptions.GetProperties(), true);
             });
         }
 

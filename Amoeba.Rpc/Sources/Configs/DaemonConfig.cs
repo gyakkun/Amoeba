@@ -5,8 +5,7 @@ using System.Text;
 
 namespace Amoeba.Rpc
 {
-    [DataContract]
-    public class DaemonConfig
+    public sealed class DaemonConfig
     {
         public DaemonConfig() { }
 
@@ -18,20 +17,12 @@ namespace Amoeba.Rpc
             this.Paths = paths;
         }
 
-        [DataMember(Name = nameof(Version))]
         public Version Version { get; private set; }
-
-        [DataMember(Name = nameof(Communication))]
         public CommunicationConfig Communication { get; private set; }
-
-        [DataMember(Name = nameof(Cache))]
         public CacheConfig Cache { get; private set; }
-
-        [DataMember(Name = nameof(Paths))]
         public PathsConfig Paths { get; private set; }
 
-        [DataContract]
-        public class CommunicationConfig
+        public sealed class CommunicationConfig
         {
             public CommunicationConfig() { }
 
@@ -40,12 +31,10 @@ namespace Amoeba.Rpc
                 this.ListenUri = listenUri;
             }
 
-            [DataMember(Name = nameof(ListenUri))]
             public string ListenUri { get; private set; }
         }
 
-        [DataContract]
-        public class CacheConfig
+        public sealed class CacheConfig
         {
             public CacheConfig() { }
 
@@ -54,12 +43,10 @@ namespace Amoeba.Rpc
                 this.BlocksFilePath = blocksFilePath;
             }
 
-            [DataMember(Name = nameof(BlocksFilePath))]
             public string BlocksFilePath { get; private set; }
         }
 
-        [DataContract]
-        public class PathsConfig
+        public sealed class PathsConfig
         {
             public PathsConfig() { }
 
@@ -70,13 +57,8 @@ namespace Amoeba.Rpc
                 this.LogDirectoryPath = logDirectoryPath;
             }
 
-            [DataMember(Name = nameof(TempDirectoryPath))]
             public string TempDirectoryPath { get; private set; }
-
-            [DataMember(Name = nameof(ConfigDirectoryPath))]
             public string ConfigDirectoryPath { get; private set; }
-
-            [DataMember(Name = nameof(LogDirectoryPath))]
             public string LogDirectoryPath { get; private set; }
         }
     }

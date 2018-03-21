@@ -59,6 +59,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Sources\Core\SessionInfo.cs" />
+    <Compile Include="Sources\Core\Messages\Packet.cs" />
+    <Compile Include="Sources\Core\RouteTable\Node.cs" />
+    <Compile Include="Sources\Core\RouteTable\RouteTableMethods.cs" />
     <Compile Include="Sources\Windows\MainWindowViewModel.cs" />
     <Page Include="Sources\Windows\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -68,7 +72,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Sources\IntegrationTests\SimulationManager.cs" />
+    <Compile Include="Sources\Core\SimulationManager.cs" />
     <Compile Include="Sources\Windows\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -161,5 +165,6 @@
       <Name>Omnius.Wpf</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

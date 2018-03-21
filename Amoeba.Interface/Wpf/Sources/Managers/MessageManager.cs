@@ -17,8 +17,8 @@ namespace Amoeba.Interface
         private Settings _settings;
 
         private LockedHashSet<Signature> _trustSignatures = new LockedHashSet<Signature>();
-        private LockedHashDictionary<Signature, BroadcastMessage<Profile>> _cacheProfiles = new LockedHashDictionary<Signature, BroadcastMessage<Profile>>();
-        private LockedHashDictionary<Signature, BroadcastMessage<Store>> _cacheStores = new LockedHashDictionary<Signature, BroadcastMessage<Store>>();
+        private LockedHashDictionary<Signature, BroadcastProfileMessage> _cacheProfiles = new LockedHashDictionary<Signature, BroadcastProfileMessage>();
+        private LockedHashDictionary<Signature, BroadcastStoreMessage> _cacheStores = new LockedHashDictionary<Signature, BroadcastStoreMessage>();
 
         private TaskManager _watchTaskManager;
 
@@ -49,7 +49,7 @@ namespace Amoeba.Interface
                 this.UpdateProfiles();
                 this.UpdateStores();
 
-                if (token.WaitHandle.WaitOne(1000 * 60)) return;
+                if (token.WaitHandle.WaitOne(1000 * 60 * 3)) return;
             }
         }
 
@@ -58,11 +58,11 @@ namespace Amoeba.Interface
             var searchSignatures = new HashSet<Signature>();
 
             {
-                var profiles = new HashSet<BroadcastMessage<Profile>>();
+                var profiles = new HashSet<BroadcastProfileMessage>();
 
                 foreach (var leaderSignature in SettingsManager.Instance.SubscribeSignatures.ToArray())
                 {
-                    var targetProfiles = new List<BroadcastMessage<Profile>>();
+                    var targetProfiles = new List<BroadcastProfileMessage>();
 
                     var targetSignatures = new HashSet<Signature>();
                     var checkedSignatures = new HashSet<Signature>();
@@ -109,7 +109,7 @@ namespace Amoeba.Interface
                 _trustSignatures.UnionWith(searchSignatures);
             }
 
-            searchSignatures.Add(SettingsManager.Instance.AccountInfo.DigitalSignature.GetSignature());
+            searchSignatures.Add(SettingsManager.Instance.AccountSetting.DigitalSignature.GetSignature());
 
             lock (_amoebaInterfaceManager.LockObject)
             {
@@ -118,9 +118,9 @@ namespace Amoeba.Interface
             }
         }
 
-        private IEnumerable<BroadcastMessage<Profile>> GetProfiles(IEnumerable<Signature> trustSignatures)
+        private IEnumerable<BroadcastProfileMessage> GetProfiles(IEnumerable<Signature> trustSignatures)
         {
-            var profiles = new List<BroadcastMessage<Profile>>();
+            var profiles = new List<BroadcastProfileMessage>();
 
             foreach (var trustSignature in trustSignatures)
             {
@@ -153,7 +153,7 @@ namespace Amoeba.Interface
 
         private void UpdateStores()
         {
-            var stores = new List<BroadcastMessage<Store>>();
+            var stores = new List<BroadcastStoreMessage>();
 
             foreach (var trustSignature in _trustSignatures)
             {
@@ -192,9 +192,9 @@ namespace Amoeba.Interface
             }
         }
 
-        public IEnumerable<BroadcastMessage<Profile>> GetProfiles()
+        public IEnumerable<BroadcastProfileMessage> GetProfiles()
         {
-            var profiles = new List<BroadcastMessage<Profile>>();
+            var profiles = new List<BroadcastProfileMessage>();
 
             foreach (var trustSignature in _trustSignatures)
             {
@@ -207,15 +207,15 @@ namespace Amoeba.Interface
             return profiles;
         }
 
-        public BroadcastMessage<Profile> GetProfile(Signature trustSignature)
+        public BroadcastProfileMessage GetProfile(Signature trustSignature)
         {
             _cacheProfiles.TryGetValue(trustSignature, out var cachedProfile);
             return cachedProfile;
         }
 
-        public IEnumerable<BroadcastMessage<Store>> GetStores()
+        public IEnumerable<BroadcastStoreMessage> GetStores()
         {
-            var stores = new List<BroadcastMessage<Store>>();
+            var stores = new List<BroadcastStoreMessage>();
 
             foreach (var trustSignature in _trustSignatures)
             {
@@ -228,7 +228,7 @@ namespace Amoeba.Interface
             return stores;
         }
 
-        public BroadcastMessage<Store> GetStore(Signature trustSignature)
+        public BroadcastStoreMessage GetStore(Signature trustSignature)
         {
             _cacheStores.TryGetValue(trustSignature, out var cachedStore);
             return cachedStore;
@@ -242,12 +242,12 @@ namespace Amoeba.Interface
             {
                 int version = _settings.Load("Version", () => 0);
 
-                foreach (var profile in _settings.Load("CacheProfiles", () => new List<BroadcastMessage<Profile>>()))
+                foreach (var profile in _settings.Load("CacheProfiles", () => new List<BroadcastProfileMessage>()))
                 {
                     _cacheProfiles.Add(profile.AuthorSignature, profile);
                 }
 
-                foreach (var store in _settings.Load("CacheStores", () => new List<BroadcastMessage<Store>>()))
+                foreach (var store in _settings.Load("CacheStores", () => new List<BroadcastStoreMessage>()))
                 {
                     _cacheStores.Add(store.AuthorSignature, store);
                 }

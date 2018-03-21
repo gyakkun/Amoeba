@@ -1,59 +1,36 @@
 ﻿using System;
 using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
+using Newtonsoft.Json;
 
 namespace Amoeba.Interface
 {
-    [DataContract(Name = nameof(SearchRegex))]
+    [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
     class SearchRegex : IEquatable<SearchRegex>
     {
-        private string _value;
-        private bool _isIgnoreCase;
-
         private Regex _regex;
 
+        [JsonConstructor]
         public SearchRegex(string value, bool isIgnoreCase)
         {
             this.Value = value;
             this.IsIgnoreCase = isIgnoreCase;
+
+            this.RegexUpdate();
         }
 
-        [DataMember(Name = nameof(Value))]
-        public string Value
-        {
-            get
-            {
-                return _value;
-            }
-            private set
-            {
-                _value = value;
+        [JsonProperty]
+        public string Value { get; }
 
-                this.RegexUpdate();
-            }
-        }
-
-        [DataMember(Name = nameof(IsIgnoreCase))]
-        public bool IsIgnoreCase
-        {
-            get
-            {
-                return _isIgnoreCase;
-            }
-            private set
-            {
-                _isIgnoreCase = value;
-
-                this.RegexUpdate();
-            }
-        }
+        [JsonProperty]
+        public bool IsIgnoreCase { get; }
 
         private void RegexUpdate()
         {
             var o = RegexOptions.Compiled | RegexOptions.Singleline;
-            if (_isIgnoreCase) o |= RegexOptions.IgnoreCase;
+            if (this.IsIgnoreCase) o |= RegexOptions.IgnoreCase;
 
-            if (_value != null) _regex = new Regex(_value, o);
+            if (this.Value != null) _regex = new Regex(this.Value, o);
             else _regex = null;
         }
 

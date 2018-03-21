@@ -63,7 +63,7 @@ namespace Amoeba.Interface
                 _settings = new Settings(configPath);
                 int version = _settings.Load("Version", () => 0);
 
-                this.DynamicOptions.SetProperties(_settings.Load(nameof(DynamicOptions), () => Array.Empty<DynamicOptions.DynamicPropertyInfo>()));
+                this.DynamicOptions.SetProperties(_settings.Load(nameof(this.DynamicOptions), () => Array.Empty<DynamicOptions.DynamicPropertyInfo>()));
             }
 
             {
@@ -82,12 +82,12 @@ namespace Amoeba.Interface
 
             TimeSpan miningTime = TimeSpan.Zero;
 
-            if (!trustSignatures.Contains(SettingsManager.Instance.AccountInfo.DigitalSignature.GetSignature()))
+            if (!trustSignatures.Contains(SettingsManager.Instance.AccountSetting.DigitalSignature.GetSignature()))
             {
                 miningTime = TimeSpan.FromMinutes(3);
             }
 
-            _amoebaInterfaceManager.SetChatMessage(_tag, new ChatMessage(this.Comment.Value), SettingsManager.Instance.AccountInfo.DigitalSignature, miningTime, _token);
+            _amoebaInterfaceManager.SetMulticastCommentMessage(_tag, new CommentContent(this.Comment.Value), SettingsManager.Instance.AccountSetting.DigitalSignature, miningTime, _token);
 
             this.OnCloseEvent();
         }
@@ -97,7 +97,7 @@ namespace Amoeba.Interface
             App.Current.Dispatcher.Invoke(() =>
             {
                 _settings.Save("Version", 0);
-                _settings.Save(nameof(DynamicOptions), this.DynamicOptions.GetProperties(), true);
+                _settings.Save(nameof(this.DynamicOptions), this.DynamicOptions.GetProperties(), true);
             });
         }
 

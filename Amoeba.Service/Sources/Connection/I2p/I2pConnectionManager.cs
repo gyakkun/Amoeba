@@ -56,6 +56,7 @@ namespace Amoeba.Service
             {
                 lock (_lockObject)
                 {
+                    if (_config == config) return;
                     _config = config;
                 }
 

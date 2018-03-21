@@ -7,7 +7,7 @@ using Omnius.Base;
 
 namespace Amoeba.Rpc
 {
-    class WaitQueue<T> : ManagerBase, ICollection<T>, IEnumerable<T>, ICollection, IEnumerable, ISynchronized
+    sealed class WaitQueue<T> : ManagerBase, ICollection<T>, IEnumerable<T>, ICollection, IEnumerable, ISynchronized
     {
         private Queue<T> _queue;
         private int? _capacity;

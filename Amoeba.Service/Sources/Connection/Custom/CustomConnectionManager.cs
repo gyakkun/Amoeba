@@ -74,6 +74,7 @@ namespace Amoeba.Service
             {
                 lock (_lockObject)
                 {
+                    if (_config == config) return;
                     _config = config;
                 }
 
@@ -200,9 +201,9 @@ namespace Amoeba.Service
                 catch (SocketException)
                 {
                     if (socket != null) socket.Dispose();
-                }
 
-                throw new Exception();
+                    throw;
+                }
             }
 
             public Cap ConnectCap(string uri)
@@ -235,7 +236,7 @@ namespace Amoeba.Service
                             if (!IPAddress.TryParse(address, out ipAddress)) return null;
 
 #if !DEBUG
-                        if (!CheckGlobalIpAddress(ipAddress)) return null;
+                            if (!CheckGlobalIpAddress(ipAddress)) return null;
 #endif
 
                             if (!_catharsisManager.Check(ipAddress))
@@ -461,11 +462,11 @@ namespace Amoeba.Service
                         connectionFilters.Add(new ConnectionFilter("tcp", ConnectionType.None, "tcp:127.0.0.1:19050"));
                         connectionFilters.Add(new ConnectionFilter("tor", ConnectionType.Socks5Proxy, "tcp:127.0.0.1:19050"));
 
-                        var listenUris = new UriCollection();
+                        var listenUris = new List<string>();
                         listenUris.Add($"tcp:{IPAddress.Loopback}:4050");
                         listenUris.Add($"tcp:[{IPAddress.IPv6Loopback}]:4050");
 
-                        return new CustomConnectionConfig(null, connectionFilters, listenUris);
+                        return new CustomConnectionConfig(Array.Empty<string>(), connectionFilters, listenUris);
                     });
                 }
             }

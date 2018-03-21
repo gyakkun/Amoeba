@@ -15,7 +15,7 @@ using Omnius.Serialization;
 
 namespace Amoeba.Rpc
 {
-    public class AmoebaInterfaceManager : StateManagerBase, IService, ISynchronized
+    public sealed class AmoebaInterfaceManager : StateManagerBase, IService, ISynchronized
     {
         private TcpClient _tcpClient;
         private MessagingManager _messagingManager;
@@ -65,15 +65,13 @@ namespace Amoeba.Rpc
 
         private void _messagingManager_ReceiveEvent(Stream responseStream)
         {
-            using (var reader = new ItemStreamReader(new WrapperStream(responseStream), _bufferManager))
-            {
-                var type = (AmoebaFunctionResponseType)reader.GetUInt32();
-                int id = (int)reader.GetUInt32();
+            var reader = new MessageStreamReader(new WrapperStream(responseStream), _bufferManager);
+            var type = (AmoebaFunctionResponseType)reader.GetUInt64();
+            int id = (int)reader.GetUInt64();
 
-                if (_queueMap.TryGetValue(id, out var queue))
-                {
-                    queue.Enqueue(new ResponseInfo() { Type = type, Stream = new RangeStream(responseStream) });
-                }
+            if (_queueMap.TryGetValue(id, out var queue))
+            {
+                queue.Enqueue(new ResponseInfo() { Type = type, Stream = new RangeStream(responseStream) });
             }
         }
 
@@ -106,47 +104,49 @@ namespace Amoeba.Rpc
 
             _queueMap.Add(id, queue);
 
-            using (var writer = new ItemStreamWriter(_bufferManager))
+            var messageStream = new RecyclableMemoryStream(_bufferManager);
+            var writer = new MessageStreamWriter(messageStream, _bufferManager);
+
+            writer.Write((ulong)type);
+            writer.Write((ulong)id);
+
+            Stream valueStream = null;
+
+            if (argument != null)
             {
-                writer.Write((uint)type);
-                writer.Write((uint)id);
-
-                Stream valueStream = null;
-
-                if (argument != null)
+                try
                 {
-                    try
-                    {
-                        valueStream = new RecyclableMemoryStream(_bufferManager);
-                        JsonUtils.Save(valueStream, argument);
-                    }
-                    catch (Exception)
-                    {
-                        if (valueStream != null)
-                        {
-                            valueStream.Dispose();
-                            valueStream = null;
-                        }
-
-                        throw;
-                    }
+                    valueStream = new RecyclableMemoryStream(_bufferManager);
+                    JsonUtils.Save(valueStream, argument);
                 }
+                catch (Exception)
+                {
+                    if (valueStream != null)
+                    {
+                        valueStream.Dispose();
+                        valueStream = null;
+                    }
 
-                _messagingManager.Send(new UniteStream(writer.GetStream(), valueStream));
+                    throw;
+                }
             }
+
+            messageStream.Seek(0, SeekOrigin.Begin);
+            _messagingManager.Send(new UniteStream(messageStream, valueStream));
 
             return (id, queue);
         }
 
         private void Cancel(int id)
         {
-            using (var writer = new ItemStreamWriter(_bufferManager))
-            {
-                writer.Write((uint)AmoebaFunctionType.Cancel);
-                writer.Write((uint)id);
+            var messageStream = new RecyclableMemoryStream(_bufferManager);
+            var writer = new MessageStreamWriter(messageStream, _bufferManager);
 
-                _messagingManager.Send(writer.GetStream());
-            }
+            writer.Write((ulong)AmoebaFunctionType.Cancel);
+            writer.Write((ulong)id);
+
+            messageStream.Seek(0, SeekOrigin.Begin);
+            _messagingManager.Send(messageStream);
         }
 
         private TResult Function<TResult, TArgument, TProgress>(AmoebaFunctionType type, TArgument argument, IProgress<TProgress> progress, CancellationToken token)
@@ -512,7 +512,7 @@ namespace Amoeba.Rpc
             }
         }
 
-        public Task SetProfile(Profile profile, DigitalSignature digitalSignature, CancellationToken token)
+        public Task SetProfile(ProfileContent profile, DigitalSignature digitalSignature, CancellationToken token)
         {
             this.Check();
 
@@ -525,7 +525,7 @@ namespace Amoeba.Rpc
             }
         }
 
-        public Task SetStore(Store store, DigitalSignature digitalSignature, CancellationToken token)
+        public Task SetStore(StoreContent store, DigitalSignature digitalSignature, CancellationToken token)
         {
             this.Check();
 
@@ -538,7 +538,7 @@ namespace Amoeba.Rpc
             }
         }
 
-        public Task SetMailMessage(Signature targetSignature, MailMessage mailMessage, AgreementPublicKey agreementPublicKey, DigitalSignature digitalSignature, CancellationToken token)
+        public Task SetUnicastCommentMessage(Signature targetSignature, CommentContent comment, AgreementPublicKey agreementPublicKey, DigitalSignature digitalSignature, CancellationToken token)
         {
             this.Check();
 
@@ -546,12 +546,12 @@ namespace Amoeba.Rpc
             {
                 return Task.Run(() =>
                 {
-                    this.Action(AmoebaFunctionType.SetMailMessage, (targetSignature, mailMessage, agreementPublicKey, digitalSignature), token);
+                    this.Action(AmoebaFunctionType.SetUnicastCommentMessage, (targetSignature, comment, agreementPublicKey, digitalSignature), token);
                 });
             }
         }
 
-        public Task SetChatMessage(Tag tag, ChatMessage chatMessage, DigitalSignature digitalSignature, TimeSpan miningTimeSpan, CancellationToken token)
+        public Task SetMulticastCommentMessage(Tag tag, CommentContent comment, DigitalSignature digitalSignature, TimeSpan miningTimeSpan, CancellationToken token)
         {
             this.Check();
 
@@ -559,12 +559,12 @@ namespace Amoeba.Rpc
             {
                 return Task.Run(() =>
                 {
-                    this.Action(AmoebaFunctionType.SetChatMessage, (tag, chatMessage, digitalSignature, miningTimeSpan), token);
+                    this.Action(AmoebaFunctionType.SetMulticastCommentMessage, (tag, comment, digitalSignature, miningTimeSpan), token);
                 });
             }
         }
 
-        public Task<BroadcastMessage<Profile>> GetProfile(Signature signature, CancellationToken token)
+        public Task<BroadcastProfileMessage> GetProfile(Signature signature, CancellationToken token)
         {
             this.Check();
 
@@ -572,12 +572,12 @@ namespace Amoeba.Rpc
             {
                 return Task.Run(() =>
                 {
-                    return this.Function<BroadcastMessage<Profile>, Signature>(AmoebaFunctionType.GetProfile, signature, token);
+                    return this.Function<BroadcastProfileMessage, Signature>(AmoebaFunctionType.GetProfile, signature, token);
                 });
             }
         }
 
-        public Task<BroadcastMessage<Store>> GetStore(Signature signature, CancellationToken token)
+        public Task<BroadcastStoreMessage> GetStore(Signature signature, CancellationToken token)
         {
             this.Check();
 
@@ -585,12 +585,12 @@ namespace Amoeba.Rpc
             {
                 return Task.Run(() =>
                 {
-                    return this.Function<BroadcastMessage<Store>, Signature>(AmoebaFunctionType.GetStore, signature, token);
+                    return this.Function<BroadcastStoreMessage, Signature>(AmoebaFunctionType.GetStore, signature, token);
                 });
             }
         }
 
-        public Task<IEnumerable<UnicastMessage<MailMessage>>> GetMailMessages(Signature signature, AgreementPrivateKey agreementPrivateKey, CancellationToken token)
+        public Task<IEnumerable<UnicastCommentMessage>> GetUnicastCommentMessages(Signature signature, AgreementPrivateKey agreementPrivateKey, CancellationToken token)
         {
             this.Check();
 
@@ -598,12 +598,12 @@ namespace Amoeba.Rpc
             {
                 return Task.Run(() =>
                 {
-                    return this.Function<IEnumerable<UnicastMessage<MailMessage>>, (Signature, AgreementPrivateKey)>(AmoebaFunctionType.GetMailMessages, (signature, agreementPrivateKey), token);
+                    return this.Function<IEnumerable<UnicastCommentMessage>, (Signature, AgreementPrivateKey)>(AmoebaFunctionType.GetUnicastCommentMessages, (signature, agreementPrivateKey), token);
                 });
             }
         }
 
-        public Task<IEnumerable<MulticastMessage<ChatMessage>>> GetChatMessages(Tag tag, CancellationToken token)
+        public Task<IEnumerable<MulticastCommentMessage>> GetMulticastCommentMessages(Tag tag, CancellationToken token)
         {
             this.Check();
 
@@ -611,7 +611,7 @@ namespace Amoeba.Rpc
             {
                 return Task.Run(() =>
                 {
-                    return this.Function<IEnumerable<MulticastMessage<ChatMessage>>, Tag>(AmoebaFunctionType.GetChatMessages, tag, token);
+                    return this.Function<IEnumerable<MulticastCommentMessage>, Tag>(AmoebaFunctionType.GetMulticastCommentMessages, tag, token);
                 });
             }
         }

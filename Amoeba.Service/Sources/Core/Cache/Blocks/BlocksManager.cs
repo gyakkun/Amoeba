@@ -35,12 +35,12 @@ namespace Amoeba.Service
             private long _size;
             private Dictionary<Hash, ClusterInfo> _clusterIndex;
 
-            private ReaderWriterLockManager _lockManager = new ReaderWriterLockManager();
-
             private EventQueue<Hash> _addedBlockEventQueue = new EventQueue<Hash>(new TimeSpan(0, 0, 3));
             private EventQueue<Hash> _removedBlockEventQueue = new EventQueue<Hash>(new TimeSpan(0, 0, 3));
 
             private WatchTimer _updateTimer;
+
+            private readonly object _lockObject = new object();
 
             private volatile bool _isDisposed;
 
@@ -86,7 +86,7 @@ namespace Amoeba.Service
 
             private void UpdateReport()
             {
-                using (_lockManager.ReadLock())
+                lock (_lockObject)
                 {
                     long blockCount = _clusterIndex.Count;
                     long usingSpace = _fileStream.Length;
@@ -120,7 +120,7 @@ namespace Amoeba.Service
             {
                 get
                 {
-                    using (_lockManager.ReadLock())
+                    lock (_lockObject)
                     {
                         return _size;
                     }
@@ -131,7 +131,7 @@ namespace Amoeba.Service
             {
                 get
                 {
-                    using (_lockManager.ReadLock())
+                    lock (_lockObject)
                     {
                         return _clusterIndex.Count;
                     }
@@ -164,7 +164,7 @@ namespace Amoeba.Service
 
             private IEnumerable<long> GetFreeSectors(int count)
             {
-                using (_lockManager.WriteLock())
+                lock (_lockObject)
                 {
                     if (_sectorsManager.FreeSectorCount >= count)
                     {
@@ -200,7 +200,7 @@ namespace Amoeba.Service
 
             public void Lock(Hash hash)
             {
-                using (_lockManager.WriteLock())
+                lock (_lockObject)
                 {
                     _protectionManager.Add(hash);
                 }
@@ -208,7 +208,7 @@ namespace Amoeba.Service
 
             public void Unlock(Hash hash)
             {
-                using (_lockManager.WriteLock())
+                lock (_lockObject)
                 {
                     _protectionManager.Remove(hash);
                 }
@@ -216,7 +216,7 @@ namespace Amoeba.Service
 
             public bool Contains(Hash hash)
             {
-                using (_lockManager.ReadLock())
+                lock (_lockObject)
                 {
                     return _clusterIndex.ContainsKey(hash);
                 }
@@ -224,7 +224,7 @@ namespace Amoeba.Service
 
             public IEnumerable<Hash> IntersectFrom(IEnumerable<Hash> collection)
             {
-                using (_lockManager.ReadLock())
+                lock (_lockObject)
                 {
                     foreach (var hash in collection)
                     {
@@ -238,7 +238,7 @@ namespace Amoeba.Service
 
             public IEnumerable<Hash> ExceptFrom(IEnumerable<Hash> collection)
             {
-                using (_lockManager.ReadLock())
+                lock (_lockObject)
                 {
                     foreach (var hash in collection)
                     {
@@ -252,7 +252,7 @@ namespace Amoeba.Service
 
             public void Remove(Hash hash)
             {
-                using (_lockManager.WriteLock())
+                lock (_lockObject)
                 {
                     if (_clusterIndex.TryGetValue(hash, out var clusterInfo))
                     {
@@ -270,7 +270,7 @@ namespace Amoeba.Service
             {
                 if (size < 0) throw new ArgumentOutOfRangeException(nameof(size));
 
-                using (_lockManager.WriteLock())
+                lock (_lockObject)
                 {
                     int unit = 1024 * 1024 * 256; // 256MB
                     size = Roundup(size, unit);
@@ -291,7 +291,7 @@ namespace Amoeba.Service
 
             private void UpdateSectorsBitmap()
             {
-                using (_lockManager.WriteLock())
+                lock (_lockObject)
                 {
                     _sectorsManager.Reallocate(_size);
 
@@ -307,7 +307,7 @@ namespace Amoeba.Service
                 return Task.Run(() =>
                 {
                     // 重複するセクタを確保したブロックを検出しRemoveする。
-                    using (_lockManager.ReadLock())
+                    lock (_lockObject)
                     {
                         using (var bitmapManager = new BitmapManager(_bufferManager))
                         {
@@ -359,7 +359,7 @@ namespace Amoeba.Service
 
                             try
                             {
-                                using (_lockManager.ReadLock())
+                                lock (_lockObject)
                                 {
                                     if (this.Contains(hash))
                                     {
@@ -404,11 +404,11 @@ namespace Amoeba.Service
             {
                 ArraySegment<byte> result;
 
-                using (_lockManager.ReadLock())
+                lock (_lockObject)
                 {
                     ClusterInfo clusterInfo = null;
 
-                    using (_lockManager.WriteLock())
+                    lock (_lockObject)
                     {
                         if (_clusterIndex.TryGetValue(hash, out clusterInfo))
                         {
@@ -487,7 +487,7 @@ namespace Amoeba.Service
                     throw new FormatException();
                 }
 
-                using (_lockManager.ReadLock())
+                lock (_lockObject)
                 {
                     if (this.Contains(hash)) return;
 
@@ -540,11 +540,9 @@ namespace Amoeba.Service
                         throw e;
                     }
 
-                    using (_lockManager.WriteLock())
+                    lock (_lockObject)
                     {
-                        var clusterInfo = new ClusterInfo(sectorList.ToArray(), value.Count);
-                        clusterInfo.UpdateTime = DateTime.UtcNow;
-
+                        var clusterInfo = new ClusterInfo(sectorList.ToArray(), value.Count, DateTime.UtcNow);
                         _clusterIndex[hash] = clusterInfo;
                     }
 
@@ -555,7 +553,7 @@ namespace Amoeba.Service
 
             public int GetLength(Hash hash)
             {
-                using (_lockManager.ReadLock())
+                lock (_lockObject)
                 {
                     if (_clusterIndex.ContainsKey(hash))
                     {
@@ -570,7 +568,7 @@ namespace Amoeba.Service
 
             public void Load()
             {
-                using (_lockManager.WriteLock())
+                lock (_lockObject)
                 {
                     int version = _settings.Load("Version", () => 0);
 
@@ -585,7 +583,7 @@ namespace Amoeba.Service
 
             public void Save()
             {
-                using (_lockManager.WriteLock())
+                lock (_lockObject)
                 {
                     _settings.Save("Version", 0);
 
@@ -598,7 +596,7 @@ namespace Amoeba.Service
 
             public Hash[] ToArray()
             {
-                using (_lockManager.ReadLock())
+                lock (_lockObject)
                 {
                     return _clusterIndex.Keys.ToArray();
                 }
@@ -608,7 +606,7 @@ namespace Amoeba.Service
 
             public IEnumerator<Hash> GetEnumerator()
             {
-                using (_lockManager.ReadLock())
+                lock (_lockObject)
                 {
                     foreach (var hash in _clusterIndex.Keys)
                     {
@@ -623,67 +621,13 @@ namespace Amoeba.Service
 
             IEnumerator IEnumerable.GetEnumerator()
             {
-                using (_lockManager.ReadLock())
+                lock (_lockObject)
                 {
                     return this.GetEnumerator();
                 }
             }
 
             #endregion
-
-            [DataContract(Name = nameof(ClusterInfo))]
-            sealed class ClusterInfo
-            {
-                private long[] _indexes;
-                private int _length;
-                private DateTime _updateTime;
-
-                public ClusterInfo(long[] indexes, int length)
-                {
-                    this.Indexes = indexes;
-                    this.Length = length;
-                }
-
-                [DataMember(Name = nameof(Indexes))]
-                public long[] Indexes
-                {
-                    get
-                    {
-                        return _indexes;
-                    }
-                    private set
-                    {
-                        _indexes = value;
-                    }
-                }
-
-                [DataMember(Name = nameof(Length))]
-                public int Length
-                {
-                    get
-                    {
-                        return _length;
-                    }
-                    private set
-                    {
-                        _length = value;
-                    }
-                }
-
-                [DataMember(Name = nameof(UpdateTime))]
-                public DateTime UpdateTime
-                {
-                    get
-                    {
-                        return _updateTime;
-                    }
-                    set
-                    {
-                        var utc = value.ToUniversalTime();
-                        _updateTime = utc.AddTicks(-(utc.Ticks % TimeSpan.TicksPerSecond));
-                    }
-                }
-            }
 
             protected override void Dispose(bool isDisposing)
             {
@@ -735,20 +679,6 @@ namespace Amoeba.Service
                         }
 
                         _updateTimer = null;
-                    }
-
-                    if (_lockManager != null)
-                    {
-                        try
-                        {
-                            _lockManager.Dispose();
-                        }
-                        catch (Exception)
-                        {
-
-                        }
-
-                        _lockManager = null;
                     }
                 }
             }

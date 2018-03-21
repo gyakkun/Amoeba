@@ -94,7 +94,7 @@ namespace Amoeba.Interface
                 int version = _settings.Load("Version", () => 0);
 
                 _sortInfo = _settings.Load("SortInfo", () => new ListSortInfo() { Direction = ListSortDirection.Ascending, PropertyName = "Name" });
-                this.DynamicOptions.SetProperties(_settings.Load(nameof(DynamicOptions), () => Array.Empty<DynamicOptions.DynamicPropertyInfo>()));
+                this.DynamicOptions.SetProperties(_settings.Load(nameof(this.DynamicOptions), () => Array.Empty<DynamicOptions.DynamicPropertyInfo>()));
             }
 
             {
@@ -104,110 +104,117 @@ namespace Amoeba.Interface
 
         private void WatchThread(CancellationToken token)
         {
-            for (; ; )
+            try
             {
-                var downloadItemInfos = new Dictionary<(Metadata, string), DownloadItemInfo>(new CustomEqualityComparer());
-
-                foreach (var newValue in SettingsManager.Instance.DownloadItemInfos.ToArray())
+                for (; ; )
                 {
-                    var key = (newValue.Seed.Metadata, newValue.Path);
+                    var downloadItemInfos = new Dictionary<(Metadata, string), DownloadItemInfo>(new CustomEqualityComparer());
 
-                    if (!downloadItemInfos.TryGetValue(key, out var oldValue))
+                    foreach (var newValue in SettingsManager.Instance.DownloadItemInfos.ToArray())
                     {
-                        downloadItemInfos.Add(key, newValue);
-                    }
-                    else
-                    {
-                        if (oldValue.Seed.CreationTime < newValue.Seed.CreationTime)
+                        var key = (newValue.Seed.Metadata, newValue.Path);
+
+                        if (!downloadItemInfos.TryGetValue(key, out var oldValue))
                         {
-                            downloadItemInfos[key] = newValue;
-                            SettingsManager.Instance.DownloadItemInfos.Remove(oldValue);
+                            downloadItemInfos.Add(key, newValue);
                         }
                         else
                         {
-                            SettingsManager.Instance.DownloadItemInfos.Remove(newValue);
+                            if (oldValue.Seed.CreationTime < newValue.Seed.CreationTime)
+                            {
+                                downloadItemInfos[key] = newValue;
+                                SettingsManager.Instance.DownloadItemInfos.Remove(oldValue);
+                            }
+                            else
+                            {
+                                SettingsManager.Instance.DownloadItemInfos.Remove(newValue);
+                            }
                         }
                     }
-                }
 
-                var map = new Dictionary<(Metadata, string), DownloadContentReport>(new CustomEqualityComparer());
+                    var map = new Dictionary<(Metadata, string), DownloadContentReport>(new CustomEqualityComparer());
 
-                foreach (var report in _amoebaInterfaceManager.GetDownloadContentReports())
-                {
-                    map.Add((report.Metadata, report.Path), report);
-                }
-
-                foreach (var item in downloadItemInfos.Values)
-                {
-                    if (!map.TryGetValue((item.Seed.Metadata, item.Path), out var info))
+                    foreach (var report in _amoebaInterfaceManager.GetDownloadContentReports())
                     {
-                        _amoebaInterfaceManager.AddDownload(item.Seed.Metadata, item.Path, item.Seed.Length);
-                    }
-                }
-
-                foreach (var (metadata, path) in map.Keys)
-                {
-                    if (!downloadItemInfos.ContainsKey((metadata, path)))
-                    {
-                        _amoebaInterfaceManager.RemoveDownload(metadata, path);
-                    }
-                }
-
-                App.Current.Dispatcher.InvokeAsync(() =>
-                {
-                    if (token.IsCancellationRequested) return;
-
-                    foreach (var (metadata, path) in _contents.Keys.ToArray())
-                    {
-                        if (!downloadItemInfos.ContainsKey((metadata, path)))
-                        {
-                            _contents.Remove((metadata, path));
-                        }
+                        map.Add((report.Metadata, report.Path), report);
                     }
 
                     foreach (var item in downloadItemInfos.Values)
                     {
-                        if (!map.TryGetValue((item.Seed.Metadata, item.Path), out var report)) continue;
-
-                        DownloadListViewItemInfo viewModel;
-
-                        if (!_contents.TryGetValue((item.Seed.Metadata, item.Path), out viewModel))
+                        if (!map.TryGetValue((item.Seed.Metadata, item.Path), out var info))
                         {
-                            viewModel = new DownloadListViewItemInfo();
-                            _contents[(item.Seed.Metadata, item.Path)] = viewModel;
+                            _amoebaInterfaceManager.AddDownload(item.Seed.Metadata, item.Path, item.Seed.Length);
                         }
-
-                        viewModel.Icon = IconUtils.GetImage(item.Seed.Name);
-                        viewModel.Name = item.Seed.Name;
-                        viewModel.Length = item.Seed.Length;
-                        viewModel.CreationTime = item.Seed.CreationTime;
-
-                        // Rate
-                        {
-                            viewModel.Rate.Depth = report.Depth;
-
-                            double value = Math.Round(((double)report.DownloadBlockCount / (report.BlockCount - report.ParityBlockCount)) * 100, 2);
-                            string text = string.Format("{0}% {1}/{2}({3}) [{4}/{5}]",
-                                value,
-                                report.DownloadBlockCount,
-                                (report.BlockCount - report.ParityBlockCount),
-                                report.BlockCount,
-                                report.Depth,
-                                report.Metadata.Depth);
-
-                            viewModel.Rate.Value = value;
-                            viewModel.Rate.Text = text;
-                        }
-
-                        viewModel.State = report.State;
-                        viewModel.Path = item.Path;
-                        viewModel.Model = item;
                     }
 
-                    this.Sort();
-                });
+                    foreach (var (metadata, path) in map.Keys)
+                    {
+                        if (!downloadItemInfos.ContainsKey((metadata, path)))
+                        {
+                            _amoebaInterfaceManager.RemoveDownload(metadata, path);
+                        }
+                    }
 
-                if (token.WaitHandle.WaitOne(1000 * 3)) return;
+                    App.Current.Dispatcher.InvokeAsync(() =>
+                    {
+                        if (token.IsCancellationRequested) return;
+
+                        foreach (var (metadata, path) in _contents.Keys.ToArray())
+                        {
+                            if (!downloadItemInfos.ContainsKey((metadata, path)))
+                            {
+                                _contents.Remove((metadata, path));
+                            }
+                        }
+
+                        foreach (var item in downloadItemInfos.Values)
+                        {
+                            if (!map.TryGetValue((item.Seed.Metadata, item.Path), out var report)) continue;
+
+                            DownloadListViewItemInfo viewModel;
+
+                            if (!_contents.TryGetValue((item.Seed.Metadata, item.Path), out viewModel))
+                            {
+                                viewModel = new DownloadListViewItemInfo();
+                                _contents[(item.Seed.Metadata, item.Path)] = viewModel;
+                            }
+
+                            viewModel.Icon = IconUtils.GetImage(item.Seed.Name);
+                            viewModel.Name = item.Seed.Name;
+                            viewModel.Length = item.Seed.Length;
+                            viewModel.CreationTime = item.Seed.CreationTime;
+
+                            // Rate
+                            {
+                                viewModel.Rate.Depth = report.Depth;
+
+                                double value = Math.Round(((double)report.DownloadBlockCount / (report.BlockCount - report.ParityBlockCount)) * 100, 2);
+                                string text = string.Format("{0}% {1}/{2}({3}) [{4}/{5}]",
+                                    value,
+                                    report.DownloadBlockCount,
+                                    (report.BlockCount - report.ParityBlockCount),
+                                    report.BlockCount,
+                                    report.Depth,
+                                    report.Metadata.Depth);
+
+                                viewModel.Rate.Value = value;
+                                viewModel.Rate.Text = text;
+                            }
+
+                            viewModel.State = report.State;
+                            viewModel.Path = item.Path;
+                            viewModel.Model = item;
+                        }
+
+                        this.Sort();
+                    });
+
+                    if (token.WaitHandle.WaitOne(1000 * 3)) return;
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
             }
         }
 
@@ -368,7 +375,7 @@ namespace Amoeba.Interface
             {
                 _settings.Save("Version", 0);
                 _settings.Save("SortInfo", _sortInfo);
-                _settings.Save(nameof(DynamicOptions), this.DynamicOptions.GetProperties(), true);
+                _settings.Save(nameof(this.DynamicOptions), this.DynamicOptions.GetProperties(), true);
             });
         }
 

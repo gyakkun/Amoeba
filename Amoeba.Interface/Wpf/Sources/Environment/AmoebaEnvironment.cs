@@ -1,7 +1,7 @@
 using System;
 using System.IO;
+using System.Reflection;
 using System.Runtime.Serialization;
-using System.Windows;
 using System.Windows.Media.Imaging;
 using Nett;
 using Omnius.Base;
@@ -11,9 +11,9 @@ namespace Amoeba.Interface
     class AmoebaEnvironment
     {
         public static Version Version { get; private set; }
-        public static EnvironmentPaths Paths { get; private set; }
-        public static EnvironmentIcons Icons { get; private set; }
-        public static EnvironmentImages Images { get; private set; }
+        public static PathsEnvironment Paths { get; private set; }
+        public static IconsEnvironment Icons { get; private set; }
+        public static ImagesEnvironment Images { get; private set; }
 
         public static InterfaceConfig Config { get; private set; }
 
@@ -21,10 +21,12 @@ namespace Amoeba.Interface
         {
             try
             {
-                Version = new Version(5, 1, 1);
-                Paths = new EnvironmentPaths();
-                Icons = new EnvironmentIcons();
-                Images = new EnvironmentImages();
+                Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
+
+                Version = new Version(5, 1, 2);
+                Paths = new PathsEnvironment();
+                Icons = new IconsEnvironment();
+                Images = new ImagesEnvironment();
 
                 LoadConfig();
             }
@@ -58,7 +60,7 @@ namespace Amoeba.Interface
             }
         }
 
-        public class EnvironmentPaths
+        public class PathsEnvironment
         {
             public string BaseDirectoryPath { get; private set; }
             public string CoreDirectoryPath { get; private set; }
@@ -73,7 +75,7 @@ namespace Amoeba.Interface
             public string LanguagesDirectoryPath { get; private set; }
             public string IconsDirectoryPath { get; private set; }
 
-            public EnvironmentPaths()
+            public PathsEnvironment()
             {
                 this.BaseDirectoryPath = "../../";
                 this.CoreDirectoryPath = "../../Core";
@@ -90,12 +92,12 @@ namespace Amoeba.Interface
             }
         }
 
-        public class EnvironmentIcons
+        public class IconsEnvironment
         {
             public BitmapImage Amoeba { get; }
             public BitmapImage Box { get; }
 
-            public EnvironmentIcons()
+            public IconsEnvironment()
             {
                 this.Amoeba = GetIcon("Amoeba.ico");
                 this.Box = GetIcon("Files/Box.ico");
@@ -121,14 +123,14 @@ namespace Amoeba.Interface
             }
         }
 
-        public class EnvironmentImages
+        public class ImagesEnvironment
         {
             public BitmapImage Amoeba { get; }
             public BitmapImage BlueBall { get; }
             public BitmapImage GreenBall { get; }
             public BitmapImage YelloBall { get; }
 
-            public EnvironmentImages()
+            public ImagesEnvironment()
             {
                 this.Amoeba = GetImage("Amoeba.png");
                 this.BlueBall = GetImage("States/Blue.png");
@@ -156,7 +158,6 @@ namespace Amoeba.Interface
             }
         }
 
-        [DataContract]
         public class InterfaceConfig
         {
             public InterfaceConfig() { }
@@ -167,13 +168,9 @@ namespace Amoeba.Interface
                 this.Communication = communication;
             }
 
-            [DataMember(Name = nameof(Version))]
             public Version Version { get; private set; }
-
-            [DataMember(Name = nameof(Communication))]
             public CommunicationConfig Communication { get; private set; }
 
-            [DataContract]
             public class CommunicationConfig
             {
                 public CommunicationConfig() { }
@@ -183,7 +180,6 @@ namespace Amoeba.Interface
                     this.TargetUri = targetUri;
                 }
 
-                [DataMember(Name = nameof(TargetUri))]
                 public string TargetUri { get; private set; }
             }
         }

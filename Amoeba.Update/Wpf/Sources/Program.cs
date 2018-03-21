@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
+using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -15,21 +17,21 @@ namespace Amoeba.Update
             {
                 string sessionId = args[0];
                 string sourceDirectoryPath = args[1];
-                string targetDirectoryPath = args[2];
-                string runExePath = args[3];
+                string destinationDirectoryPath = args[2];
+                string runExeFilePath = args[3];
 
                 var mutex = new Mutex(false, sessionId);
                 if (!mutex.WaitOne(1000 * 30)) return;
 
                 {
-                    string tempDirectoryPath = Program.GetUniqueDirectoryPath(targetDirectoryPath);
+                    string tempDirectoryPath = GetUniqueDirectoryPath(destinationDirectoryPath);
 
                     for (int i = 0; i < 128; i++)
                     {
                         try
                         {
-                            Program.CopyDirectory(targetDirectoryPath, tempDirectoryPath);
-                            Program.DeleteDirectory(targetDirectoryPath);
+                            CopyDirectory(destinationDirectoryPath, tempDirectoryPath);
+                            DeleteDirectory(destinationDirectoryPath);
 
                             break;
                         }
@@ -45,8 +47,8 @@ namespace Amoeba.Update
                     {
                         try
                         {
-                            Program.CopyDirectory(sourceDirectoryPath, targetDirectoryPath);
-                            Program.DeleteDirectory(sourceDirectoryPath);
+                            CopyDirectory(sourceDirectoryPath, destinationDirectoryPath);
+                            DeleteDirectory(sourceDirectoryPath);
 
                             break;
                         }
@@ -62,7 +64,7 @@ namespace Amoeba.Update
                     {
                         try
                         {
-                            Program.DeleteDirectory(tempDirectoryPath);
+                            DeleteDirectory(tempDirectoryPath);
 
                             break;
                         }
@@ -77,8 +79,8 @@ namespace Amoeba.Update
 
                 {
                     var startInfo = new ProcessStartInfo();
-                    startInfo.FileName = Path.GetFullPath(runExePath);
-                    startInfo.WorkingDirectory = Path.GetFullPath(Path.GetDirectoryName(runExePath));
+                    startInfo.FileName = Path.GetFullPath(runExeFilePath);
+                    startInfo.WorkingDirectory = Path.GetFullPath(Path.GetDirectoryName(runExeFilePath));
 
                     Process.Start(startInfo);
                 }

@@ -25,15 +25,17 @@ namespace Amoeba.Interface
 
         private LanguagesManager()
         {
-#if DEBUG
-            string path = @"C:\Local\Projects\Alliance-Network\Amoeba\Amoeba.Interface\Wpf\Resources\Languages";
+            if ((bool)(System.ComponentModel.DesignerProperties.IsInDesignModeProperty.GetMetadata(typeof(System.Windows.DependencyObject)).DefaultValue))
+            {
+                string path = @"C:\Local\Projects\Alliance-Network\Amoeba\Amoeba.Interface\Wpf\Resources\Languages";
+                if (!Directory.Exists(path)) path = AmoebaEnvironment.Paths.LanguagesDirectoryPath;
 
-            if (!Directory.Exists(path)) path = AmoebaEnvironment.Paths.LanguagesDirectoryPath;
-#else
-            string path = AmoebaEnvironment.Paths.LanguagesDirectoryPath;
-#endif
-
-            this.Load(path);
+                this.Load(path);
+            }
+            else
+            {
+                this.Load(AmoebaEnvironment.Paths.LanguagesDirectoryPath);
+            }
         }
 
         private void Load(string directoryPath)
@@ -78,7 +80,7 @@ namespace Amoeba.Interface
             {
                 this.SetCurrentLanguage("Chinese");
             }
-            else if (_dic.Keys.Any(n => n == "English"))
+            else
             {
                 this.SetCurrentLanguage("English");
             }

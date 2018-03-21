@@ -112,7 +112,7 @@
                             <Setter TargetName="ContentControl" Property="Foreground" Value="{Binding RelativeSource={RelativeSource AncestorType=TreeViewItem}, Path=Foreground}" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding Path=IsUpdated.Value}" Value="True">
-                            <Setter TargetName="ContentControl" Property="Foreground" Value="{Binding Path=ViewInfo.Colors.Tree_Hit, Source={x:Static local:SettingsManager.Instance}}" />
+                            <Setter TargetName="ContentControl" Property="Foreground" Value="{Binding Path=ViewSetting.Colors.Tree_Hit, Source={x:Static local:SettingsManager.Instance}}" />
                         </DataTrigger>
                     </HierarchicalDataTemplate.Triggers>
                 </HierarchicalDataTemplate>

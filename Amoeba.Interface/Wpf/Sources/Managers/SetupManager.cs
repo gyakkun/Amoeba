@@ -1,9 +1,4 @@
-﻿using Amoeba.Rpc;
-using Ionic.Zip;
-using Nett;
-using Omnius.Base;
-using Omnius.Security;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -14,6 +9,11 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using Amoeba.Rpc;
+using Ionic.Zip;
+using Nett;
+using Omnius.Base;
+using Omnius.Security;
 
 namespace Amoeba.Interface
 {
@@ -67,7 +67,7 @@ namespace Amoeba.Interface
 
                 // 既定のフォルダを作成する。
                 {
-                    foreach (var propertyInfo in typeof(AmoebaEnvironment.EnvironmentPaths).GetProperties())
+                    foreach (var propertyInfo in typeof(AmoebaEnvironment.PathsEnvironment).GetProperties())
                     {
                         string path = propertyInfo.GetValue(AmoebaEnvironment.Paths) as string;
                         if (!Directory.Exists(path)) Directory.CreateDirectory(path);
@@ -172,7 +172,7 @@ namespace Amoeba.Interface
                                 sessionId,
                                 Path.GetFullPath(Path.Combine(tempUpdateDirectoryPath, "Core")),
                                 Path.GetFullPath(AmoebaEnvironment.Paths.CoreDirectoryPath),
-                                Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "Amoeba.Interface.exe")));
+                                Path.GetFullPath(Assembly.GetEntryAssembly().Location));
                             startInfo.WorkingDirectory = Path.GetFullPath(Path.GetDirectoryName(tempUpdateExeFilePath));
 
                             Process.Start(startInfo);
@@ -206,6 +206,56 @@ namespace Amoeba.Interface
                                     || !File.Exists(Path.Combine(basePath, oldPath))) continue;
 
                                 File.Copy(Path.Combine(basePath, oldPath), Path.Combine(basePath, newPath));
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            Log.Error(e);
+                        }
+                    }
+
+                    if (AmoebaEnvironment.Config.Version <= new Version(5, 1, 1))
+                    {
+                        try
+                        {
+                            var sourcePath = Path.Combine(AmoebaEnvironment.Paths.ConfigDirectoryPath, @"View\Settings");
+                            var destPath = Path.Combine(AmoebaEnvironment.Paths.ConfigDirectoryPath, @"Control\Settings");
+
+                            if (Directory.Exists(sourcePath))
+                            {
+                                if (!Directory.Exists(destPath))
+                                {
+                                    Directory.CreateDirectory(destPath);
+                                }
+
+                                foreach (var oldPath in Directory.GetFiles(sourcePath))
+                                {
+                                    var newPath = Path.Combine(destPath, Path.GetFileName(oldPath));
+                                    if (File.Exists(newPath) || !File.Exists(oldPath)) continue;
+
+                                    File.Copy(oldPath, newPath);
+                                }
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            Log.Error(e);
+                        }
+
+                        try
+                        {
+                            var basePath = Path.Combine(AmoebaEnvironment.Paths.ConfigDirectoryPath, @"Control\Settings");
+
+                            var renameList = new List<(string oldPath, string newPath)>();
+                            renameList.Add((@"AccountInfo.json.gz", @"AccountSetting.json.gz"));
+                            renameList.Add((@"UpdateInfo.json.gz", @"UpdateSetting.json.gz"));
+
+                            foreach (var (oldPath, newPath) in renameList
+                                .Select(tuple => (Path.Combine(basePath, tuple.oldPath), Path.Combine(basePath, tuple.newPath))))
+                            {
+                                if (File.Exists(newPath) || !File.Exists(oldPath)) continue;
+
+                                File.Copy(oldPath, newPath);
                             }
                         }
                         catch (Exception e)
@@ -384,16 +434,37 @@ namespace Amoeba.Interface
                 sb.AppendLine(string.Format("Time:\t\t{0}", DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")));
                 sb.AppendLine(string.Format("Level:\t\t{0}", e.Level));
 
-                Exception exception = e.Exception;
+                var list = new List<Exception>();
 
-                while (exception != null)
+                if (e.Exception is AggregateException aggregateException)
                 {
-                    sb.AppendLine("--------------------------------------------------------------------------------");
-                    sb.AppendLine(string.Format("Exception:\t\t{0}", exception.GetType().ToString()));
-                    if (!string.IsNullOrWhiteSpace(exception.Message)) sb.AppendLine(string.Format("Message:\t\t{0}", exception.Message));
-                    if (!string.IsNullOrWhiteSpace(exception.StackTrace)) sb.AppendLine(string.Format("StackTrace:\t\t{0}", exception.StackTrace));
+                    list.AddRange(aggregateException.InnerExceptions);
+                }
+                else
+                {
+                    var exception = e.Exception;
 
-                    exception = exception.InnerException;
+                    while (exception != null)
+                    {
+                        list.Add(exception);
+
+                        exception = exception.InnerException;
+                    }
+                }
+
+                foreach (var exception in list)
+                {
+                    try
+                    {
+                        sb.AppendLine("--------------------------------------------------------------------------------");
+                        sb.AppendLine(string.Format("Exception:\t\t{0}", exception.GetType().ToString()));
+                        if (!string.IsNullOrWhiteSpace(exception.Message)) sb.AppendLine(string.Format("Message:\t\t{0}", exception.Message));
+                        if (!string.IsNullOrWhiteSpace(exception.StackTrace)) sb.AppendLine(string.Format("StackTrace:\t\t{0}", exception.StackTrace));
+                    }
+                    catch (Exception)
+                    {
+
+                    }
                 }
 
                 sb.AppendLine();
@@ -409,7 +480,6 @@ namespace Amoeba.Interface
                 ".NET Framework:\t{1}", System.Runtime.InteropServices.RuntimeInformation.OSDescription, Environment.Version);
         }
 
-        [DataContract]
         public class InterfaceConfig
         {
             public InterfaceConfig() { }
@@ -420,13 +490,9 @@ namespace Amoeba.Interface
                 this.Communication = communication;
             }
 
-            [DataMember(Name = nameof(Version))]
             public Version Version { get; private set; }
-
-            [DataMember(Name = nameof(Communication))]
             public CommunicationConfig Communication { get; private set; }
 
-            [DataContract]
             public class CommunicationConfig
             {
                 public CommunicationConfig() { }
@@ -436,7 +502,6 @@ namespace Amoeba.Interface
                     this.TargetUri = targetUri;
                 }
 
-                [DataMember(Name = nameof(TargetUri))]
                 public string TargetUri { get; private set; }
             }
         }

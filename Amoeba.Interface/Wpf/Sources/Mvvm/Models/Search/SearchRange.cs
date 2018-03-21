@@ -1,46 +1,25 @@
 ﻿using System;
 using System.Runtime.Serialization;
+using Newtonsoft.Json;
 
 namespace Amoeba.Interface
 {
-    [DataContract(Name = nameof(SearchRange<T>))]
-    struct SearchRange<T> : IEquatable<SearchRange<T>>
+    [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
+    readonly struct SearchRange<T> : IEquatable<SearchRange<T>>
         where T : IComparable<T>, IEquatable<T>
     {
-        private T _min;
-        private T _max;
-
+        [JsonConstructor]
         public SearchRange(T min, T max)
         {
-            _min = min;
-            _max = (max.CompareTo(_min) < 0) ? _min : max;
+            this.Min = min;
+            this.Max = (max.CompareTo(this.Min) < 0) ? this.Min : max;
         }
 
-        [DataMember(Name = nameof(Min))]
-        public T Min
-        {
-            get
-            {
-                return _min;
-            }
-            private set
-            {
-                _min = value;
-            }
-        }
+        [JsonProperty]
+        public T Min { get; }
 
-        [DataMember(Name = nameof(Max))]
-        public T Max
-        {
-            get
-            {
-                return _max;
-            }
-            private set
-            {
-                _max = value;
-            }
-        }
+        [JsonProperty]
+        public T Max { get; }
 
         public bool Verify(T value)
         {
@@ -61,8 +40,7 @@ namespace Amoeba.Interface
 
         public override bool Equals(object obj)
         {
-            if ((object)obj == null || !(obj is SearchRange<T>)) return false;
-
+            if (!(obj is SearchRange<T>)) return false;
             return this.Equals((SearchRange<T>)obj);
         }
 

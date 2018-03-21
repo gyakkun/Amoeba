@@ -100,8 +100,8 @@ namespace Amoeba.Interface
 
         private static void Set(TextEditor textEditor, AvalonEditChatMessagesInfo info)
         {
-            textEditor.FontFamily = new FontFamily(SettingsManager.Instance.ViewInfo.Fonts.Chat_Message.FontFamily);
-            textEditor.FontSize = (double)new FontSizeConverter().ConvertFromString(SettingsManager.Instance.ViewInfo.Fonts.Chat_Message.FontSize + "pt");
+            textEditor.FontFamily = new FontFamily(SettingsManager.Instance.ViewSetting.Fonts.Chat_Message.FontFamily);
+            textEditor.FontSize = (double)new FontSizeConverter().ConvertFromString(SettingsManager.Instance.ViewSetting.Fonts.Chat_Message.FontSize + "pt");
 
             var document = new StringBuilder();
             var settings = new List<CustomElementSetting>();
@@ -222,7 +222,7 @@ namespace Amoeba.Interface
                 {
                     if (result.Type == "State")
                     {
-                        double size = (double)new FontSizeConverter().ConvertFromString(SettingsManager.Instance.ViewInfo.Fonts.Chat_Message.FontSize + "pt");
+                        double size = (double)new FontSizeConverter().ConvertFromString(SettingsManager.Instance.ViewSetting.Fonts.Chat_Message.FontSize + "pt");
 
                         var image = new Image() { Height = (size - 3), Width = (size - 3), Margin = new Thickness(1.5, 1.5, 0, 0) };
                         if (result.Value == "!") image.Source = AmoebaEnvironment.Images.YelloBall;
@@ -243,11 +243,11 @@ namespace Amoeba.Interface
 
                         if (_trustSignatures.Contains(Signature.Parse(result.Value)))
                         {
-                            brush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(SettingsManager.Instance.ViewInfo.Colors.Message_Trust));
+                            brush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(SettingsManager.Instance.ViewSetting.Colors.Message_Trust));
                         }
                         else
                         {
-                            brush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(SettingsManager.Instance.ViewInfo.Colors.Message_Untrust));
+                            brush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(SettingsManager.Instance.ViewSetting.Colors.Message_Untrust));
                         }
 
                         var element = new CustomTextElement(result.Value);

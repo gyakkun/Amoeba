@@ -184,7 +184,7 @@ namespace Amoeba.Interface
 
                 this.SelectedMiningLimit.Value = _settings.Load("MiningLimit", () => 0);
 
-                this.DynamicOptions.SetProperties(_settings.Load(nameof(DynamicOptions), () => Array.Empty<DynamicOptions.DynamicPropertyInfo>()));
+                this.DynamicOptions.SetProperties(_settings.Load(nameof(this.DynamicOptions), () => Array.Empty<DynamicOptions.DynamicPropertyInfo>()));
             }
 
             {
@@ -272,7 +272,7 @@ namespace Amoeba.Interface
                 {
                     if (token.IsCancellationRequested) return;
 
-                    var newMessages = new HashSet<MulticastMessage<ChatMessage>>(_amoebaInterfaceManager.GetChatMessages(chatThreadViewModel.Model.Tag, CancellationToken.None).Result);
+                    var newMessages = new HashSet<MulticastCommentMessage>(_amoebaInterfaceManager.GetMulticastCommentMessages(chatThreadViewModel.Model.Tag, CancellationToken.None).Result);
 
                     lock (chatThreadViewModel.Model.Messages.LockObject)
                     {
@@ -527,7 +527,7 @@ namespace Amoeba.Interface
                 _settings.Save("Version", 0);
                 _settings.Save("MiningLimit", this.SelectedMiningLimit.Value);
                 _settings.Save("ChatCategoryInfo", this.TabViewModel.Value.Model);
-                _settings.Save(nameof(DynamicOptions), this.DynamicOptions.GetProperties(), true);
+                _settings.Save(nameof(this.DynamicOptions), this.DynamicOptions.GetProperties(), true);
             });
         }
 

@@ -2,10 +2,11 @@
 using System.Runtime.Serialization;
 using Amoeba.Messages;
 using Amoeba.Rpc;
+using Newtonsoft.Json;
 
 namespace Amoeba.Interface
 {
-    [DataContract(Name = nameof(DownloadItemInfo))]
+    [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
     class DownloadItemInfo : IEquatable<DownloadItemInfo>
     {
         public DownloadItemInfo(Seed seed, string path)
@@ -14,10 +15,10 @@ namespace Amoeba.Interface
             this.Path = path;
         }
 
-        [DataMember(Name = nameof(Seed))]
+        [JsonProperty]
         public Seed Seed { get; private set; }
 
-        [DataMember(Name = nameof(Path))]
+        [JsonProperty]
         public string Path { get; private set; }
 
         public override int GetHashCode()

@@ -42,7 +42,7 @@ namespace Amoeba.Interface
             {
                 try
                 {
-                    var updateInfo = SettingsManager.Instance.UpdateInfo;
+                    var updateInfo = SettingsManager.Instance.UpdateSetting;
                     if (!updateInfo.IsEnabled) return;
 
                     var store = _amoebaInterfaceManager.GetStore(updateInfo.Signature, CancellationToken.None).Result;

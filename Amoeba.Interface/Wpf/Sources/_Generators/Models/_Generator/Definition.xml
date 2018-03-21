@@ -1,0 +1,366 @@
+<Config>
+
+    <Class Modifier="internal" Name="AccountSetting">
+        <Properties>
+            <Item Type="DigitalSignature" Name="DigitalSignature" />
+            <Item Type="string" Name="Comment" />
+            <Item Type="Agreement" Name="Agreement" />
+            <Array Type="Signature" Name="TrustSignatures" />
+            <Array Type="Signature" Name="UntrustSignatures" />
+            <Array Type="Tag" Name="Tags" />
+        </Properties>
+    </Class>
+
+    <Class Modifier="internal" Name="UpdateSetting">
+        <Properties>
+            <Item Type="bool" Name="IsEnabled" />
+            <Item Type="Signature" Name="Signature" />
+        </Properties>
+    </Class>
+
+    <Class Modifier="internal" Name="ViewSetting">
+        <Properties>
+            <Item Type="ColorsSetting" Name="Colors" IsInitialized="true" />
+            <Item Type="FontsSetting" Name="Fonts" IsInitialized="true" />
+        </Properties>
+        <Classes>
+
+            <Class Name="ColorsSetting">
+                <Properties>
+                    <Item Type="string" Name="Tree_Hit" />
+                    <Item Type="string" Name="Link_New" />
+                    <Item Type="string" Name="Link_Visited" />
+                    <Item Type="string" Name="Message_Trust" />
+                    <Item Type="string" Name="Message_Untrust" />
+                </Properties>
+            </Class>
+
+            <Class Name="FontsSetting">
+                <Properties>
+                    <Item Type="FontSetting" Name="Chat_Message" />
+                </Properties>
+                <Classes>
+
+                    <Class Name="FontSetting">
+                        <Properties>
+                            <Item Type="string" Name="FontFamily" />
+                            <Item Type="double" Name="FontSize" />
+                        </Properties>
+                    </Class>
+
+                </Classes>
+            </Class>
+
+        </Classes>
+    </Class>
+
+    <Class Modifier="internal" Name="ListSortInfo">
+        <Properties>
+            <Item Type="string" Name="PropertyName" />
+            <Item Type="ListSortDirection" Name="Direction" />
+        </Properties>
+    </Class>
+
+    <Class Modifier="internal" Name="RelationSignatureInfo">
+        <Properties>
+            <Item Type="Signature" Name="Signature" />
+            <Item Type="BroadcastProfileMessage" Name="Profile" />
+            <Array Type="RelationSignatureInfo" Name="Children" />
+        </Properties>
+    </Class>
+
+    <Class Modifier="internal" Name="OptionsInfo">
+        <Properties>
+            <Item Type="AccountInfo" Name="Account" IsInitialized="true" />
+            <Item Type="ConnectionInfo" Name="Connection" IsInitialized="true" />
+            <Item Type="DataInfo" Name="Data" IsInitialized="true" />
+            <Item Type="ViewInfo" Name="View" IsInitialized="true" />
+            <Item Type="UpdateInfo" Name="Update" IsInitialized="true" />
+        </Properties>
+        <Classes>
+
+            <Class Name="AccountInfo">
+                <Properties>
+                    <Item Type="DigitalSignature" Name="DigitalSignature" />
+                    <Item Type="string" Name="Comment" />
+                    <Array Type="Signature" Name="TrustSignatures" />
+                    <Array Type="Signature" Name="UntrustSignatures" />
+                    <Array Type="Tag" Name="Tags" />
+                </Properties>
+            </Class>
+
+            <Class Name="ConnectionInfo">
+                <Properties>
+                    <Item Type="TcpInfo" Name="Tcp" IsInitialized="true" />
+                    <Item Type="I2pInfo" Name="I2p" IsInitialized="true" />
+                    <Item Type="CustomInfo" Name="Custom" IsInitialized="true" />
+                    <Item Type="BandwidthInfo" Name="Bandwidth" IsInitialized="true" />
+                </Properties>
+                <Classes>
+
+                    <Class Name="TcpInfo">
+                        <Properties>
+                            <Item Type="bool" Name="Ipv4IsEnabled" />
+                            <Item Type="ushort" Name="Ipv4Port" />
+                            <Item Type="bool" Name="Ipv6IsEnabled" />
+                            <Item Type="ushort" Name="Ipv6Port" />
+                            <Item Type="string" Name="ProxyUri" />
+                        </Properties>
+                    </Class>
+
+                    <Class Name="I2pInfo">
+                        <Properties>
+                            <Item Type="bool" Name="IsEnabled" />
+                            <Item Type="string" Name="SamBridgeUri" />
+                        </Properties>
+                    </Class>
+
+                    <Class Name="CustomInfo">
+                        <Properties>
+                            <Array Type="string" Name="LocationUris" />
+                            <Array Type="ConnectionFilter" Name="ConnectionFilters" />
+                            <Array Type="string" Name="ListenUris" />
+                        </Properties>
+                    </Class>
+
+                    <Class Name="BandwidthInfo">
+                        <Properties>
+                            <Item Type="int" Name="ConnectionCountLimit" />
+                            <Item Type="int" Name="BandwidthLimit" />
+                        </Properties>
+                    </Class>
+
+                </Classes>
+            </Class>
+
+            <Class Name="DataInfo">
+                <Properties>
+                    <Item Type="CacheInfo" Name="Cache" IsInitialized="true" />
+                    <Item Type="DownloadInfo" Name="Download" IsInitialized="true" />
+                </Properties>
+                <Classes>
+
+                    <Class Name="CacheInfo">
+                        <Properties>
+                            <Item Type="long" Name="Size" />
+                        </Properties>
+                    </Class>
+
+                    <Class Name="DownloadInfo">
+                        <Properties>
+                            <Item Type="string" Name="DirectoryPath" />
+                            <Item Type="int" Name="ProtectedPercentage" />
+                        </Properties>
+                    </Class>
+
+                </Classes>
+            </Class>
+
+            <Class Name="ViewInfo">
+                <Properties>
+                    <Array Type="Signature" Name="SubscribeSignatures" />
+                </Properties>
+            </Class>
+
+            <Class Name="UpdateInfo">
+                <Properties>
+                    <Item Type="bool" Name="IsEnabled" />
+                    <Item Type="Signature" Name="Signature" />
+                </Properties>
+            </Class>
+
+        </Classes>
+    </Class>
+
+    <Class Modifier="internal" Name="CloudStateInfo">
+        <Properties>
+            <Item Type="string" Name="Location" />
+        </Properties>
+    </Class>
+
+    <Class Modifier="internal" Name="ChatCategoryInfo">
+        <Properties>
+            <Item Type="string" Name="Name" />
+            <Item Type="bool" Name="IsExpanded" />
+            <Array Type="ChatThreadInfo" Name="ThreadInfos" />
+            <Array Type="ChatCategoryInfo" Name="CategoryInfos" />
+        </Properties>
+    </Class>
+
+    <Class Modifier="internal" Name="ChatThreadInfo">
+        <Properties>
+            <Item Type="bool" Name="IsUpdated" />
+            <Item Type="Tag" Name="Tag" />
+            <Item Type="bool" Name="IsTrustMessageOnly" />
+            <Item Type="bool" Name="IsNewMessageOnly" />
+            <Array Type="ChatMessageInfo" Name="Messages" IsLocked="true"/>
+        </Properties>
+    </Class>
+
+    <Class Modifier="internal" Name="ChatMessageInfo">
+        <Properties>
+            <Item Type="ChatMessageState" Name="State" />
+            <Item Type="MulticastCommentMessage" Name="Message" />
+        </Properties>
+    </Class>
+
+    <Class Modifier="internal" Name="StoreCategoryInfo">
+        <Properties>
+            <Item Type="string" Name="Name" />
+            <Item Type="bool" Name="IsExpanded" />
+            <Array Type="StoreSignatureInfo" Name="SignatureInfos" />
+            <Array Type="StoreCategoryInfo" Name="CategoryInfos" />
+        </Properties>
+    </Class>
+
+    <Class Modifier="internal" Name="StoreSignatureInfo">
+        <Properties>
+            <Item Type="Signature" Name="AuthorSignature" />
+            <Item Type="DateTime" Name="UpdateTime" />
+            <Item Type="bool" Name="IsExpanded" />
+            <Item Type="bool" Name="IsUpdated" />
+            <Array Type="StoreBoxInfo" Name="BoxInfos" />
+        </Properties>
+    </Class>
+
+    <Class Modifier="internal" Name="StoreBoxInfo">
+        <Properties>
+            <Item Type="string" Name="Name" />
+            <Item Type="bool" Name="IsExpanded" />
+            <Array Type="Seed" Name="Seeds" />
+            <Array Type="StoreBoxInfo" Name="BoxInfos" />
+        </Properties>
+    </Class>
+
+    <Class Modifier="internal" Name="StoreListViewItemInfo">
+        <Properties>
+            <Item Type="BitmapSource" Name="Icon" />
+            <Item Type="string" Name="Name" />
+            <Item Type="long" Name="Length" />
+            <Item Type="DateTime" Name="CreationTime" />
+            <Item Type="SearchState" Name="State" />
+            <Item Type="object" Name="Model" />
+        </Properties>
+    </Class>
+
+    <Class Modifier="internal" Name="SearchInfo">
+        <Properties>
+            <Item Type="string" Name="Name" />
+            <Item Type="bool" Name="IsExpanded" />
+            <Item Type="bool" Name="IsUpdated" />
+            <Item Type="SearchConditionsInfo" Name="Conditions" IsInitialized="true" />
+            <Array Type="SearchInfo" Name="Children" />
+        </Properties>
+    </Class>
+
+    <Class Modifier="internal" Name="SearchConditionsInfo">
+        <Properties>
+            <Array Type="SearchCondition(string)" Name="SearchNames" />
+            <Array Type="SearchCondition(SearchRegex)" Name="SearchRegexes" />
+            <Array Type="SearchCondition(Signature)" Name="SearchSignatures" />
+            <Array Type="SearchCondition(SearchRange(DateTime))" Name="SearchCreationTimeRanges" />
+            <Array Type="SearchCondition(SearchRange(long))" Name="SearchLengthRanges" />
+            <Array Type="SearchCondition(SearchState)" Name="SearchStates" />
+        </Properties>
+    </Class>
+
+    <Class Modifier="internal" Name="SearchListViewItemInfo">
+        <Properties>
+            <Item Type="BitmapSource" Name="Icon" />
+            <Item Type="string" Name="Name" />
+            <Item Type="Signature" Name="Signature" />
+            <Item Type="long" Name="Length" />
+            <Item Type="DateTime" Name="CreationTime" />
+            <Item Type="SearchState" Name="State" />
+            <Item Type="Seed" Name="Model" />
+        </Properties>
+    </Class>
+
+    <Class Modifier="internal" Name="DownloadListViewItemInfo">
+        <Properties>
+            <Item Type="BitmapSource" Name="Icon" />
+            <Item Type="string" Name="Name" />
+            <Item Type="long" Name="Length" />
+            <Item Type="DateTime" Name="CreationTime" />
+            <Item Type="DownloadListViewItemRateInfo" Name="Rate" IsInitialized="true" />
+            <Item Type="DownloadState" Name="State" />
+            <Item Type="string" Name="Path" />
+            <Item Type="DownloadItemInfo" Name="Model" />
+        </Properties>
+    </Class>
+
+    <Class Modifier="internal" Name="DownloadListViewItemRateInfo">
+        <Properties>
+            <Item Type="string" Name="Text" />
+            <Item Type="int" Name="Depth" />
+            <Item Type="double" Name="Value" />
+        </Properties>
+    </Class>
+
+    <Class Modifier="internal" Name="UploadStoreInfo">
+        <Properties>
+            <Item Type="bool" Name="IsExpanded" />
+            <Item Type="bool" Name="IsUpdated" />
+            <Array Type="UploadDirectoryInfo" Name="DirectoryInfos" />
+            <Array Type="UploadCategoryInfo" Name="CategoryInfos" />
+        </Properties>
+    </Class>
+
+    <Class Modifier="internal" Name="UploadCategoryInfo">
+        <Properties>
+            <Item Type="string" Name="Name" />
+            <Item Type="bool" Name="IsExpanded" />
+            <Array Type="UploadDirectoryInfo" Name="DirectoryInfos" />
+            <Array Type="UploadCategoryInfo" Name="CategoryInfos" />
+        </Properties>
+    </Class>
+
+    <Class Modifier="internal" Name="UploadDirectoryInfo">
+        <Properties>
+            <Item Type="string" Name="Name" />
+            <Item Type="string" Name="Path" />
+            <Item Type="bool" Name="IsExpanded" />
+            <Array Type="Seed" Name="Seeds" />
+            <Array Type="UploadBoxInfo" Name="BoxInfos" />
+        </Properties>
+    </Class>
+
+    <Class Modifier="internal" Name="UploadBoxInfo">
+        <Properties>
+            <Item Type="string" Name="Name" />
+            <Item Type="bool" Name="IsExpanded" />
+            <Array Type="Seed" Name="Seeds" />
+            <Array Type="UploadBoxInfo" Name="BoxInfos" />
+        </Properties>
+    </Class>
+
+    <Class Modifier="internal" Name="UploadListViewItemInfo">
+        <Properties>
+            <Item Type="int" Name="Group" />
+            <Item Type="BitmapSource" Name="Icon" />
+            <Item Type="string" Name="Name" />
+            <Item Type="long" Name="Length" />
+            <Item Type="DateTime" Name="CreationTime" />
+            <Item Type="SearchState" Name="State" />
+            <Item Type="string" Name="Path" />
+            <Item Type="object" Name="Model" />
+        </Properties>
+    </Class>
+
+    <Class Modifier="internal" Name="UploadPreviewListViewItemInfo">
+        <Properties>
+            <Item Type="BitmapSource" Name="Icon" />
+            <Item Type="string" Name="Name" />
+            <Item Type="long" Name="Length" />
+            <Item Type="string" Name="Path" />
+        </Properties>
+    </Class>
+
+    <Class Modifier="internal" Name="UploadSyncRateInfo">
+        <Properties>
+            <Item Type="string" Name="Text" />
+            <Item Type="double" Name="Value" />
+        </Properties>
+    </Class>
+
+</Config>

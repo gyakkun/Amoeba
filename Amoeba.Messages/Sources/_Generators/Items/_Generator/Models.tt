@@ -1,0 +1,480 @@
+<#@ template debug="true" hostspecific="true" language="C#" #>
+<#@ output encoding="UTF-8" extension=".generated.cs" #>
+<#@ assembly name="System" #>
+<#@ assembly name="System.Core" #>
+<#@ assembly name="System.Xml" #>
+<#@ assembly name="System.Xml.Linq" #>
+<#@ assembly name="Microsoft.CSharp" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Xml" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Text.RegularExpressions" #>
+<#@ import namespace="System.Dynamic" #>
+using Newtonsoft.Json;
+using System;
+using System.ComponentModel;
+using System.Collections.Generic;
+using Omnius.Serialization;
+using Omnius.Utils;
+using Omnius.Base;
+using System.IO;
+using System.Runtime.Serialization;
+using Omnius.Security;
+using System.Collections.ObjectModel;
+using System.Linq;
+
+namespace Amoeba.Messages
+{
+<#= Generator.GetString(this.Host.ResolvePath("Definition.xml")) #>
+}
+<#+
+    public static class Generator
+    {
+        public static string GetString(string filePath)
+        {
+            return GenerateUtils.Generate(filePath);
+        }
+
+        private static class GenerateUtils
+        {
+            public static string Generate(string filePath)
+            {
+                var w = new Writer();
+
+                foreach (var cd in ParseUtils.Load(filePath))
+                {
+                    w.PushIndent();
+
+                    Write_Class(w, cd);
+
+                    w.PopIndent();
+                }
+
+                return w.ToString();
+            }
+
+            private static void Write_Class(Writer w, ClassDef cd)
+            {
+                foreach (var a in cd.Attributes)
+                {
+                    w.WriteLine(a);
+                }
+
+                w.WriteLine("[JsonObject(MemberSerialization = MemberSerialization.OptIn)]");
+                w.WriteLine("{0} sealed partial class {1} : ItemBase<{1}>", cd.Modifier, cd.Name);
+                w.WriteLine("{");
+
+                w.PushIndent();
+
+                Write_Class_Constructor(w, cd);
+                Write_Class_Properties(w, cd);
+                Write_Class_Equals(w, cd);
+                Write_Class_GetHashCode(w, cd);
+
+                w.PopIndent();
+
+                w.WriteLine("}");
+            }
+
+            private static void Write_Class_Constructor(Writer w, ClassDef cd)
+            {
+                var parameter = string.Join(", ", cd.Properties
+                    .Select(pd =>
+                    {
+                        if (pd.SerializeType == SerializeType.Array)
+                        {
+                            return string.Format("IEnumerable<{0}>", pd.Type) + " " + GetLocalName(pd.Name);
+                        }
+                        else
+                        {
+                            return pd.Type + " " + GetLocalName(pd.Name);
+                        }
+                    }));
+
+                w.WriteLine("[JsonConstructor]");
+                w.WriteLine("public {0}({1})", cd.Name, parameter);
+                w.WriteLine("{");
+
+                w.PushIndent();
+
+                foreach (var pd in cd.Properties)
+                {
+                    if (pd.SerializeType == SerializeType.Array)
+                    {
+                        if (pd.State.IsMutable)
+                        {
+                            w.WriteLine("this.{0} = new List<{1}>({2}.ToArray());", pd.Name, pd.Type, GetLocalName(pd.Name));
+                        }
+                        else
+                        {
+                            w.WriteLine("this.{0} = new ReadOnlyCollection<{1}>({2}.ToArray());", pd.Name, pd.Type, GetLocalName(pd.Name));
+                        }
+
+
+                    }
+                    else
+                    {
+                        w.WriteLine("this.{0} = {1};", pd.Name, GetLocalName(pd.Name));
+                    }
+                }
+
+                w.PopIndent();
+
+                w.WriteLine("}");
+            }
+
+            private static void Write_Class_Equals(Writer w, ClassDef cd)
+            {
+                w.WriteLine("public override bool Equals({0} target)", cd.Name);
+                w.WriteLine("{");
+
+                w.PushIndent();
+
+                {
+                    w.WriteLine("if ((object)target == null) return false;");
+                    w.WriteLine("if (Object.ReferenceEquals(this, target)) return true;");
+
+                    foreach (var pd in cd.Properties)
+                    {
+                        if (pd.SerializeType == SerializeType.Item)
+                        {
+                            w.WriteLine("if (this.{0} != target.{0}) return false;", pd.Name);
+                        }
+                        else if (pd.SerializeType == SerializeType.Array)
+                        {
+                            w.WriteLine("if (!CollectionUtils.Equals(this.{0}, target.{0})) return false;", pd.Name);
+                        }
+                    }
+                }
+
+                w.WriteLine("return true;");
+
+                w.PopIndent();
+
+                w.WriteLine("}");
+            }
+
+            private static void Write_Class_GetHashCode(Writer w, ClassDef cd)
+            {
+                w.WriteLine("private int? _hashCode;");
+                w.WriteLine("public override int GetHashCode()");
+                w.WriteLine("{");
+
+                w.PushIndent();
+
+                {
+
+                    w.WriteLine("if (!_hashCode.HasValue)");
+                    w.WriteLine("{");
+
+                    w.PushIndent();
+
+                    {
+                        w.WriteLine("int h = 0;");
+
+                        foreach (var pd in cd.Properties)
+                        {
+                            if (pd.SerializeType == SerializeType.Item)
+                            {
+                                w.WriteLine("if (this.{0} != default({1})) h ^= this.{0}.GetHashCode();", pd.Name, pd.Type);
+                            }
+                            else if (pd.SerializeType == SerializeType.Array)
+                            {
+                                string indexString = "i";
+
+                                w.WriteLine("for (int {0} = 0; {0} < {1}.Count; {0}++)", indexString, pd.Name);
+                                w.WriteLine("{");
+
+                                w.PushIndent();
+
+                                w.WriteLine("h ^= this.{0}[{1}].GetHashCode();", pd.Name, indexString);
+
+                                w.PopIndent();
+
+                                w.WriteLine("}");
+                            }
+                        }
+
+                        w.WriteLine("_hashCode = h;");
+                    }
+
+                    w.PopIndent();
+
+                    w.WriteLine("}");
+                    w.WriteLine("return _hashCode.Value;");
+                }
+
+                w.PopIndent();
+
+                w.WriteLine("}");
+            }
+
+            private static void Write_Class_Properties(Writer w, ClassDef cd)
+            {
+                foreach (var pd in cd.Properties.OrderBy(n => n.Id))
+                {
+                    foreach (var a in pd.Attributes)
+                    {
+                        w.WriteLine(a);
+                    }
+
+                    w.WriteLine("[JsonProperty]", pd.Modifier, pd.Type, pd.Name, "{ get; }");
+
+                    if (pd.SerializeType == SerializeType.Item)
+                    {
+                        if (pd.State.IsMutable)
+                        {
+                            w.WriteLine("{0} {1} {2} {3}", pd.Modifier, pd.Type, pd.Name, "{ get; set; }");
+                        }
+                        else
+                        {
+                            w.WriteLine("{0} {1} {2} {3}", pd.Modifier, pd.Type, pd.Name, "{ get; }");
+                        }
+                    }
+                    else if (pd.SerializeType == SerializeType.Array)
+                    {
+                        if (pd.State.IsMutable)
+                        {
+                            w.WriteLine("{0} IList<{1}> {2} {3}", pd.Modifier, pd.Type, pd.Name, "{ get; }");
+                        }
+                        else
+                        {
+                            w.WriteLine("{0} IReadOnlyList<{1}> {2} {3}", pd.Modifier, pd.Type, pd.Name, "{ get; }");
+                        }
+                    }
+                }
+            }
+
+            private static string GetLocalName(string name)
+            {
+                return name[0].ToString().ToLower() + name.Substring(1);
+            }
+
+            private class Writer
+            {
+                private StringBuilder _sb = new StringBuilder();
+                private int _indentDepth = 0;
+                private bool _wroteIndent = false;
+
+                public Writer()
+                {
+
+                }
+
+                private bool TryWriteIndent()
+                {
+                    if (_wroteIndent) return false;
+                    _wroteIndent = true;
+
+                    for (int i = 0; i < _indentDepth; i++)
+                    {
+                        _sb.Append("    ");
+                    }
+
+                    return true;
+                }
+
+                public void WriteLine()
+                {
+                    this.TryWriteIndent();
+                    _sb.AppendLine();
+                    _wroteIndent = false;
+                }
+
+                public void WriteLine(string value)
+                {
+                    this.TryWriteIndent();
+                    _sb.AppendLine(value);
+                    _wroteIndent = false;
+                }
+
+                public void WriteLine(string format, params object[] args)
+                {
+                    this.TryWriteIndent();
+                    _sb.AppendFormat(format, args);
+                    _sb.AppendLine();
+                    _wroteIndent = false;
+                }
+
+                public void PushIndent()
+                {
+                    _indentDepth++;
+                }
+
+                public void PopIndent()
+                {
+                    _indentDepth--;
+                }
+
+                public override string ToString()
+                {
+                    return _sb.ToString();
+                }
+            }
+        }
+
+        private static class ParseUtils
+        {
+            public static IEnumerable<ClassDef> Load(string xmlFilePath)
+            {
+                var classDefs = new List<ClassDef>();
+
+                using (var streamReader = new StreamReader(xmlFilePath))
+                using (var reader = XmlReader.Create(streamReader))
+                {
+                    while (reader.Read())
+                    {
+                        if (reader.NodeType != XmlNodeType.Element) continue;
+
+                        if (reader.Name == "Class")
+                        {
+                            var modifier = reader.GetAttribute("Modifier") ?? "public";
+                            var attributes = new List<string>();
+                            var name = reader.GetAttribute("Name") ?? null;
+                            var properties = new List<PropertyDef>();
+
+                            using (var subReader = reader.ReadSubtree())
+                            {
+                                while (subReader.Read())
+                                {
+                                    if (subReader.NodeType != XmlNodeType.Element) continue;
+
+                                    if (subReader.Name == "Attributes")
+                                    {
+                                        using (var subReader2 = subReader.ReadSubtree())
+                                        {
+                                            subReader2.Read();
+
+                                            while (subReader2.Read())
+                                            {
+                                                if (subReader2.NodeType != XmlNodeType.Element) continue;
+
+                                                attributes.Add(ReadAttribute(subReader2));
+                                            }
+                                        }
+                                    }
+                                    else if (subReader.Name == "Properties")
+                                    {
+                                        using (var subReader2 = subReader.ReadSubtree())
+                                        {
+                                            subReader2.Read();
+
+                                            while (subReader2.Read())
+                                            {
+                                                if (subReader2.NodeType != XmlNodeType.Element) continue;
+
+                                                properties.Add(ReadProperty(subReader2));
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            var result = new ClassDef();
+                            if (modifier != null) result.Modifier = modifier;
+                            result.Attributes = attributes;
+                            result.Name = name;
+                            result.Properties = properties;
+
+                            classDefs.Add(result);
+                        }
+                    }
+                }
+
+                return classDefs;
+            }
+
+            private static string ReadAttribute(XmlReader reader)
+            {
+                if (reader.Name == "Attribute")
+                {
+                    return reader.GetAttribute("Value");
+                }
+
+                return null;
+            }
+
+            private static PropertyDef ReadProperty(XmlReader reader)
+            {
+                SerializeType serializeType = 0;
+                string modifier = reader.GetAttribute("Modifier") ?? "public";
+                var attributes = new List<string>();
+                string type = reader.GetAttribute("Type") ?? null;
+                string name = reader.GetAttribute("Name") ?? null;
+
+                bool isMutable = bool.Parse(reader.GetAttribute("IsMutable") ?? "false");
+
+                using (var subReader = reader.ReadSubtree())
+                {
+                    while (subReader.Read())
+                    {
+                        if (subReader.NodeType != XmlNodeType.Element) continue;
+
+                        if (subReader.Name == "Attributes")
+                        {
+                            using (var subReader2 = subReader.ReadSubtree())
+                            {
+                                subReader2.Read();
+
+                                while (subReader2.Read())
+                                {
+                                    if (subReader2.NodeType != XmlNodeType.Element) continue;
+
+                                    attributes.Add(ReadAttribute(subReader2));
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (reader.Name == "Item")
+                {
+                    serializeType = SerializeType.Item;
+                }
+                else if (reader.Name == "Array")
+                {
+                    serializeType = SerializeType.Array;
+                }
+
+                var result = new PropertyDef();
+                result.Modifier = modifier;
+                result.Attributes = attributes;
+                result.Name = name;
+                result.Type = type;
+                result.SerializeType = serializeType;
+                result.State = new ExpandoObject();
+                result.State.IsMutable = isMutable;
+
+                return result;
+            }
+        }
+
+        private class ClassDef
+        {
+            public string Modifier { get; set; }
+            public List<string> Attributes { get; set; }
+            public string Name { get; set; }
+            public List<PropertyDef> Properties { get; set; }
+        }
+
+        private enum SerializeType
+        {
+            Item,
+            Array,
+        }
+
+        private class PropertyDef
+        {
+            public SerializeType SerializeType { get; set; }
+            public string Modifier { get; set; }
+            public List<string> Attributes { get; set; }
+            public int Id { get; set; }
+            public string Name { get; set; }
+            public string Type { get; set; }
+            public dynamic State { get; set; }
+        }
+    }
+#>

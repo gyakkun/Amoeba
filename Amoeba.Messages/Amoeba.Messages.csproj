@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
-        <AssemblyVersion>2018.3.3.126</AssemblyVersion>
+        <AssemblyVersion>2018.3.20.204</AssemblyVersion>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -12,6 +12,12 @@
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
         <LangVersion>latest</LangVersion>
     </PropertyGroup>
+
+    <ItemGroup>
+      <Compile Remove="Sources\Core\**" />
+      <EmbeddedResource Remove="Sources\Core\**" />
+      <None Remove="Sources\Core\**" />
+    </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\Omnius\Omnius.Base\Omnius.Base.csproj" />
@@ -27,7 +33,12 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Compile Update="Sources\_Generator\Models.generated.cs">
+        <Compile Update="Sources\_Generators\Messages\_Generator\Models.generated.cs">
+          <DependentUpon>Models.tt</DependentUpon>
+          <DesignTime>True</DesignTime>
+          <AutoGen>True</AutoGen>
+        </Compile>
+        <Compile Update="Sources\_Generators\Items\_Generator\Models.generated.cs">
             <DesignTime>True</DesignTime>
             <AutoGen>True</AutoGen>
             <DependentUpon>Models.tt</DependentUpon>
@@ -35,7 +46,11 @@
     </ItemGroup>
 
     <ItemGroup>
-        <None Update="Sources\_Generator\Models.tt">
+        <None Update="Sources\_Generators\Messages\_Generator\Models.tt">
+          <LastGenOutput>Models.generated.cs</LastGenOutput>
+          <Generator>TextTemplatingFileGenerator</Generator>
+        </None>
+        <None Update="Sources\_Generators\Items\_Generator\Models.tt">
             <Generator>TextTemplatingFileGenerator</Generator>
             <LastGenOutput>Models.generated.cs</LastGenOutput>
         </None>
