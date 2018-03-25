@@ -6,7 +6,7 @@ namespace Amoeba.Messages
 {
     public enum SessionType
     {
-        Connect,
-        Accept,
+        Connect = 0,
+        Accept = 1,
     }
 }

@@ -85,10 +85,22 @@ namespace Amoeba.Interface
                 this.UpdateDirectoryPath = "../../Update";
                 this.LogDirectoryPath = "../../Log";
                 this.WorkDirectoryPath = "../../Work";
-                this.DaemonDirectoryPath = "../Daemon";
                 this.InterfaceDirectoryPath = "../Interface";
                 this.LanguagesDirectoryPath = "./Resources/Languages";
                 this.IconsDirectoryPath = "./Resources/Icons";
+
+#if DEBUG
+                this.DaemonDirectoryPath = "../Daemon";
+#else
+                if (Environment.Is64BitProcess)
+                {
+                    this.DaemonDirectoryPath = "../Daemon-x64";
+                }
+                else
+                {
+                    this.DaemonDirectoryPath = "../Daemon-x86";
+                }
+#endif
             }
         }
 

@@ -85,9 +85,9 @@ namespace Amoeba.Service
                 s += MessageSizeComputer.GetSize((ulong)this.Hashes.Count);
                 for (int i = 0; i < this.Hashes.Count; i++)
                 {
-                    var size_1 = this.Hashes[i].GetMessageSize();
-                    s += MessageSizeComputer.GetSize((ulong)size_1);
-                    s += size_1;
+                    var element_size = this.Hashes[i].GetMessageSize();
+                    s += MessageSizeComputer.GetSize((ulong)element_size);
+                    s += element_size;
                 }
             }
             return s;
@@ -212,9 +212,9 @@ namespace Amoeba.Service
                 s += MessageSizeComputer.GetSize((ulong)this.Groups.Count);
                 for (int i = 0; i < this.Groups.Count; i++)
                 {
-                    var size_1 = this.Groups[i].GetMessageSize();
-                    s += MessageSizeComputer.GetSize((ulong)size_1);
-                    s += size_1;
+                    var element_size = this.Groups[i].GetMessageSize();
+                    s += MessageSizeComputer.GetSize((ulong)element_size);
+                    s += element_size;
                 }
             }
             return s;
@@ -263,216 +263,6 @@ namespace Amoeba.Service
         }
     }
     [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
-    internal sealed partial class ProfilePacket : MessageBase<ProfilePacket>
-    {
-        static ProfilePacket()
-        {
-            ProfilePacket.Formatter = new CustomFormatter();
-        }
-        [JsonConstructor]
-        public ProfilePacket(byte[] id, Location location)
-        {
-            if (id == null) throw new ArgumentNullException("id");
-            if (location == null) throw new ArgumentNullException("location");
-            this.Id = id;
-            this.Location = location;
-            this.Initialize();
-        }
-        [JsonProperty]
-        public byte[] Id { get; }
-        [JsonProperty]
-        public Location Location { get; }
-        public override bool Equals(ProfilePacket target)
-        {
-            if ((object)target == null) return false;
-            if (Object.ReferenceEquals(this, target)) return true;
-            if ((this.Id == null) != (target.Id == null)) return false;
-            if ((this.Id != null && target.Id != null)
-                && !Unsafe.Equals(this.Id, target.Id)) return false;
-            if (this.Location != target.Location) return false;
-            return true;
-        }
-        private int? _hashCode;
-        public override int GetHashCode()
-        {
-            if (!_hashCode.HasValue)
-            {
-                int h = 0;
-                if (this.Id != default(byte[])) h ^= MessageUtils.GetHashCode(this.Id);
-                if (this.Location != default(Location)) h ^= this.Location.GetHashCode();
-                _hashCode = h;
-            }
-            return _hashCode.Value;
-        }
-        public override long GetMessageSize()
-        {
-            long s = 0;
-            // Id
-            if (this.Id != default(byte[]))
-            {
-                s += MessageSizeComputer.GetSize((ulong)0);
-                s += MessageSizeComputer.GetSize(this.Id);
-            }
-            // Location
-            if (this.Location != default(Location))
-            {
-                s += MessageSizeComputer.GetSize((ulong)1);
-                var size = this.Location.GetMessageSize();
-                s += MessageSizeComputer.GetSize((ulong)size);
-                s += size;
-            }
-            return s;
-        }
-        private sealed class CustomFormatter : IMessageFormatter<ProfilePacket>
-        {
-            public void Serialize(MessageStreamWriter w, ProfilePacket value, int rank)
-            {
-                if (rank > 256) throw new FormatException();
-                // Id
-                if (value.Id != default(byte[]))
-                {
-                    w.Write((ulong)0);
-                    w.Write(value.Id);
-                }
-                // Location
-                if (value.Location != default(Location))
-                {
-                    w.Write((ulong)1);
-                    w.Write((ulong)value.Location.GetMessageSize());
-                    Location.Formatter.Serialize(w, value.Location, rank + 1);
-                }
-            }
-            public ProfilePacket Deserialize(MessageStreamReader r, int rank)
-            {
-                if (rank > 256) throw new FormatException();
-                byte[] p_id = default(byte[]);
-                Location p_location = default(Location);
-                while (r.Available > 0)
-                {
-                    int id = (int)r.GetUInt64();
-                    switch (id)
-                    {
-                        case 0: //Id
-                            {
-                                p_id = r.GetBytes();
-                                break;
-                            }
-                        case 1: //Location
-                            {
-                                var size = (long)r.GetUInt64();
-                                p_location = Location.Formatter.Deserialize(r.GetRange(size), rank + 1);
-                                break;
-                            }
-                    }
-                }
-                return new ProfilePacket(p_id, p_location);
-            }
-        }
-    }
-    [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
-    internal sealed partial class LocationsPacket : MessageBase<LocationsPacket>
-    {
-        static LocationsPacket()
-        {
-            LocationsPacket.Formatter = new CustomFormatter();
-        }
-        public static readonly int MaxLocationsCount = 1024 * 256;
-        [JsonConstructor]
-        public LocationsPacket(IList<Location> locations)
-        {
-            if (locations == null) throw new ArgumentNullException("locations");
-            if (locations.Count > MaxLocationsCount) throw new ArgumentOutOfRangeException("locations");
-            for (int i = 0; i < locations.Count; i++)
-            {
-                if (locations[i] == null) throw new ArgumentNullException("locations[i]");
-            }
-            this.Locations = new ReadOnlyCollection<Location>(locations);
-            this.Initialize();
-        }
-        [JsonProperty]
-        public IReadOnlyList<Location> Locations { get; }
-        public override bool Equals(LocationsPacket target)
-        {
-            if ((object)target == null) return false;
-            if (Object.ReferenceEquals(this, target)) return true;
-            if (!CollectionUtils.Equals(this.Locations, target.Locations)) return false;
-            return true;
-        }
-        private int? _hashCode;
-        public override int GetHashCode()
-        {
-            if (!_hashCode.HasValue)
-            {
-                int h = 0;
-                for (int i = 0; i < Locations.Count; i++)
-                {
-                    h ^= this.Locations[i].GetHashCode();
-                }
-                _hashCode = h;
-            }
-            return _hashCode.Value;
-        }
-        public override long GetMessageSize()
-        {
-            long s = 0;
-            // Locations
-            if (this.Locations.Count != 0)
-            {
-                s += MessageSizeComputer.GetSize((ulong)0);
-                s += MessageSizeComputer.GetSize((ulong)this.Locations.Count);
-                for (int i = 0; i < this.Locations.Count; i++)
-                {
-                    var size_1 = this.Locations[i].GetMessageSize();
-                    s += MessageSizeComputer.GetSize((ulong)size_1);
-                    s += size_1;
-                }
-            }
-            return s;
-        }
-        private sealed class CustomFormatter : IMessageFormatter<LocationsPacket>
-        {
-            public void Serialize(MessageStreamWriter w, LocationsPacket value, int rank)
-            {
-                if (rank > 256) throw new FormatException();
-                // Locations
-                if (value.Locations.Count != 0)
-                {
-                    w.Write((ulong)0);
-                    w.Write((ulong)value.Locations.Count);
-                    for (int i = 0; i < value.Locations.Count; i++)
-                    {
-                        w.Write((ulong)value.Locations[i].GetMessageSize());
-                        Location.Formatter.Serialize(w, value.Locations[i], rank + 1);
-                    }
-                }
-            }
-            public LocationsPacket Deserialize(MessageStreamReader r, int rank)
-            {
-                if (rank > 256) throw new FormatException();
-                Location[] p_locations = Array.Empty<Location>();
-                while (r.Available > 0)
-                {
-                    int id = (int)r.GetUInt64();
-                    switch (id)
-                    {
-                        case 0: //Locations
-                            {
-                                var length = (long)r.GetUInt64();
-                                p_locations = new Location[Math.Min(length, 1024 * 256)];
-                                for (int i = 0; i < p_locations.Length; i++)
-                                {
-                                    var element_size = (long)r.GetUInt64();
-                                    p_locations[i] = Location.Formatter.Deserialize(r.GetRange(element_size), rank + 1);
-                                }
-                                break;
-                            }
-                    }
-                }
-                return new LocationsPacket(p_locations);
-            }
-        }
-    }
-    [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
     internal sealed partial class BroadcastMetadata : MessageBase<BroadcastMetadata>
     {
         static BroadcastMetadata()
@@ -487,7 +277,7 @@ namespace Amoeba.Service
             if (metadata == null) throw new ArgumentNullException("metadata");
             if (type.Length > MaxTypeLength) throw new ArgumentOutOfRangeException("type");
             this.Type = type;
-            this.CreationTime = creationTime;
+            this.CreationTime = creationTime.Trim();
             this.Metadata = metadata;
             this.Certificate = certificate;
             this.Initialize();
@@ -646,7 +436,7 @@ namespace Amoeba.Service
             if (type.Length > MaxTypeLength) throw new ArgumentOutOfRangeException("type");
             this.Type = type;
             this.Tag = tag;
-            this.CreationTime = creationTime;
+            this.CreationTime = creationTime.Trim();
             this.Metadata = metadata;
             this.Cash = cash;
             this.Certificate = certificate;
@@ -858,7 +648,7 @@ namespace Amoeba.Service
             if (type.Length > MaxTypeLength) throw new ArgumentOutOfRangeException("type");
             this.Type = type;
             this.Signature = signature;
-            this.CreationTime = creationTime;
+            this.CreationTime = creationTime.Trim();
             this.Metadata = metadata;
             this.Certificate = certificate;
             this.Initialize();
@@ -1027,6 +817,422 @@ namespace Amoeba.Service
         }
     }
     [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
+    internal sealed partial class ProfilePacket : MessageBase<ProfilePacket>
+    {
+        static ProfilePacket()
+        {
+            ProfilePacket.Formatter = new CustomFormatter();
+        }
+        [JsonConstructor]
+        public ProfilePacket(byte[] id, Location location)
+        {
+            if (id == null) throw new ArgumentNullException("id");
+            if (location == null) throw new ArgumentNullException("location");
+            this.Id = id;
+            this.Location = location;
+            this.Initialize();
+        }
+        [JsonProperty]
+        public byte[] Id { get; }
+        [JsonProperty]
+        public Location Location { get; }
+        public override bool Equals(ProfilePacket target)
+        {
+            if ((object)target == null) return false;
+            if (Object.ReferenceEquals(this, target)) return true;
+            if ((this.Id == null) != (target.Id == null)) return false;
+            if ((this.Id != null && target.Id != null)
+                && !Unsafe.Equals(this.Id, target.Id)) return false;
+            if (this.Location != target.Location) return false;
+            return true;
+        }
+        private int? _hashCode;
+        public override int GetHashCode()
+        {
+            if (!_hashCode.HasValue)
+            {
+                int h = 0;
+                if (this.Id != default(byte[])) h ^= MessageUtils.GetHashCode(this.Id);
+                if (this.Location != default(Location)) h ^= this.Location.GetHashCode();
+                _hashCode = h;
+            }
+            return _hashCode.Value;
+        }
+        public override long GetMessageSize()
+        {
+            long s = 0;
+            // Id
+            if (this.Id != default(byte[]))
+            {
+                s += MessageSizeComputer.GetSize((ulong)0);
+                s += MessageSizeComputer.GetSize(this.Id);
+            }
+            // Location
+            if (this.Location != default(Location))
+            {
+                s += MessageSizeComputer.GetSize((ulong)1);
+                var size = this.Location.GetMessageSize();
+                s += MessageSizeComputer.GetSize((ulong)size);
+                s += size;
+            }
+            return s;
+        }
+        private sealed class CustomFormatter : IMessageFormatter<ProfilePacket>
+        {
+            public void Serialize(MessageStreamWriter w, ProfilePacket value, int rank)
+            {
+                if (rank > 256) throw new FormatException();
+                // Id
+                if (value.Id != default(byte[]))
+                {
+                    w.Write((ulong)0);
+                    w.Write(value.Id);
+                }
+                // Location
+                if (value.Location != default(Location))
+                {
+                    w.Write((ulong)1);
+                    w.Write((ulong)value.Location.GetMessageSize());
+                    Location.Formatter.Serialize(w, value.Location, rank + 1);
+                }
+            }
+            public ProfilePacket Deserialize(MessageStreamReader r, int rank)
+            {
+                if (rank > 256) throw new FormatException();
+                byte[] p_id = default(byte[]);
+                Location p_location = default(Location);
+                while (r.Available > 0)
+                {
+                    int id = (int)r.GetUInt64();
+                    switch (id)
+                    {
+                        case 0: //Id
+                            {
+                                p_id = r.GetBytes();
+                                break;
+                            }
+                        case 1: //Location
+                            {
+                                var size = (long)r.GetUInt64();
+                                p_location = Location.Formatter.Deserialize(r.GetRange(size), rank + 1);
+                                break;
+                            }
+                    }
+                }
+                return new ProfilePacket(p_id, p_location);
+            }
+        }
+    }
+    [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
+    internal sealed partial class LocationsPacket : MessageBase<LocationsPacket>
+    {
+        static LocationsPacket()
+        {
+            LocationsPacket.Formatter = new CustomFormatter();
+        }
+        public static readonly int MaxLocationsCount = 1024 * 8;
+        [JsonConstructor]
+        public LocationsPacket(IList<Location> locations)
+        {
+            if (locations == null) throw new ArgumentNullException("locations");
+            if (locations.Count > MaxLocationsCount) throw new ArgumentOutOfRangeException("locations");
+            for (int i = 0; i < locations.Count; i++)
+            {
+                if (locations[i] == null) throw new ArgumentNullException("locations[i]");
+            }
+            this.Locations = new ReadOnlyCollection<Location>(locations);
+            this.Initialize();
+        }
+        [JsonProperty]
+        public IReadOnlyList<Location> Locations { get; }
+        public override bool Equals(LocationsPacket target)
+        {
+            if ((object)target == null) return false;
+            if (Object.ReferenceEquals(this, target)) return true;
+            if (!CollectionUtils.Equals(this.Locations, target.Locations)) return false;
+            return true;
+        }
+        private int? _hashCode;
+        public override int GetHashCode()
+        {
+            if (!_hashCode.HasValue)
+            {
+                int h = 0;
+                for (int i = 0; i < Locations.Count; i++)
+                {
+                    h ^= this.Locations[i].GetHashCode();
+                }
+                _hashCode = h;
+            }
+            return _hashCode.Value;
+        }
+        public override long GetMessageSize()
+        {
+            long s = 0;
+            // Locations
+            if (this.Locations.Count != 0)
+            {
+                s += MessageSizeComputer.GetSize((ulong)0);
+                s += MessageSizeComputer.GetSize((ulong)this.Locations.Count);
+                for (int i = 0; i < this.Locations.Count; i++)
+                {
+                    var element_size = this.Locations[i].GetMessageSize();
+                    s += MessageSizeComputer.GetSize((ulong)element_size);
+                    s += element_size;
+                }
+            }
+            return s;
+        }
+        private sealed class CustomFormatter : IMessageFormatter<LocationsPacket>
+        {
+            public void Serialize(MessageStreamWriter w, LocationsPacket value, int rank)
+            {
+                if (rank > 256) throw new FormatException();
+                // Locations
+                if (value.Locations.Count != 0)
+                {
+                    w.Write((ulong)0);
+                    w.Write((ulong)value.Locations.Count);
+                    for (int i = 0; i < value.Locations.Count; i++)
+                    {
+                        w.Write((ulong)value.Locations[i].GetMessageSize());
+                        Location.Formatter.Serialize(w, value.Locations[i], rank + 1);
+                    }
+                }
+            }
+            public LocationsPacket Deserialize(MessageStreamReader r, int rank)
+            {
+                if (rank > 256) throw new FormatException();
+                Location[] p_locations = Array.Empty<Location>();
+                while (r.Available > 0)
+                {
+                    int id = (int)r.GetUInt64();
+                    switch (id)
+                    {
+                        case 0: //Locations
+                            {
+                                var length = (long)r.GetUInt64();
+                                p_locations = new Location[Math.Min(length, 1024 * 8)];
+                                for (int i = 0; i < p_locations.Length; i++)
+                                {
+                                    var element_size = (long)r.GetUInt64();
+                                    p_locations[i] = Location.Formatter.Deserialize(r.GetRange(element_size), rank + 1);
+                                }
+                                break;
+                            }
+                    }
+                }
+                return new LocationsPacket(p_locations);
+            }
+        }
+    }
+    [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
+    internal sealed partial class BlocksLinkPacket : MessageBase<BlocksLinkPacket>
+    {
+        static BlocksLinkPacket()
+        {
+            BlocksLinkPacket.Formatter = new CustomFormatter();
+        }
+        public static readonly int MaxHashesCount = 1024 * 8;
+        [JsonConstructor]
+        public BlocksLinkPacket(IList<Hash> hashes)
+        {
+            if (hashes == null) throw new ArgumentNullException("hashes");
+            if (hashes.Count > MaxHashesCount) throw new ArgumentOutOfRangeException("hashes");
+            for (int i = 0; i < hashes.Count; i++)
+            {
+                if (hashes[i] == null) throw new ArgumentNullException("hashes[i]");
+            }
+            this.Hashes = new ReadOnlyCollection<Hash>(hashes);
+            this.Initialize();
+        }
+        [JsonProperty]
+        public IReadOnlyList<Hash> Hashes { get; }
+        public override bool Equals(BlocksLinkPacket target)
+        {
+            if ((object)target == null) return false;
+            if (Object.ReferenceEquals(this, target)) return true;
+            if (!CollectionUtils.Equals(this.Hashes, target.Hashes)) return false;
+            return true;
+        }
+        private int? _hashCode;
+        public override int GetHashCode()
+        {
+            if (!_hashCode.HasValue)
+            {
+                int h = 0;
+                for (int i = 0; i < Hashes.Count; i++)
+                {
+                    h ^= this.Hashes[i].GetHashCode();
+                }
+                _hashCode = h;
+            }
+            return _hashCode.Value;
+        }
+        public override long GetMessageSize()
+        {
+            long s = 0;
+            // Hashes
+            if (this.Hashes.Count != 0)
+            {
+                s += MessageSizeComputer.GetSize((ulong)0);
+                s += MessageSizeComputer.GetSize((ulong)this.Hashes.Count);
+                for (int i = 0; i < this.Hashes.Count; i++)
+                {
+                    var element_size = this.Hashes[i].GetMessageSize();
+                    s += MessageSizeComputer.GetSize((ulong)element_size);
+                    s += element_size;
+                }
+            }
+            return s;
+        }
+        private sealed class CustomFormatter : IMessageFormatter<BlocksLinkPacket>
+        {
+            public void Serialize(MessageStreamWriter w, BlocksLinkPacket value, int rank)
+            {
+                if (rank > 256) throw new FormatException();
+                // Hashes
+                if (value.Hashes.Count != 0)
+                {
+                    w.Write((ulong)0);
+                    w.Write((ulong)value.Hashes.Count);
+                    for (int i = 0; i < value.Hashes.Count; i++)
+                    {
+                        w.Write((ulong)value.Hashes[i].GetMessageSize());
+                        Hash.Formatter.Serialize(w, value.Hashes[i], rank + 1);
+                    }
+                }
+            }
+            public BlocksLinkPacket Deserialize(MessageStreamReader r, int rank)
+            {
+                if (rank > 256) throw new FormatException();
+                Hash[] p_hashes = Array.Empty<Hash>();
+                while (r.Available > 0)
+                {
+                    int id = (int)r.GetUInt64();
+                    switch (id)
+                    {
+                        case 0: //Hashes
+                            {
+                                var length = (long)r.GetUInt64();
+                                p_hashes = new Hash[Math.Min(length, 1024 * 8)];
+                                for (int i = 0; i < p_hashes.Length; i++)
+                                {
+                                    var element_size = (long)r.GetUInt64();
+                                    p_hashes[i] = Hash.Formatter.Deserialize(r.GetRange(element_size), rank + 1);
+                                }
+                                break;
+                            }
+                    }
+                }
+                return new BlocksLinkPacket(p_hashes);
+            }
+        }
+    }
+    [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
+    internal sealed partial class BlocksRequestPacket : MessageBase<BlocksRequestPacket>
+    {
+        static BlocksRequestPacket()
+        {
+            BlocksRequestPacket.Formatter = new CustomFormatter();
+        }
+        public static readonly int MaxHashesCount = 1024 * 8;
+        [JsonConstructor]
+        public BlocksRequestPacket(IList<Hash> hashes)
+        {
+            if (hashes == null) throw new ArgumentNullException("hashes");
+            if (hashes.Count > MaxHashesCount) throw new ArgumentOutOfRangeException("hashes");
+            for (int i = 0; i < hashes.Count; i++)
+            {
+                if (hashes[i] == null) throw new ArgumentNullException("hashes[i]");
+            }
+            this.Hashes = new ReadOnlyCollection<Hash>(hashes);
+            this.Initialize();
+        }
+        [JsonProperty]
+        public IReadOnlyList<Hash> Hashes { get; }
+        public override bool Equals(BlocksRequestPacket target)
+        {
+            if ((object)target == null) return false;
+            if (Object.ReferenceEquals(this, target)) return true;
+            if (!CollectionUtils.Equals(this.Hashes, target.Hashes)) return false;
+            return true;
+        }
+        private int? _hashCode;
+        public override int GetHashCode()
+        {
+            if (!_hashCode.HasValue)
+            {
+                int h = 0;
+                for (int i = 0; i < Hashes.Count; i++)
+                {
+                    h ^= this.Hashes[i].GetHashCode();
+                }
+                _hashCode = h;
+            }
+            return _hashCode.Value;
+        }
+        public override long GetMessageSize()
+        {
+            long s = 0;
+            // Hashes
+            if (this.Hashes.Count != 0)
+            {
+                s += MessageSizeComputer.GetSize((ulong)0);
+                s += MessageSizeComputer.GetSize((ulong)this.Hashes.Count);
+                for (int i = 0; i < this.Hashes.Count; i++)
+                {
+                    var element_size = this.Hashes[i].GetMessageSize();
+                    s += MessageSizeComputer.GetSize((ulong)element_size);
+                    s += element_size;
+                }
+            }
+            return s;
+        }
+        private sealed class CustomFormatter : IMessageFormatter<BlocksRequestPacket>
+        {
+            public void Serialize(MessageStreamWriter w, BlocksRequestPacket value, int rank)
+            {
+                if (rank > 256) throw new FormatException();
+                // Hashes
+                if (value.Hashes.Count != 0)
+                {
+                    w.Write((ulong)0);
+                    w.Write((ulong)value.Hashes.Count);
+                    for (int i = 0; i < value.Hashes.Count; i++)
+                    {
+                        w.Write((ulong)value.Hashes[i].GetMessageSize());
+                        Hash.Formatter.Serialize(w, value.Hashes[i], rank + 1);
+                    }
+                }
+            }
+            public BlocksRequestPacket Deserialize(MessageStreamReader r, int rank)
+            {
+                if (rank > 256) throw new FormatException();
+                Hash[] p_hashes = Array.Empty<Hash>();
+                while (r.Available > 0)
+                {
+                    int id = (int)r.GetUInt64();
+                    switch (id)
+                    {
+                        case 0: //Hashes
+                            {
+                                var length = (long)r.GetUInt64();
+                                p_hashes = new Hash[Math.Min(length, 1024 * 8)];
+                                for (int i = 0; i < p_hashes.Length; i++)
+                                {
+                                    var element_size = (long)r.GetUInt64();
+                                    p_hashes[i] = Hash.Formatter.Deserialize(r.GetRange(element_size), rank + 1);
+                                }
+                                break;
+                            }
+                    }
+                }
+                return new BlocksRequestPacket(p_hashes);
+            }
+        }
+    }
+    [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
     internal sealed partial class BlockResultPacket : MessageBase<BlockResultPacket>
     {
         static BlockResultPacket()
@@ -1135,219 +1341,13 @@ namespace Amoeba.Service
         }
     }
     [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
-    internal sealed partial class BlocksLinkPacket : MessageBase<BlocksLinkPacket>
-    {
-        static BlocksLinkPacket()
-        {
-            BlocksLinkPacket.Formatter = new CustomFormatter();
-        }
-        public static readonly int MaxHashesCount = 1024 * 256;
-        [JsonConstructor]
-        public BlocksLinkPacket(IList<Hash> hashes)
-        {
-            if (hashes == null) throw new ArgumentNullException("hashes");
-            if (hashes.Count > MaxHashesCount) throw new ArgumentOutOfRangeException("hashes");
-            for (int i = 0; i < hashes.Count; i++)
-            {
-                if (hashes[i] == null) throw new ArgumentNullException("hashes[i]");
-            }
-            this.Hashes = new ReadOnlyCollection<Hash>(hashes);
-            this.Initialize();
-        }
-        [JsonProperty]
-        public IReadOnlyList<Hash> Hashes { get; }
-        public override bool Equals(BlocksLinkPacket target)
-        {
-            if ((object)target == null) return false;
-            if (Object.ReferenceEquals(this, target)) return true;
-            if (!CollectionUtils.Equals(this.Hashes, target.Hashes)) return false;
-            return true;
-        }
-        private int? _hashCode;
-        public override int GetHashCode()
-        {
-            if (!_hashCode.HasValue)
-            {
-                int h = 0;
-                for (int i = 0; i < Hashes.Count; i++)
-                {
-                    h ^= this.Hashes[i].GetHashCode();
-                }
-                _hashCode = h;
-            }
-            return _hashCode.Value;
-        }
-        public override long GetMessageSize()
-        {
-            long s = 0;
-            // Hashes
-            if (this.Hashes.Count != 0)
-            {
-                s += MessageSizeComputer.GetSize((ulong)0);
-                s += MessageSizeComputer.GetSize((ulong)this.Hashes.Count);
-                for (int i = 0; i < this.Hashes.Count; i++)
-                {
-                    var size_1 = this.Hashes[i].GetMessageSize();
-                    s += MessageSizeComputer.GetSize((ulong)size_1);
-                    s += size_1;
-                }
-            }
-            return s;
-        }
-        private sealed class CustomFormatter : IMessageFormatter<BlocksLinkPacket>
-        {
-            public void Serialize(MessageStreamWriter w, BlocksLinkPacket value, int rank)
-            {
-                if (rank > 256) throw new FormatException();
-                // Hashes
-                if (value.Hashes.Count != 0)
-                {
-                    w.Write((ulong)0);
-                    w.Write((ulong)value.Hashes.Count);
-                    for (int i = 0; i < value.Hashes.Count; i++)
-                    {
-                        w.Write((ulong)value.Hashes[i].GetMessageSize());
-                        Hash.Formatter.Serialize(w, value.Hashes[i], rank + 1);
-                    }
-                }
-            }
-            public BlocksLinkPacket Deserialize(MessageStreamReader r, int rank)
-            {
-                if (rank > 256) throw new FormatException();
-                Hash[] p_hashes = Array.Empty<Hash>();
-                while (r.Available > 0)
-                {
-                    int id = (int)r.GetUInt64();
-                    switch (id)
-                    {
-                        case 0: //Hashes
-                            {
-                                var length = (long)r.GetUInt64();
-                                p_hashes = new Hash[Math.Min(length, 1024 * 256)];
-                                for (int i = 0; i < p_hashes.Length; i++)
-                                {
-                                    var element_size = (long)r.GetUInt64();
-                                    p_hashes[i] = Hash.Formatter.Deserialize(r.GetRange(element_size), rank + 1);
-                                }
-                                break;
-                            }
-                    }
-                }
-                return new BlocksLinkPacket(p_hashes);
-            }
-        }
-    }
-    [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
-    internal sealed partial class BlocksRequestPacket : MessageBase<BlocksRequestPacket>
-    {
-        static BlocksRequestPacket()
-        {
-            BlocksRequestPacket.Formatter = new CustomFormatter();
-        }
-        public static readonly int MaxHashesCount = 1024 * 256;
-        [JsonConstructor]
-        public BlocksRequestPacket(IList<Hash> hashes)
-        {
-            if (hashes == null) throw new ArgumentNullException("hashes");
-            if (hashes.Count > MaxHashesCount) throw new ArgumentOutOfRangeException("hashes");
-            for (int i = 0; i < hashes.Count; i++)
-            {
-                if (hashes[i] == null) throw new ArgumentNullException("hashes[i]");
-            }
-            this.Hashes = new ReadOnlyCollection<Hash>(hashes);
-            this.Initialize();
-        }
-        [JsonProperty]
-        public IReadOnlyList<Hash> Hashes { get; }
-        public override bool Equals(BlocksRequestPacket target)
-        {
-            if ((object)target == null) return false;
-            if (Object.ReferenceEquals(this, target)) return true;
-            if (!CollectionUtils.Equals(this.Hashes, target.Hashes)) return false;
-            return true;
-        }
-        private int? _hashCode;
-        public override int GetHashCode()
-        {
-            if (!_hashCode.HasValue)
-            {
-                int h = 0;
-                for (int i = 0; i < Hashes.Count; i++)
-                {
-                    h ^= this.Hashes[i].GetHashCode();
-                }
-                _hashCode = h;
-            }
-            return _hashCode.Value;
-        }
-        public override long GetMessageSize()
-        {
-            long s = 0;
-            // Hashes
-            if (this.Hashes.Count != 0)
-            {
-                s += MessageSizeComputer.GetSize((ulong)0);
-                s += MessageSizeComputer.GetSize((ulong)this.Hashes.Count);
-                for (int i = 0; i < this.Hashes.Count; i++)
-                {
-                    var size_1 = this.Hashes[i].GetMessageSize();
-                    s += MessageSizeComputer.GetSize((ulong)size_1);
-                    s += size_1;
-                }
-            }
-            return s;
-        }
-        private sealed class CustomFormatter : IMessageFormatter<BlocksRequestPacket>
-        {
-            public void Serialize(MessageStreamWriter w, BlocksRequestPacket value, int rank)
-            {
-                if (rank > 256) throw new FormatException();
-                // Hashes
-                if (value.Hashes.Count != 0)
-                {
-                    w.Write((ulong)0);
-                    w.Write((ulong)value.Hashes.Count);
-                    for (int i = 0; i < value.Hashes.Count; i++)
-                    {
-                        w.Write((ulong)value.Hashes[i].GetMessageSize());
-                        Hash.Formatter.Serialize(w, value.Hashes[i], rank + 1);
-                    }
-                }
-            }
-            public BlocksRequestPacket Deserialize(MessageStreamReader r, int rank)
-            {
-                if (rank > 256) throw new FormatException();
-                Hash[] p_hashes = Array.Empty<Hash>();
-                while (r.Available > 0)
-                {
-                    int id = (int)r.GetUInt64();
-                    switch (id)
-                    {
-                        case 0: //Hashes
-                            {
-                                var length = (long)r.GetUInt64();
-                                p_hashes = new Hash[Math.Min(length, 1024 * 256)];
-                                for (int i = 0; i < p_hashes.Length; i++)
-                                {
-                                    var element_size = (long)r.GetUInt64();
-                                    p_hashes[i] = Hash.Formatter.Deserialize(r.GetRange(element_size), rank + 1);
-                                }
-                                break;
-                            }
-                    }
-                }
-                return new BlocksRequestPacket(p_hashes);
-            }
-        }
-    }
-    [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
     internal sealed partial class BroadcastMetadatasRequestPacket : MessageBase<BroadcastMetadatasRequestPacket>
     {
         static BroadcastMetadatasRequestPacket()
         {
             BroadcastMetadatasRequestPacket.Formatter = new CustomFormatter();
         }
-        public static readonly int MaxSignaturesCount = 1024 * 256;
+        public static readonly int MaxSignaturesCount = 1024 * 8;
         [JsonConstructor]
         public BroadcastMetadatasRequestPacket(IList<Signature> signatures)
         {
@@ -1393,9 +1393,9 @@ namespace Amoeba.Service
                 s += MessageSizeComputer.GetSize((ulong)this.Signatures.Count);
                 for (int i = 0; i < this.Signatures.Count; i++)
                 {
-                    var size_1 = this.Signatures[i].GetMessageSize();
-                    s += MessageSizeComputer.GetSize((ulong)size_1);
-                    s += size_1;
+                    var element_size = this.Signatures[i].GetMessageSize();
+                    s += MessageSizeComputer.GetSize((ulong)element_size);
+                    s += element_size;
                 }
             }
             return s;
@@ -1429,7 +1429,7 @@ namespace Amoeba.Service
                         case 0: //Signatures
                             {
                                 var length = (long)r.GetUInt64();
-                                p_signatures = new Signature[Math.Min(length, 1024 * 256)];
+                                p_signatures = new Signature[Math.Min(length, 1024 * 8)];
                                 for (int i = 0; i < p_signatures.Length; i++)
                                 {
                                     var element_size = (long)r.GetUInt64();
@@ -1450,7 +1450,7 @@ namespace Amoeba.Service
         {
             BroadcastMetadatasResultPacket.Formatter = new CustomFormatter();
         }
-        public static readonly int MaxBroadcastMetadatasCount = 1024 * 256;
+        public static readonly int MaxBroadcastMetadatasCount = 1024 * 8;
         [JsonConstructor]
         public BroadcastMetadatasResultPacket(IList<BroadcastMetadata> broadcastMetadatas)
         {
@@ -1496,9 +1496,9 @@ namespace Amoeba.Service
                 s += MessageSizeComputer.GetSize((ulong)this.BroadcastMetadatas.Count);
                 for (int i = 0; i < this.BroadcastMetadatas.Count; i++)
                 {
-                    var size_1 = this.BroadcastMetadatas[i].GetMessageSize();
-                    s += MessageSizeComputer.GetSize((ulong)size_1);
-                    s += size_1;
+                    var element_size = this.BroadcastMetadatas[i].GetMessageSize();
+                    s += MessageSizeComputer.GetSize((ulong)element_size);
+                    s += element_size;
                 }
             }
             return s;
@@ -1532,7 +1532,7 @@ namespace Amoeba.Service
                         case 0: //BroadcastMetadatas
                             {
                                 var length = (long)r.GetUInt64();
-                                p_broadcastMetadatas = new BroadcastMetadata[Math.Min(length, 1024 * 256)];
+                                p_broadcastMetadatas = new BroadcastMetadata[Math.Min(length, 1024 * 8)];
                                 for (int i = 0; i < p_broadcastMetadatas.Length; i++)
                                 {
                                     var element_size = (long)r.GetUInt64();
@@ -1553,7 +1553,7 @@ namespace Amoeba.Service
         {
             MulticastMetadatasRequestPacket.Formatter = new CustomFormatter();
         }
-        public static readonly int MaxTagsCount = 1024 * 256;
+        public static readonly int MaxTagsCount = 1024 * 8;
         [JsonConstructor]
         public MulticastMetadatasRequestPacket(IList<Tag> tags)
         {
@@ -1599,9 +1599,9 @@ namespace Amoeba.Service
                 s += MessageSizeComputer.GetSize((ulong)this.Tags.Count);
                 for (int i = 0; i < this.Tags.Count; i++)
                 {
-                    var size_1 = this.Tags[i].GetMessageSize();
-                    s += MessageSizeComputer.GetSize((ulong)size_1);
-                    s += size_1;
+                    var element_size = this.Tags[i].GetMessageSize();
+                    s += MessageSizeComputer.GetSize((ulong)element_size);
+                    s += element_size;
                 }
             }
             return s;
@@ -1635,7 +1635,7 @@ namespace Amoeba.Service
                         case 0: //Tags
                             {
                                 var length = (long)r.GetUInt64();
-                                p_tags = new Tag[Math.Min(length, 1024 * 256)];
+                                p_tags = new Tag[Math.Min(length, 1024 * 8)];
                                 for (int i = 0; i < p_tags.Length; i++)
                                 {
                                     var element_size = (long)r.GetUInt64();
@@ -1656,7 +1656,7 @@ namespace Amoeba.Service
         {
             MulticastMetadatasResultPacket.Formatter = new CustomFormatter();
         }
-        public static readonly int MaxMulticastMetadatasCount = 1024 * 256;
+        public static readonly int MaxMulticastMetadatasCount = 1024 * 8;
         [JsonConstructor]
         public MulticastMetadatasResultPacket(IList<MulticastMetadata> multicastMetadatas)
         {
@@ -1702,9 +1702,9 @@ namespace Amoeba.Service
                 s += MessageSizeComputer.GetSize((ulong)this.MulticastMetadatas.Count);
                 for (int i = 0; i < this.MulticastMetadatas.Count; i++)
                 {
-                    var size_1 = this.MulticastMetadatas[i].GetMessageSize();
-                    s += MessageSizeComputer.GetSize((ulong)size_1);
-                    s += size_1;
+                    var element_size = this.MulticastMetadatas[i].GetMessageSize();
+                    s += MessageSizeComputer.GetSize((ulong)element_size);
+                    s += element_size;
                 }
             }
             return s;
@@ -1738,7 +1738,7 @@ namespace Amoeba.Service
                         case 0: //MulticastMetadatas
                             {
                                 var length = (long)r.GetUInt64();
-                                p_multicastMetadatas = new MulticastMetadata[Math.Min(length, 1024 * 256)];
+                                p_multicastMetadatas = new MulticastMetadata[Math.Min(length, 1024 * 8)];
                                 for (int i = 0; i < p_multicastMetadatas.Length; i++)
                                 {
                                     var element_size = (long)r.GetUInt64();
@@ -1759,7 +1759,7 @@ namespace Amoeba.Service
         {
             UnicastMetadatasRequestPacket.Formatter = new CustomFormatter();
         }
-        public static readonly int MaxSignaturesCount = 1024 * 256;
+        public static readonly int MaxSignaturesCount = 1024 * 8;
         [JsonConstructor]
         public UnicastMetadatasRequestPacket(IList<Signature> signatures)
         {
@@ -1805,9 +1805,9 @@ namespace Amoeba.Service
                 s += MessageSizeComputer.GetSize((ulong)this.Signatures.Count);
                 for (int i = 0; i < this.Signatures.Count; i++)
                 {
-                    var size_1 = this.Signatures[i].GetMessageSize();
-                    s += MessageSizeComputer.GetSize((ulong)size_1);
-                    s += size_1;
+                    var element_size = this.Signatures[i].GetMessageSize();
+                    s += MessageSizeComputer.GetSize((ulong)element_size);
+                    s += element_size;
                 }
             }
             return s;
@@ -1841,7 +1841,7 @@ namespace Amoeba.Service
                         case 0: //Signatures
                             {
                                 var length = (long)r.GetUInt64();
-                                p_signatures = new Signature[Math.Min(length, 1024 * 256)];
+                                p_signatures = new Signature[Math.Min(length, 1024 * 8)];
                                 for (int i = 0; i < p_signatures.Length; i++)
                                 {
                                     var element_size = (long)r.GetUInt64();
@@ -1862,7 +1862,7 @@ namespace Amoeba.Service
         {
             UnicastMetadatasResultPacket.Formatter = new CustomFormatter();
         }
-        public static readonly int MaxUnicastMetadatasCount = 1024 * 256;
+        public static readonly int MaxUnicastMetadatasCount = 1024 * 8;
         [JsonConstructor]
         public UnicastMetadatasResultPacket(IList<UnicastMetadata> unicastMetadatas)
         {
@@ -1908,9 +1908,9 @@ namespace Amoeba.Service
                 s += MessageSizeComputer.GetSize((ulong)this.UnicastMetadatas.Count);
                 for (int i = 0; i < this.UnicastMetadatas.Count; i++)
                 {
-                    var size_1 = this.UnicastMetadatas[i].GetMessageSize();
-                    s += MessageSizeComputer.GetSize((ulong)size_1);
-                    s += size_1;
+                    var element_size = this.UnicastMetadatas[i].GetMessageSize();
+                    s += MessageSizeComputer.GetSize((ulong)element_size);
+                    s += element_size;
                 }
             }
             return s;
@@ -1944,7 +1944,7 @@ namespace Amoeba.Service
                         case 0: //UnicastMetadatas
                             {
                                 var length = (long)r.GetUInt64();
-                                p_unicastMetadatas = new UnicastMetadata[Math.Min(length, 1024 * 256)];
+                                p_unicastMetadatas = new UnicastMetadata[Math.Min(length, 1024 * 8)];
                                 for (int i = 0; i < p_unicastMetadatas.Length; i++)
                                 {
                                     var element_size = (long)r.GetUInt64();

@@ -418,9 +418,9 @@ namespace Amoeba.Interface
                 var sb = new StringBuilder();
                 sb.AppendLine("--------------------------------------------------------------------------------");
                 sb.AppendLine();
-                sb.AppendLine(string.Format("Time:\t\t{0}", DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")));
-                sb.AppendLine(string.Format("Level:\t\t{0}", e.Level));
-                sb.AppendLine(string.Format("Message:\t\t{0}", e.Message));
+                sb.AppendLine($"Time: {DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}");
+                sb.AppendLine($"Level: {e.Level}");
+                sb.AppendLine($"Message: {e.Message}");
 
                 sb.AppendLine();
 
@@ -431,14 +431,15 @@ namespace Amoeba.Interface
             {
                 var sb = new StringBuilder();
                 sb.AppendLine("--------------------------------------------------------------------------------");
-                sb.AppendLine(string.Format("Time:\t\t{0}", DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")));
-                sb.AppendLine(string.Format("Level:\t\t{0}", e.Level));
+                sb.AppendLine();
+                sb.AppendLine($"Time: {DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}");
+                sb.AppendLine($"Level: {e.Level}");
 
                 var list = new List<Exception>();
 
                 if (e.Exception is AggregateException aggregateException)
                 {
-                    list.AddRange(aggregateException.InnerExceptions);
+                    list.AddRange(aggregateException.Flatten().InnerExceptions);
                 }
                 else
                 {
@@ -448,7 +449,14 @@ namespace Amoeba.Interface
                     {
                         list.Add(exception);
 
-                        exception = exception.InnerException;
+                        try
+                        {
+                            exception = exception.InnerException;
+                        }
+                        catch (Exception)
+                        {
+
+                        }
                     }
                 }
 
@@ -456,10 +464,10 @@ namespace Amoeba.Interface
                 {
                     try
                     {
-                        sb.AppendLine("--------------------------------------------------------------------------------");
-                        sb.AppendLine(string.Format("Exception:\t\t{0}", exception.GetType().ToString()));
-                        if (!string.IsNullOrWhiteSpace(exception.Message)) sb.AppendLine(string.Format("Message:\t\t{0}", exception.Message));
-                        if (!string.IsNullOrWhiteSpace(exception.StackTrace)) sb.AppendLine(string.Format("StackTrace:\t\t{0}", exception.StackTrace));
+                        sb.AppendLine();
+                        sb.AppendLine($"Exception: {exception.GetType().ToString()}");
+                        if (!string.IsNullOrWhiteSpace(exception.Message)) sb.AppendLine($"Message: {exception.Message}");
+                        if (!string.IsNullOrWhiteSpace(exception.StackTrace)) sb.AppendLine($"StackTrace: {exception.StackTrace}");
                     }
                     catch (Exception)
                     {
@@ -475,9 +483,13 @@ namespace Amoeba.Interface
 
         private static string GetMachineInfomation()
         {
-            return string.Format(
-                "OS:\t\t{0}\r\n" +
-                ".NET Framework:\t{1}", System.Runtime.InteropServices.RuntimeInformation.OSDescription, Environment.Version);
+            var sb = new StringBuilder();
+            sb.AppendLine($"Type: Interface {Assembly.GetExecutingAssembly().GetName().Version}");
+            sb.AppendLine($"OS: {RuntimeInformation.OSDescription}");
+            sb.AppendLine($"Architecture: {RuntimeInformation.OSArchitecture}");
+            sb.AppendLine($".NET Framework: {Environment.Version}");
+
+            return sb.ToString().Trim();
         }
 
         public class InterfaceConfig

@@ -19,6 +19,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Amoeba.Messages;
 using Newtonsoft.Json;
+using Omnius.Base;
 using Omnius.Serialization;
 using Omnius.Utils;
 
@@ -108,8 +109,6 @@ namespace Amoeba.Service
                         {
                             w.WriteLine("this.{0} = new ReadOnlyCollection<{1}>({2}.ToArray());", pd.Name, pd.Type, GetLocalName(pd.Name));
                         }
-
-
                     }
                     else
                     {
@@ -217,27 +216,56 @@ namespace Amoeba.Service
                         w.WriteLine(a);
                     }
 
-                    w.WriteLine("[JsonProperty]", pd.Modifier, pd.Type, pd.Name, "{ get; }");
-
                     if (pd.SerializeType == SerializeType.Item)
                     {
-                        if (pd.State.IsMutable)
+                        if (pd.Type == "DateTime")
                         {
-                            w.WriteLine("{0} {1} {2} {3}", pd.Modifier, pd.Type, pd.Name, "{ get; set; }");
+                            w.WriteLine("private {0} _{1};",  pd.Type, GetLocalName(pd.Name));
+                            w.WriteLine("[JsonProperty]");
+                            w.WriteLine("{0} {1} {2}", pd.Modifier, pd.Type, pd.Name);
+                            w.WriteLine("{");
+                                                       
+                            w.PushIndent();
+ 
+                            w.WriteLine("get => _{0};", GetLocalName(pd.Name));
+                               
+                            if (pd.State.IsMutable)
+                            {   
+                                w.WriteLine("set => _{0} = value.Trim();", GetLocalName(pd.Name));
+                            }
+                            else
+                            {
+                                w.WriteLine("private set => _{0} = value.Trim();", GetLocalName(pd.Name));
+                            }
+             
+                            w.PopIndent();
+   
+                            w.WriteLine("}");
                         }
                         else
                         {
-                            w.WriteLine("{0} {1} {2} {3}", pd.Modifier, pd.Type, pd.Name, "{ get; }");
+                            w.WriteLine("[JsonProperty]");
+
+                            if (pd.State.IsMutable)
+                            {
+                                w.WriteLine("{0} {1} {2} {3}", pd.Modifier, pd.Type, pd.Name, "{ get; set; }");
+                            }
+                            else
+                            {
+                                w.WriteLine("{0} {1} {2} {3}", pd.Modifier, pd.Type, pd.Name, "{ get; }");
+                            }
                         }
                     }
                     else if (pd.SerializeType == SerializeType.Array)
                     {
                         if (pd.State.IsMutable)
                         {
+                            w.WriteLine("[JsonProperty]");
                             w.WriteLine("{0} IList<{1}> {2} {3}", pd.Modifier, pd.Type, pd.Name, "{ get; }");
                         }
                         else
                         {
+                            w.WriteLine("[JsonProperty]");
                             w.WriteLine("{0} IReadOnlyList<{1}> {2} {3}", pd.Modifier, pd.Type, pd.Name, "{ get; }");
                         }
                     }

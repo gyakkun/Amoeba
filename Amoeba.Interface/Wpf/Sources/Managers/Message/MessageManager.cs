@@ -242,15 +242,17 @@ namespace Amoeba.Interface
             {
                 int version = _settings.Load("Version", () => 0);
 
-                foreach (var profile in _settings.Load("CacheProfiles", () => new List<BroadcastProfileMessage>()))
+                foreach (var profile in _settings.Load("CacheProfiles", () => Enumerable.Empty<BroadcastProfileMessage>()))
                 {
                     _cacheProfiles.Add(profile.AuthorSignature, profile);
                 }
 
-                foreach (var store in _settings.Load("CacheStores", () => new List<BroadcastStoreMessage>()))
+                foreach (var store in _settings.Load("CacheStores", () => Enumerable.Empty<BroadcastStoreMessage>()))
                 {
                     _cacheStores.Add(store.AuthorSignature, store);
                 }
+
+                _trustSignatures.UnionWith(_settings.Load("TrustSignatures", () => Enumerable.Empty<Signature>()));
 
                 _watchTaskManager.Start();
             }
@@ -262,8 +264,9 @@ namespace Amoeba.Interface
             {
                 _settings.Save("Version", 0);
 
-                _settings.Save("CacheProfiles", _cacheProfiles.Select(n => n.Value).ToList());
-                _settings.Save("CacheStores", _cacheStores.Select(n => n.Value).ToList());
+                _settings.Save("CacheProfiles", _cacheProfiles.Select(n => n.Value).ToArray());
+                _settings.Save("CacheStores", _cacheStores.Select(n => n.Value).ToArray());
+                _settings.Save("TrustSignatures", _trustSignatures);
             }
         }
 

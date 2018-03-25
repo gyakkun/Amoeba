@@ -155,6 +155,10 @@ namespace Amoeba.Service
                     {
                         w.WriteLine("this.{0} = new ReadOnlyCollection<{1}>({2});", pd.Name, pd.State.ElementProperty.Type, GetLocalName(pd.Name));
                     }
+                    else if (pd.SerializeType == SerializeType.DateTime)
+                    {
+                        w.WriteLine("this.{0} = {1}.Trim();", pd.Name, GetLocalName(pd.Name));
+                    }
                     else
                     {
                         w.WriteLine("this.{0} = {1};", pd.Name, GetLocalName(pd.Name));
@@ -170,22 +174,8 @@ namespace Amoeba.Service
 
             private static void Write_Class_Constructor_CheckNull(Writer w, string name, PropertyDef pd)
             {
-                if (pd.SerializeType == SerializeType.Bytes)
-                {
-                    if (pd.State.IsNullable) return;
-                    w.WriteLine("if ({0} == null) throw new ArgumentNullException(\"{0}\");", name);
-                }
-                else if (pd.SerializeType == SerializeType.String)
-                {
-                    if (pd.State.IsNullable) return;
-                    w.WriteLine("if ({0} == null) throw new ArgumentNullException(\"{0}\");", name);
-                }
-                else if (pd.SerializeType == SerializeType.Message)
-                {
-                    if (pd.State.IsNullable) return;
-                    w.WriteLine("if ({0} == null) throw new ArgumentNullException(\"{0}\");", name);
-                }
-                else if (pd.SerializeType == SerializeType.Array)
+                if (pd.SerializeType == SerializeType.Bytes || pd.SerializeType == SerializeType.String
+                    || pd.SerializeType == SerializeType.Message || pd.SerializeType == SerializeType.Array)
                 {
                     if (pd.State.IsNullable) return;
                     w.WriteLine("if ({0} == null) throw new ArgumentNullException(\"{0}\");", name);
@@ -194,12 +184,7 @@ namespace Amoeba.Service
 
             private static void Write_Class_Constructor_Define_MaxLength(Writer w, PropertyDef pd)
             {
-                if (pd.SerializeType == SerializeType.Bytes)
-                {
-                    if (pd.State.MaxLength == null) return;
-                    w.WriteLine("public static readonly int Max{0}Length = {1};", pd.Name, pd.State.MaxLength);
-                }
-                else if (pd.SerializeType == SerializeType.String)
+                if (pd.SerializeType == SerializeType.Bytes || pd.SerializeType == SerializeType.String)
                 {
                     if (pd.State.MaxLength == null) return;
                     w.WriteLine("public static readonly int Max{0}Length = {1};", pd.Name, pd.State.MaxLength);
@@ -347,7 +332,6 @@ namespace Amoeba.Service
                 w.PushIndent();
 
                 {
-
                     w.WriteLine("if (!_hashCode.HasValue)");
                     w.WriteLine("{");
 
@@ -436,7 +420,7 @@ namespace Amoeba.Service
                         w.WriteLine(a);
                     }
 
-                    w.WriteLine("[JsonProperty]", pd.Modifier, pd.Type, pd.Name, "{ get; }");
+                    w.WriteLine("[JsonProperty]");
                     w.WriteLine("{0} {1} {2} {3}", pd.Modifier, pd.Type, pd.Name, "{ get; }");
                 }
             }
@@ -523,7 +507,7 @@ namespace Amoeba.Service
                 }
                 else if (pd.SerializeType == SerializeType.Message)
                 {
-                    string sizeString = (rank == 0) ? "size" : "size_" + rank;
+                    string sizeString = (rank == 0) ? "size" : "element_size";
 
                     w.WriteLine("var {0} = {1}.GetMessageSize();", sizeString, name);
                     w.WriteLine("s += MessageSizeComputer.GetSize((ulong){0});", sizeString);

@@ -19,10 +19,10 @@ namespace Amoeba.Rpc
         {
             using (var stream = new RecyclableMemoryStream(BufferManager.Instance))
             {
-                JsonUtils.Save(stream, item);
+                Save(stream, item);
                 stream.Seek(0, SeekOrigin.Begin);
 
-                return JsonUtils.Load<T>(stream);
+                return Load<T>(stream);
             }
         }
 

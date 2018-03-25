@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Amoeba.Messages;
 using Newtonsoft.Json;
+using Omnius.Base;
 using Omnius.Serialization;
 using Omnius.Utils;
 
@@ -18,8 +19,13 @@ namespace Amoeba.Service
             this.CreationTime = creationTime;
             this.Hashes = new ReadOnlyCollection<Hash>(hashes.ToArray());
         }
+        private DateTime _creationTime;
         [JsonProperty]
-        public DateTime CreationTime { get; }
+        public DateTime CreationTime
+        {
+            get => _creationTime;
+            private set => _creationTime = value.Trim();
+        }
         [JsonProperty]
         public IReadOnlyList<Hash> Hashes { get; }
         public override bool Equals(ProtectedCacheInfo target)
@@ -60,8 +66,13 @@ namespace Amoeba.Service
         public long[] Indexes { get; }
         [JsonProperty]
         public int Length { get; }
+        private DateTime _updateTime;
         [JsonProperty]
-        public DateTime UpdateTime { get; set; }
+        public DateTime UpdateTime
+        {
+            get => _updateTime;
+            set => _updateTime = value.Trim();
+        }
         public override bool Equals(ClusterInfo target)
         {
             if ((object)target == null) return false;
@@ -159,8 +170,13 @@ namespace Amoeba.Service
             this.LockedHashes = new ReadOnlyCollection<Hash>(lockedHashes.ToArray());
             this.ShareInfo = shareInfo;
         }
+        private DateTime _creationTime;
         [JsonProperty]
-        public DateTime CreationTime { get; }
+        public DateTime CreationTime
+        {
+            get => _creationTime;
+            private set => _creationTime = value.Trim();
+        }
         [JsonProperty]
         public TimeSpan LifeSpan { get; }
         [JsonProperty]

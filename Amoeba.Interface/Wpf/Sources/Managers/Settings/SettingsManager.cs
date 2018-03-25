@@ -7,23 +7,27 @@ using System.Globalization;
 
 namespace Amoeba.Interface
 {
-    partial class SettingsManager : ISettings, INotifyPropertyChanged
+    sealed class SettingsManager : ISettings
     {
         public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(string name)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-
-        private Settings _settings;
+        private void OnPropertyChanged(string name) => this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
         public static SettingsManager Instance { get; } = new SettingsManager(System.IO.Path.Combine(AmoebaEnvironment.Paths.ConfigDirectoryPath, "Control", "Settings"));
+
+        private Settings _settings;
 
         private SettingsManager(string configPath)
         {
             _settings = new Settings(configPath);
         }
+
+        public string UseLanguage { get; set; }
+        public AccountSetting AccountSetting { get; private set; }
+        public LockedHashSet<Signature> SubscribeSignatures { get; private set; } = new LockedHashSet<Signature>();
+        public UpdateSetting UpdateSetting { get; private set; }
+        public ViewSetting ViewSetting { get; private set; }
+        public LockedHashSet<DownloadItemInfo> DownloadItemInfos { get; private set; } = new LockedHashSet<DownloadItemInfo>();
+        public LockedHashSet<Seed> DownloadedSeeds { get; private set; } = new LockedHashSet<Seed>();
 
         public void Load()
         {

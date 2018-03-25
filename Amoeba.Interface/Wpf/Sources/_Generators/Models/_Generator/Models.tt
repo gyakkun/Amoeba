@@ -149,10 +149,38 @@ namespace Amoeba.Interface
                     {
                         if (pd.State.IsInitialized)
                         {
+                            w.WriteLine("private {0} _{1};", pd.Type, GetLocalName(pd.Name));
                             w.WriteLine("[JsonProperty]");
-                            w.WriteLine("{0} {1} {2} {3} = new {1}();", pd.Modifier, pd.Type, pd.Name, "{ get; }");
+
+                            w.WriteLine("{0} {1} {2}", pd.Modifier, pd.Type, pd.Name);
+                            w.WriteLine("{");
+
+                            w.PushIndent();
+
+                            w.WriteLine("get");
+                            w.WriteLine("{");
+
+                            w.PushIndent();
+
+                            w.WriteLine("if (_{0} == null)", GetLocalName(pd.Name));
+
+                            w.PushIndent();
+
+                            w.WriteLine("_{0} = new {1}();", GetLocalName(pd.Name), pd.Type);
+
+                            w.PopIndent();
+
+                            w.WriteLine("return _{0};", GetLocalName(pd.Name));
+                            
+                            w.PopIndent();
+
+                            w.WriteLine("}");
+
+                            w.PopIndent();
+
+                            w.WriteLine("}");
                         }
-                        else
+                        else  
                         {
                             w.WriteLine("private {0} _{1};", pd.Type, GetLocalName(pd.Name));
                             w.WriteLine("[JsonProperty]");
@@ -173,7 +201,15 @@ namespace Amoeba.Interface
 
                             w.PushIndent();
 
-                            w.WriteLine("_{0} = value;", GetLocalName(pd.Name));
+                            if (pd.Type == "DateTime")
+                            {
+                                w.WriteLine("_{0} = value.Trim();", GetLocalName(pd.Name));
+                            }
+                            else
+                            {
+                                w.WriteLine("_{0} = value;", GetLocalName(pd.Name));
+                            }
+                            
                             w.WriteLine("this.OnPropertyChanged(nameof({0}));", pd.Name);
 
                             w.PopIndent();
@@ -190,17 +226,48 @@ namespace Amoeba.Interface
                         }
                     }
                     else if (pd.SerializeType == SerializeType.Array)
-                    {
-                        w.WriteLine("[JsonProperty]");
+                    {                       
+                        string listType;
 
                         if (pd.State.IsLocked)
                         {
-                            w.WriteLine("{0} LockedList<{1}> {2} {3} = new LockedList<{1}>();", pd.Modifier, pd.Type, pd.Name, "{ get; }");
+                            listType = string.Format("LockedList<{0}>", pd.Type);
                         }
                         else
                         {
-                            w.WriteLine("{0} ObservableCollection<{1}> {2} {3} = new ObservableCollection<{1}>();", pd.Modifier, pd.Type, pd.Name, "{ get; }");
+                            listType = string.Format("ObservableCollection<{0}>", pd.Type);
                         }
+
+                        w.WriteLine("private {0} _{1};", listType, GetLocalName(pd.Name));
+                        w.WriteLine("[JsonProperty]");
+
+                        w.WriteLine("{0} {1} {2}", pd.Modifier, listType, pd.Name);
+                        w.WriteLine("{");
+
+                        w.PushIndent();
+
+                        w.WriteLine("get");
+                        w.WriteLine("{");
+
+                        w.PushIndent();
+
+                        w.WriteLine("if (_{0} == null)", GetLocalName(pd.Name));
+                        
+                        w.PushIndent();
+
+                        w.WriteLine("_{0} = new {1}();", GetLocalName(pd.Name), listType);
+
+                        w.PopIndent();
+
+                        w.WriteLine("return _{0};", GetLocalName(pd.Name));
+
+                        w.PopIndent();
+
+                        w.WriteLine("}");
+
+                        w.PopIndent();
+
+                        w.WriteLine("}");
                     }
                 }
             }

@@ -23,7 +23,6 @@ namespace Amoeba.Messages
         public ConnectionFilter(string scheme, ConnectionType type, string proxyUri)
         {
             if (scheme == null) throw new ArgumentNullException("scheme");
-            if (proxyUri == null) throw new ArgumentNullException("proxyUri");
             this.Scheme = scheme;
             this.Type = type;
             this.ProxyUri = proxyUri;
@@ -491,7 +490,6 @@ namespace Amoeba.Messages
         [JsonProperty]
         public string Comment { get; }
         [Obsolete]
-        [EditorBrowsable(EditorBrowsableState.Never)]
         [JsonProperty]
         public ExchangePublicKey ExchangePublicKey { get; }
         [JsonProperty]
@@ -563,9 +561,9 @@ namespace Amoeba.Messages
                 s += MessageSizeComputer.GetSize((ulong)this.TrustSignatures.Count);
                 for (int i = 0; i < this.TrustSignatures.Count; i++)
                 {
-                    var size_1 = this.TrustSignatures[i].GetMessageSize();
-                    s += MessageSizeComputer.GetSize((ulong)size_1);
-                    s += size_1;
+                    var element_size = this.TrustSignatures[i].GetMessageSize();
+                    s += MessageSizeComputer.GetSize((ulong)element_size);
+                    s += element_size;
                 }
             }
             // DeleteSignatures
@@ -575,9 +573,9 @@ namespace Amoeba.Messages
                 s += MessageSizeComputer.GetSize((ulong)this.DeleteSignatures.Count);
                 for (int i = 0; i < this.DeleteSignatures.Count; i++)
                 {
-                    var size_1 = this.DeleteSignatures[i].GetMessageSize();
-                    s += MessageSizeComputer.GetSize((ulong)size_1);
-                    s += size_1;
+                    var element_size = this.DeleteSignatures[i].GetMessageSize();
+                    s += MessageSizeComputer.GetSize((ulong)element_size);
+                    s += element_size;
                 }
             }
             // Tags
@@ -587,9 +585,9 @@ namespace Amoeba.Messages
                 s += MessageSizeComputer.GetSize((ulong)this.Tags.Count);
                 for (int i = 0; i < this.Tags.Count; i++)
                 {
-                    var size_1 = this.Tags[i].GetMessageSize();
-                    s += MessageSizeComputer.GetSize((ulong)size_1);
-                    s += size_1;
+                    var element_size = this.Tags[i].GetMessageSize();
+                    s += MessageSizeComputer.GetSize((ulong)element_size);
+                    s += element_size;
                 }
             }
             // AgreementPublicKey
@@ -863,9 +861,9 @@ namespace Amoeba.Messages
                 s += MessageSizeComputer.GetSize((ulong)this.Boxes.Count);
                 for (int i = 0; i < this.Boxes.Count; i++)
                 {
-                    var size_1 = this.Boxes[i].GetMessageSize();
-                    s += MessageSizeComputer.GetSize((ulong)size_1);
-                    s += size_1;
+                    var element_size = this.Boxes[i].GetMessageSize();
+                    s += MessageSizeComputer.GetSize((ulong)element_size);
+                    s += element_size;
                 }
             }
             return s;
@@ -995,9 +993,9 @@ namespace Amoeba.Messages
                 s += MessageSizeComputer.GetSize((ulong)this.Seeds.Count);
                 for (int i = 0; i < this.Seeds.Count; i++)
                 {
-                    var size_1 = this.Seeds[i].GetMessageSize();
-                    s += MessageSizeComputer.GetSize((ulong)size_1);
-                    s += size_1;
+                    var element_size = this.Seeds[i].GetMessageSize();
+                    s += MessageSizeComputer.GetSize((ulong)element_size);
+                    s += element_size;
                 }
             }
             // Boxes
@@ -1007,9 +1005,9 @@ namespace Amoeba.Messages
                 s += MessageSizeComputer.GetSize((ulong)this.Boxes.Count);
                 for (int i = 0; i < this.Boxes.Count; i++)
                 {
-                    var size_1 = this.Boxes[i].GetMessageSize();
-                    s += MessageSizeComputer.GetSize((ulong)size_1);
-                    s += size_1;
+                    var element_size = this.Boxes[i].GetMessageSize();
+                    s += MessageSizeComputer.GetSize((ulong)element_size);
+                    s += element_size;
                 }
             }
             return s;
@@ -1108,7 +1106,7 @@ namespace Amoeba.Messages
             if (name.Length > MaxNameLength) throw new ArgumentOutOfRangeException("name");
             this.Name = name;
             this.Length = length;
-            this.CreationTime = creationTime;
+            this.CreationTime = creationTime.Trim();
             this.Metadata = metadata;
             this.Initialize();
         }
@@ -1258,7 +1256,7 @@ namespace Amoeba.Messages
             if (authorSignature == null) throw new ArgumentNullException("authorSignature");
             if (value == null) throw new ArgumentNullException("value");
             this.AuthorSignature = authorSignature;
-            this.CreationTime = creationTime;
+            this.CreationTime = creationTime.Trim();
             this.Value = value;
             this.Initialize();
         }
@@ -1390,7 +1388,7 @@ namespace Amoeba.Messages
             if (authorSignature == null) throw new ArgumentNullException("authorSignature");
             if (value == null) throw new ArgumentNullException("value");
             this.AuthorSignature = authorSignature;
-            this.CreationTime = creationTime;
+            this.CreationTime = creationTime.Trim();
             this.Value = value;
             this.Initialize();
         }
@@ -1525,7 +1523,7 @@ namespace Amoeba.Messages
             if (value == null) throw new ArgumentNullException("value");
             this.Tag = tag;
             this.AuthorSignature = authorSignature;
-            this.CreationTime = creationTime;
+            this.CreationTime = creationTime.Trim();
             this.Cost = cost;
             this.Value = value;
             this.Initialize();
@@ -1712,7 +1710,7 @@ namespace Amoeba.Messages
             if (value == null) throw new ArgumentNullException("value");
             this.TargetSignature = targetSignature;
             this.AuthorSignature = authorSignature;
-            this.CreationTime = creationTime;
+            this.CreationTime = creationTime.Trim();
             this.Value = value;
             this.Initialize();
         }

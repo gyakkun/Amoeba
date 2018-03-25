@@ -455,8 +455,13 @@ namespace Amoeba.Messages
             this.Metadata = metadata;
             this.Path = path;
         }
+        private DateTime _creationTime;
         [JsonProperty]
-        public DateTime CreationTime { get; }
+        public DateTime CreationTime
+        {
+            get => _creationTime;
+            private set => _creationTime = value.Trim();
+        }
         [JsonProperty]
         public long Length { get; }
         [JsonProperty]

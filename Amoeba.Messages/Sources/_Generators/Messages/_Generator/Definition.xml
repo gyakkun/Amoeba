@@ -4,7 +4,7 @@
         <Properties>
             <String Name="Scheme" Id="0" />
             <Varint Name="Type" Id="1" Type="ConnectionType" />
-            <String Name="ProxyUri" Id="2" />
+            <String Name="ProxyUri" Id="2" IsNullable="true"/>
         </Properties>
     </Class>
 
@@ -38,7 +38,6 @@
             <Message Name="ExchangePublicKey" Id="1" Type="ExchangePublicKey" IsNullable="true">
                 <Attributes>
                     <Attribute Value="[Obsolete]" />
-                    <Attribute Value="[EditorBrowsable(EditorBrowsableState.Never)]" />
                 </Attributes>
             </Message>
             <Array Name="TrustSignatures" Id="2" MaxLength="1024">

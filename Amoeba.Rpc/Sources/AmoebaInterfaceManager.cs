@@ -698,6 +698,6 @@ namespace Amoeba.Rpc
         public AmoebaInterfaceManagerException() : base() { }
         public AmoebaInterfaceManagerException(string message) : base(message) { }
         public AmoebaInterfaceManagerException(string message, Exception innerException) : base(message, innerException) { }
-        public AmoebaInterfaceManagerException(AmoebaErrorMessage errorMessage) : base(errorMessage.Message) { }
+        public AmoebaInterfaceManagerException(AmoebaErrorMessage errorMessage) : base(errorMessage.ToString()) { }
     }
 }

@@ -9,19 +9,15 @@ using System.Xml;
 
 namespace Amoeba.Interface
 {
-    partial class LanguagesManager : INotifyPropertyChanged
+    sealed partial class LanguagesManager : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
+        private void OnPropertyChanged(string name) => this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
-        protected virtual void OnPropertyChanged(string name)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
+        public static LanguagesManager Instance { get; } = new LanguagesManager();
 
         private Dictionary<string, Dictionary<string, string>> _dic = new Dictionary<string, Dictionary<string, string>>();
         private string _currentLanguage;
-
-        public static LanguagesManager Instance { get; } = new LanguagesManager();
 
         private LanguagesManager()
         {
@@ -72,18 +68,9 @@ namespace Amoeba.Interface
                 }
             }
 
-            if (CultureInfo.CurrentUICulture.Name == "ja-JP" && _dic.Keys.Any(n => n == "Japanese"))
-            {
-                this.SetCurrentLanguage("Japanese");
-            }
-            else if (CultureInfo.CurrentUICulture.Name == "zh-CN" && _dic.Keys.Any(n => n == "Chinese"))
-            {
-                this.SetCurrentLanguage("Chinese");
-            }
-            else
-            {
-                this.SetCurrentLanguage("English");
-            }
+            // this.SetCurrentLanguage("Japanese");
+            // this.SetCurrentLanguage("Chinese");
+            this.SetCurrentLanguage("English");
         }
 
         public IEnumerable<string> Languages

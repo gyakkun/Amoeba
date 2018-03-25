@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Omnius.Base;
 using Omnius.Configuration;
 using Omnius.Security;
 

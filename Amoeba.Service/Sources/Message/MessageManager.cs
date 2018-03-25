@@ -104,12 +104,13 @@ namespace Amoeba.Service
                     var stream = _coreManager.VolatileGetStream(broadcastMetadata.Metadata, 1024 * 1024 * 32);
                     if (stream == null) return null;
 
+                    var content = ContentConverter.FromStream<ProfileContent>(stream, 0);
+                    if (content == null) return null;
+
                     var result = new BroadcastProfileMessage(
                         broadcastMetadata.Certificate.GetSignature(),
                         broadcastMetadata.CreationTime,
-                        ContentConverter.FromStream<ProfileContent>(stream, 0));
-
-                    if (result.Value == null) return null;
+                        content);
 
                     _cache_Profiles[broadcastMetadata] = result;
 
@@ -146,12 +147,13 @@ namespace Amoeba.Service
                     var stream = _coreManager.VolatileGetStream(broadcastMetadata.Metadata, 1024 * 1024 * 32);
                     if (stream == null) return null;
 
+                    var content = ContentConverter.FromStream<StoreContent>(stream, 0);
+                    if (content == null) return null;
+
                     var result = new BroadcastStoreMessage(
                         broadcastMetadata.Certificate.GetSignature(),
                         broadcastMetadata.CreationTime,
-                        ContentConverter.FromStream<StoreContent>(stream, 0));
-
-                    if (result.Value == null) return null;
+                        content);
 
                     _cache_Stores[broadcastMetadata] = result;
 
@@ -289,14 +291,15 @@ namespace Amoeba.Service
                             var stream = _coreManager.VolatileGetStream(multicastMetadata.Metadata, 1024 * 1024 * 1);
                             if (stream == null) continue;
 
+                            var content = ContentConverter.FromStream<CommentContent>(stream, 0);
+                            if (content == null) continue;
+
                             var result = new MulticastCommentMessage(
                                 multicastMetadata.Tag,
                                 multicastMetadata.Certificate.GetSignature(),
                                 multicastMetadata.CreationTime,
                                 multicastMetadata.Cost,
-                                ContentConverter.FromStream<CommentContent>(stream, 0));
-
-                            if (result.Value == null) continue;
+                                content);
 
                             dic[multicastMetadata] = result;
 

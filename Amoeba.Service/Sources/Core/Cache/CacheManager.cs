@@ -257,25 +257,23 @@ namespace Amoeba.Service
 
         public int GetLength(Hash hash)
         {
+            // Cache
             {
                 int length = _blocksManager.GetLength(hash);
                 if (length != 0) return length;
             }
 
+            // Share
             {
-                int length = 0;
-
                 lock (_lockObject)
                 {
                     var shareInfo = _contentInfoManager.GetShareInfo(hash);
 
                     if (shareInfo != null)
                     {
-                        length = Math.Min((int)(shareInfo.FileLength - (shareInfo.BlockLength * shareInfo.GetIndex(hash))), shareInfo.BlockLength);
+                        return (int)Math.Min(shareInfo.FileLength - ((long)shareInfo.BlockLength * shareInfo.GetIndex(hash)), shareInfo.BlockLength);
                     }
                 }
-
-                if (length != 0) return length;
             }
 
             return 0;

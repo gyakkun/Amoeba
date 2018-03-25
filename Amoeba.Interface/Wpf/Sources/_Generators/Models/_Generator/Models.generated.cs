@@ -61,12 +61,39 @@ namespace Amoeba.Interface
                 }
             }
         }
+        private ObservableCollection<Signature> _trustSignatures;
         [JsonProperty]
-        public ObservableCollection<Signature> TrustSignatures { get; } = new ObservableCollection<Signature>();
+        public ObservableCollection<Signature> TrustSignatures
+        {
+            get
+            {
+                if (_trustSignatures == null)
+                    _trustSignatures = new ObservableCollection<Signature>();
+                return _trustSignatures;
+            }
+        }
+        private ObservableCollection<Signature> _untrustSignatures;
         [JsonProperty]
-        public ObservableCollection<Signature> UntrustSignatures { get; } = new ObservableCollection<Signature>();
+        public ObservableCollection<Signature> UntrustSignatures
+        {
+            get
+            {
+                if (_untrustSignatures == null)
+                    _untrustSignatures = new ObservableCollection<Signature>();
+                return _untrustSignatures;
+            }
+        }
+        private ObservableCollection<Tag> _tags;
         [JsonProperty]
-        public ObservableCollection<Tag> Tags { get; } = new ObservableCollection<Tag>();
+        public ObservableCollection<Tag> Tags
+        {
+            get
+            {
+                if (_tags == null)
+                    _tags = new ObservableCollection<Tag>();
+                return _tags;
+            }
+        }
         public AccountSetting Clone() => JsonUtils.Clone<AccountSetting>(this);
     }
     [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
@@ -111,10 +138,28 @@ namespace Amoeba.Interface
         public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged(string name) => this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         public ViewSetting() { }
+        private ColorsSetting _colors;
         [JsonProperty]
-        public ColorsSetting Colors { get; } = new ColorsSetting();
+        public ColorsSetting Colors
+        {
+            get
+            {
+                if (_colors == null)
+                    _colors = new ColorsSetting();
+                return _colors;
+            }
+        }
+        private FontsSetting _fonts;
         [JsonProperty]
-        public FontsSetting Fonts { get; } = new FontsSetting();
+        public FontsSetting Fonts
+        {
+            get
+            {
+                if (_fonts == null)
+                    _fonts = new FontsSetting();
+                return _fonts;
+            }
+        }
         public ViewSetting Clone() => JsonUtils.Clone<ViewSetting>(this);
         [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
         public sealed partial class ColorsSetting : INotifyPropertyChanged, ICloneable<ColorsSetting>
@@ -323,8 +368,17 @@ namespace Amoeba.Interface
                 }
             }
         }
+        private ObservableCollection<RelationSignatureInfo> _children;
         [JsonProperty]
-        public ObservableCollection<RelationSignatureInfo> Children { get; } = new ObservableCollection<RelationSignatureInfo>();
+        public ObservableCollection<RelationSignatureInfo> Children
+        {
+            get
+            {
+                if (_children == null)
+                    _children = new ObservableCollection<RelationSignatureInfo>();
+                return _children;
+            }
+        }
         public RelationSignatureInfo Clone() => JsonUtils.Clone<RelationSignatureInfo>(this);
     }
     [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
@@ -333,16 +387,61 @@ namespace Amoeba.Interface
         public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged(string name) => this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         public OptionsInfo() { }
+        private AccountInfo _account;
         [JsonProperty]
-        public AccountInfo Account { get; } = new AccountInfo();
+        public AccountInfo Account
+        {
+            get
+            {
+                if (_account == null)
+                    _account = new AccountInfo();
+                return _account;
+            }
+        }
+        private ConnectionInfo _connection;
         [JsonProperty]
-        public ConnectionInfo Connection { get; } = new ConnectionInfo();
+        public ConnectionInfo Connection
+        {
+            get
+            {
+                if (_connection == null)
+                    _connection = new ConnectionInfo();
+                return _connection;
+            }
+        }
+        private DataInfo _data;
         [JsonProperty]
-        public DataInfo Data { get; } = new DataInfo();
+        public DataInfo Data
+        {
+            get
+            {
+                if (_data == null)
+                    _data = new DataInfo();
+                return _data;
+            }
+        }
+        private ViewInfo _view;
         [JsonProperty]
-        public ViewInfo View { get; } = new ViewInfo();
+        public ViewInfo View
+        {
+            get
+            {
+                if (_view == null)
+                    _view = new ViewInfo();
+                return _view;
+            }
+        }
+        private UpdateInfo _update;
         [JsonProperty]
-        public UpdateInfo Update { get; } = new UpdateInfo();
+        public UpdateInfo Update
+        {
+            get
+            {
+                if (_update == null)
+                    _update = new UpdateInfo();
+                return _update;
+            }
+        }
         public OptionsInfo Clone() => JsonUtils.Clone<OptionsInfo>(this);
         [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
         public sealed partial class AccountInfo : INotifyPropertyChanged, ICloneable<AccountInfo>
@@ -378,12 +477,39 @@ namespace Amoeba.Interface
                     }
                 }
             }
+            private ObservableCollection<Signature> _trustSignatures;
             [JsonProperty]
-            public ObservableCollection<Signature> TrustSignatures { get; } = new ObservableCollection<Signature>();
+            public ObservableCollection<Signature> TrustSignatures
+            {
+                get
+                {
+                    if (_trustSignatures == null)
+                        _trustSignatures = new ObservableCollection<Signature>();
+                    return _trustSignatures;
+                }
+            }
+            private ObservableCollection<Signature> _untrustSignatures;
             [JsonProperty]
-            public ObservableCollection<Signature> UntrustSignatures { get; } = new ObservableCollection<Signature>();
+            public ObservableCollection<Signature> UntrustSignatures
+            {
+                get
+                {
+                    if (_untrustSignatures == null)
+                        _untrustSignatures = new ObservableCollection<Signature>();
+                    return _untrustSignatures;
+                }
+            }
+            private ObservableCollection<Tag> _tags;
             [JsonProperty]
-            public ObservableCollection<Tag> Tags { get; } = new ObservableCollection<Tag>();
+            public ObservableCollection<Tag> Tags
+            {
+                get
+                {
+                    if (_tags == null)
+                        _tags = new ObservableCollection<Tag>();
+                    return _tags;
+                }
+            }
             public AccountInfo Clone() => JsonUtils.Clone<AccountInfo>(this);
         }
         [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
@@ -392,14 +518,50 @@ namespace Amoeba.Interface
             public event PropertyChangedEventHandler PropertyChanged;
             private void OnPropertyChanged(string name) => this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
             public ConnectionInfo() { }
+            private TcpInfo _tcp;
             [JsonProperty]
-            public TcpInfo Tcp { get; } = new TcpInfo();
+            public TcpInfo Tcp
+            {
+                get
+                {
+                    if (_tcp == null)
+                        _tcp = new TcpInfo();
+                    return _tcp;
+                }
+            }
+            private I2pInfo _i2p;
             [JsonProperty]
-            public I2pInfo I2p { get; } = new I2pInfo();
+            public I2pInfo I2p
+            {
+                get
+                {
+                    if (_i2p == null)
+                        _i2p = new I2pInfo();
+                    return _i2p;
+                }
+            }
+            private CustomInfo _custom;
             [JsonProperty]
-            public CustomInfo Custom { get; } = new CustomInfo();
+            public CustomInfo Custom
+            {
+                get
+                {
+                    if (_custom == null)
+                        _custom = new CustomInfo();
+                    return _custom;
+                }
+            }
+            private BandwidthInfo _bandwidth;
             [JsonProperty]
-            public BandwidthInfo Bandwidth { get; } = new BandwidthInfo();
+            public BandwidthInfo Bandwidth
+            {
+                get
+                {
+                    if (_bandwidth == null)
+                        _bandwidth = new BandwidthInfo();
+                    return _bandwidth;
+                }
+            }
             public ConnectionInfo Clone() => JsonUtils.Clone<ConnectionInfo>(this);
             [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
             public sealed partial class TcpInfo : INotifyPropertyChanged, ICloneable<TcpInfo>
@@ -521,12 +683,39 @@ namespace Amoeba.Interface
                 public event PropertyChangedEventHandler PropertyChanged;
                 private void OnPropertyChanged(string name) => this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
                 public CustomInfo() { }
+                private ObservableCollection<string> _locationUris;
                 [JsonProperty]
-                public ObservableCollection<string> LocationUris { get; } = new ObservableCollection<string>();
+                public ObservableCollection<string> LocationUris
+                {
+                    get
+                    {
+                        if (_locationUris == null)
+                            _locationUris = new ObservableCollection<string>();
+                        return _locationUris;
+                    }
+                }
+                private ObservableCollection<ConnectionFilter> _connectionFilters;
                 [JsonProperty]
-                public ObservableCollection<ConnectionFilter> ConnectionFilters { get; } = new ObservableCollection<ConnectionFilter>();
+                public ObservableCollection<ConnectionFilter> ConnectionFilters
+                {
+                    get
+                    {
+                        if (_connectionFilters == null)
+                            _connectionFilters = new ObservableCollection<ConnectionFilter>();
+                        return _connectionFilters;
+                    }
+                }
+                private ObservableCollection<string> _listenUris;
                 [JsonProperty]
-                public ObservableCollection<string> ListenUris { get; } = new ObservableCollection<string>();
+                public ObservableCollection<string> ListenUris
+                {
+                    get
+                    {
+                        if (_listenUris == null)
+                            _listenUris = new ObservableCollection<string>();
+                        return _listenUris;
+                    }
+                }
                 public CustomInfo Clone() => JsonUtils.Clone<CustomInfo>(this);
             }
             [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
@@ -572,10 +761,28 @@ namespace Amoeba.Interface
             public event PropertyChangedEventHandler PropertyChanged;
             private void OnPropertyChanged(string name) => this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
             public DataInfo() { }
+            private CacheInfo _cache;
             [JsonProperty]
-            public CacheInfo Cache { get; } = new CacheInfo();
+            public CacheInfo Cache
+            {
+                get
+                {
+                    if (_cache == null)
+                        _cache = new CacheInfo();
+                    return _cache;
+                }
+            }
+            private DownloadInfo _download;
             [JsonProperty]
-            public DownloadInfo Download { get; } = new DownloadInfo();
+            public DownloadInfo Download
+            {
+                get
+                {
+                    if (_download == null)
+                        _download = new DownloadInfo();
+                    return _download;
+                }
+            }
             public DataInfo Clone() => JsonUtils.Clone<DataInfo>(this);
             [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
             public sealed partial class CacheInfo : INotifyPropertyChanged, ICloneable<CacheInfo>
@@ -642,8 +849,17 @@ namespace Amoeba.Interface
             public event PropertyChangedEventHandler PropertyChanged;
             private void OnPropertyChanged(string name) => this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
             public ViewInfo() { }
+            private ObservableCollection<Signature> _subscribeSignatures;
             [JsonProperty]
-            public ObservableCollection<Signature> SubscribeSignatures { get; } = new ObservableCollection<Signature>();
+            public ObservableCollection<Signature> SubscribeSignatures
+            {
+                get
+                {
+                    if (_subscribeSignatures == null)
+                        _subscribeSignatures = new ObservableCollection<Signature>();
+                    return _subscribeSignatures;
+                }
+            }
             public ViewInfo Clone() => JsonUtils.Clone<ViewInfo>(this);
         }
         [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
@@ -739,10 +955,28 @@ namespace Amoeba.Interface
                 }
             }
         }
+        private ObservableCollection<ChatThreadInfo> _threadInfos;
         [JsonProperty]
-        public ObservableCollection<ChatThreadInfo> ThreadInfos { get; } = new ObservableCollection<ChatThreadInfo>();
+        public ObservableCollection<ChatThreadInfo> ThreadInfos
+        {
+            get
+            {
+                if (_threadInfos == null)
+                    _threadInfos = new ObservableCollection<ChatThreadInfo>();
+                return _threadInfos;
+            }
+        }
+        private ObservableCollection<ChatCategoryInfo> _categoryInfos;
         [JsonProperty]
-        public ObservableCollection<ChatCategoryInfo> CategoryInfos { get; } = new ObservableCollection<ChatCategoryInfo>();
+        public ObservableCollection<ChatCategoryInfo> CategoryInfos
+        {
+            get
+            {
+                if (_categoryInfos == null)
+                    _categoryInfos = new ObservableCollection<ChatCategoryInfo>();
+                return _categoryInfos;
+            }
+        }
         public ChatCategoryInfo Clone() => JsonUtils.Clone<ChatCategoryInfo>(this);
     }
     [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
@@ -807,8 +1041,17 @@ namespace Amoeba.Interface
                 }
             }
         }
+        private LockedList<ChatMessageInfo> _messages;
         [JsonProperty]
-        public LockedList<ChatMessageInfo> Messages { get; } = new LockedList<ChatMessageInfo>();
+        public LockedList<ChatMessageInfo> Messages
+        {
+            get
+            {
+                if (_messages == null)
+                    _messages = new LockedList<ChatMessageInfo>();
+                return _messages;
+            }
+        }
         public ChatThreadInfo Clone() => JsonUtils.Clone<ChatThreadInfo>(this);
     }
     [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
@@ -881,10 +1124,28 @@ namespace Amoeba.Interface
                 }
             }
         }
+        private ObservableCollection<StoreSignatureInfo> _signatureInfos;
         [JsonProperty]
-        public ObservableCollection<StoreSignatureInfo> SignatureInfos { get; } = new ObservableCollection<StoreSignatureInfo>();
+        public ObservableCollection<StoreSignatureInfo> SignatureInfos
+        {
+            get
+            {
+                if (_signatureInfos == null)
+                    _signatureInfos = new ObservableCollection<StoreSignatureInfo>();
+                return _signatureInfos;
+            }
+        }
+        private ObservableCollection<StoreCategoryInfo> _categoryInfos;
         [JsonProperty]
-        public ObservableCollection<StoreCategoryInfo> CategoryInfos { get; } = new ObservableCollection<StoreCategoryInfo>();
+        public ObservableCollection<StoreCategoryInfo> CategoryInfos
+        {
+            get
+            {
+                if (_categoryInfos == null)
+                    _categoryInfos = new ObservableCollection<StoreCategoryInfo>();
+                return _categoryInfos;
+            }
+        }
         public StoreCategoryInfo Clone() => JsonUtils.Clone<StoreCategoryInfo>(this);
     }
     [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
@@ -916,7 +1177,7 @@ namespace Amoeba.Interface
             {
                 if (_updateTime != value)
                 {
-                    _updateTime = value;
+                    _updateTime = value.Trim();
                     this.OnPropertyChanged(nameof(UpdateTime));
                 }
             }
@@ -949,8 +1210,17 @@ namespace Amoeba.Interface
                 }
             }
         }
+        private ObservableCollection<StoreBoxInfo> _boxInfos;
         [JsonProperty]
-        public ObservableCollection<StoreBoxInfo> BoxInfos { get; } = new ObservableCollection<StoreBoxInfo>();
+        public ObservableCollection<StoreBoxInfo> BoxInfos
+        {
+            get
+            {
+                if (_boxInfos == null)
+                    _boxInfos = new ObservableCollection<StoreBoxInfo>();
+                return _boxInfos;
+            }
+        }
         public StoreSignatureInfo Clone() => JsonUtils.Clone<StoreSignatureInfo>(this);
     }
     [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
@@ -987,10 +1257,28 @@ namespace Amoeba.Interface
                 }
             }
         }
+        private ObservableCollection<Seed> _seeds;
         [JsonProperty]
-        public ObservableCollection<Seed> Seeds { get; } = new ObservableCollection<Seed>();
+        public ObservableCollection<Seed> Seeds
+        {
+            get
+            {
+                if (_seeds == null)
+                    _seeds = new ObservableCollection<Seed>();
+                return _seeds;
+            }
+        }
+        private ObservableCollection<StoreBoxInfo> _boxInfos;
         [JsonProperty]
-        public ObservableCollection<StoreBoxInfo> BoxInfos { get; } = new ObservableCollection<StoreBoxInfo>();
+        public ObservableCollection<StoreBoxInfo> BoxInfos
+        {
+            get
+            {
+                if (_boxInfos == null)
+                    _boxInfos = new ObservableCollection<StoreBoxInfo>();
+                return _boxInfos;
+            }
+        }
         public StoreBoxInfo Clone() => JsonUtils.Clone<StoreBoxInfo>(this);
     }
     [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
@@ -1050,7 +1338,7 @@ namespace Amoeba.Interface
             {
                 if (_creationTime != value)
                 {
-                    _creationTime = value;
+                    _creationTime = value.Trim();
                     this.OnPropertyChanged(nameof(CreationTime));
                 }
             }
@@ -1133,10 +1421,28 @@ namespace Amoeba.Interface
                 }
             }
         }
+        private SearchConditionsInfo _conditions;
         [JsonProperty]
-        public SearchConditionsInfo Conditions { get; } = new SearchConditionsInfo();
+        public SearchConditionsInfo Conditions
+        {
+            get
+            {
+                if (_conditions == null)
+                    _conditions = new SearchConditionsInfo();
+                return _conditions;
+            }
+        }
+        private ObservableCollection<SearchInfo> _children;
         [JsonProperty]
-        public ObservableCollection<SearchInfo> Children { get; } = new ObservableCollection<SearchInfo>();
+        public ObservableCollection<SearchInfo> Children
+        {
+            get
+            {
+                if (_children == null)
+                    _children = new ObservableCollection<SearchInfo>();
+                return _children;
+            }
+        }
         public SearchInfo Clone() => JsonUtils.Clone<SearchInfo>(this);
     }
     [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
@@ -1145,18 +1451,72 @@ namespace Amoeba.Interface
         public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged(string name) => this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         public SearchConditionsInfo() { }
+        private ObservableCollection<SearchCondition<string>> _searchNames;
         [JsonProperty]
-        public ObservableCollection<SearchCondition<string>> SearchNames { get; } = new ObservableCollection<SearchCondition<string>>();
+        public ObservableCollection<SearchCondition<string>> SearchNames
+        {
+            get
+            {
+                if (_searchNames == null)
+                    _searchNames = new ObservableCollection<SearchCondition<string>>();
+                return _searchNames;
+            }
+        }
+        private ObservableCollection<SearchCondition<SearchRegex>> _searchRegexes;
         [JsonProperty]
-        public ObservableCollection<SearchCondition<SearchRegex>> SearchRegexes { get; } = new ObservableCollection<SearchCondition<SearchRegex>>();
+        public ObservableCollection<SearchCondition<SearchRegex>> SearchRegexes
+        {
+            get
+            {
+                if (_searchRegexes == null)
+                    _searchRegexes = new ObservableCollection<SearchCondition<SearchRegex>>();
+                return _searchRegexes;
+            }
+        }
+        private ObservableCollection<SearchCondition<Signature>> _searchSignatures;
         [JsonProperty]
-        public ObservableCollection<SearchCondition<Signature>> SearchSignatures { get; } = new ObservableCollection<SearchCondition<Signature>>();
+        public ObservableCollection<SearchCondition<Signature>> SearchSignatures
+        {
+            get
+            {
+                if (_searchSignatures == null)
+                    _searchSignatures = new ObservableCollection<SearchCondition<Signature>>();
+                return _searchSignatures;
+            }
+        }
+        private ObservableCollection<SearchCondition<SearchRange<DateTime>>> _searchCreationTimeRanges;
         [JsonProperty]
-        public ObservableCollection<SearchCondition<SearchRange<DateTime>>> SearchCreationTimeRanges { get; } = new ObservableCollection<SearchCondition<SearchRange<DateTime>>>();
+        public ObservableCollection<SearchCondition<SearchRange<DateTime>>> SearchCreationTimeRanges
+        {
+            get
+            {
+                if (_searchCreationTimeRanges == null)
+                    _searchCreationTimeRanges = new ObservableCollection<SearchCondition<SearchRange<DateTime>>>();
+                return _searchCreationTimeRanges;
+            }
+        }
+        private ObservableCollection<SearchCondition<SearchRange<long>>> _searchLengthRanges;
         [JsonProperty]
-        public ObservableCollection<SearchCondition<SearchRange<long>>> SearchLengthRanges { get; } = new ObservableCollection<SearchCondition<SearchRange<long>>>();
+        public ObservableCollection<SearchCondition<SearchRange<long>>> SearchLengthRanges
+        {
+            get
+            {
+                if (_searchLengthRanges == null)
+                    _searchLengthRanges = new ObservableCollection<SearchCondition<SearchRange<long>>>();
+                return _searchLengthRanges;
+            }
+        }
+        private ObservableCollection<SearchCondition<SearchState>> _searchStates;
         [JsonProperty]
-        public ObservableCollection<SearchCondition<SearchState>> SearchStates { get; } = new ObservableCollection<SearchCondition<SearchState>>();
+        public ObservableCollection<SearchCondition<SearchState>> SearchStates
+        {
+            get
+            {
+                if (_searchStates == null)
+                    _searchStates = new ObservableCollection<SearchCondition<SearchState>>();
+                return _searchStates;
+            }
+        }
         public SearchConditionsInfo Clone() => JsonUtils.Clone<SearchConditionsInfo>(this);
     }
     [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
@@ -1230,7 +1590,7 @@ namespace Amoeba.Interface
             {
                 if (_creationTime != value)
                 {
-                    _creationTime = value;
+                    _creationTime = value.Trim();
                     this.OnPropertyChanged(nameof(CreationTime));
                 }
             }
@@ -1322,13 +1682,22 @@ namespace Amoeba.Interface
             {
                 if (_creationTime != value)
                 {
-                    _creationTime = value;
+                    _creationTime = value.Trim();
                     this.OnPropertyChanged(nameof(CreationTime));
                 }
             }
         }
+        private DownloadListViewItemRateInfo _rate;
         [JsonProperty]
-        public DownloadListViewItemRateInfo Rate { get; } = new DownloadListViewItemRateInfo();
+        public DownloadListViewItemRateInfo Rate
+        {
+            get
+            {
+                if (_rate == null)
+                    _rate = new DownloadListViewItemRateInfo();
+                return _rate;
+            }
+        }
         private DownloadState _state;
         [JsonProperty]
         public DownloadState State
@@ -1457,10 +1826,28 @@ namespace Amoeba.Interface
                 }
             }
         }
+        private ObservableCollection<UploadDirectoryInfo> _directoryInfos;
         [JsonProperty]
-        public ObservableCollection<UploadDirectoryInfo> DirectoryInfos { get; } = new ObservableCollection<UploadDirectoryInfo>();
+        public ObservableCollection<UploadDirectoryInfo> DirectoryInfos
+        {
+            get
+            {
+                if (_directoryInfos == null)
+                    _directoryInfos = new ObservableCollection<UploadDirectoryInfo>();
+                return _directoryInfos;
+            }
+        }
+        private ObservableCollection<UploadCategoryInfo> _categoryInfos;
         [JsonProperty]
-        public ObservableCollection<UploadCategoryInfo> CategoryInfos { get; } = new ObservableCollection<UploadCategoryInfo>();
+        public ObservableCollection<UploadCategoryInfo> CategoryInfos
+        {
+            get
+            {
+                if (_categoryInfos == null)
+                    _categoryInfos = new ObservableCollection<UploadCategoryInfo>();
+                return _categoryInfos;
+            }
+        }
         public UploadStoreInfo Clone() => JsonUtils.Clone<UploadStoreInfo>(this);
     }
     [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
@@ -1497,10 +1884,28 @@ namespace Amoeba.Interface
                 }
             }
         }
+        private ObservableCollection<UploadDirectoryInfo> _directoryInfos;
         [JsonProperty]
-        public ObservableCollection<UploadDirectoryInfo> DirectoryInfos { get; } = new ObservableCollection<UploadDirectoryInfo>();
+        public ObservableCollection<UploadDirectoryInfo> DirectoryInfos
+        {
+            get
+            {
+                if (_directoryInfos == null)
+                    _directoryInfos = new ObservableCollection<UploadDirectoryInfo>();
+                return _directoryInfos;
+            }
+        }
+        private ObservableCollection<UploadCategoryInfo> _categoryInfos;
         [JsonProperty]
-        public ObservableCollection<UploadCategoryInfo> CategoryInfos { get; } = new ObservableCollection<UploadCategoryInfo>();
+        public ObservableCollection<UploadCategoryInfo> CategoryInfos
+        {
+            get
+            {
+                if (_categoryInfos == null)
+                    _categoryInfos = new ObservableCollection<UploadCategoryInfo>();
+                return _categoryInfos;
+            }
+        }
         public UploadCategoryInfo Clone() => JsonUtils.Clone<UploadCategoryInfo>(this);
     }
     [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
@@ -1551,10 +1956,28 @@ namespace Amoeba.Interface
                 }
             }
         }
+        private ObservableCollection<Seed> _seeds;
         [JsonProperty]
-        public ObservableCollection<Seed> Seeds { get; } = new ObservableCollection<Seed>();
+        public ObservableCollection<Seed> Seeds
+        {
+            get
+            {
+                if (_seeds == null)
+                    _seeds = new ObservableCollection<Seed>();
+                return _seeds;
+            }
+        }
+        private ObservableCollection<UploadBoxInfo> _boxInfos;
         [JsonProperty]
-        public ObservableCollection<UploadBoxInfo> BoxInfos { get; } = new ObservableCollection<UploadBoxInfo>();
+        public ObservableCollection<UploadBoxInfo> BoxInfos
+        {
+            get
+            {
+                if (_boxInfos == null)
+                    _boxInfos = new ObservableCollection<UploadBoxInfo>();
+                return _boxInfos;
+            }
+        }
         public UploadDirectoryInfo Clone() => JsonUtils.Clone<UploadDirectoryInfo>(this);
     }
     [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
@@ -1591,10 +2014,28 @@ namespace Amoeba.Interface
                 }
             }
         }
+        private ObservableCollection<Seed> _seeds;
         [JsonProperty]
-        public ObservableCollection<Seed> Seeds { get; } = new ObservableCollection<Seed>();
+        public ObservableCollection<Seed> Seeds
+        {
+            get
+            {
+                if (_seeds == null)
+                    _seeds = new ObservableCollection<Seed>();
+                return _seeds;
+            }
+        }
+        private ObservableCollection<UploadBoxInfo> _boxInfos;
         [JsonProperty]
-        public ObservableCollection<UploadBoxInfo> BoxInfos { get; } = new ObservableCollection<UploadBoxInfo>();
+        public ObservableCollection<UploadBoxInfo> BoxInfos
+        {
+            get
+            {
+                if (_boxInfos == null)
+                    _boxInfos = new ObservableCollection<UploadBoxInfo>();
+                return _boxInfos;
+            }
+        }
         public UploadBoxInfo Clone() => JsonUtils.Clone<UploadBoxInfo>(this);
     }
     [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
@@ -1668,7 +2109,7 @@ namespace Amoeba.Interface
             {
                 if (_creationTime != value)
                 {
-                    _creationTime = value;
+                    _creationTime = value.Trim();
                     this.OnPropertyChanged(nameof(CreationTime));
                 }
             }

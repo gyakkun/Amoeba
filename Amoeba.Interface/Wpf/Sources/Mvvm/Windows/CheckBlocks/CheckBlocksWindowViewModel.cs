@@ -92,16 +92,6 @@ namespace Amoeba.Interface
 
         private void Close()
         {
-            try
-            {
-                _tokenSource.Cancel();
-                _task.Wait();
-            }
-            catch (Exception)
-            {
-
-            }
-
             this.OnCloseEvent();
         }
 
@@ -121,6 +111,16 @@ namespace Amoeba.Interface
 
             if (isDisposing)
             {
+                try
+                {
+                    _tokenSource.Cancel();
+                    _task.Wait();
+                }
+                catch (Exception)
+                {
+
+                }
+
                 EventHooks.Instance.SaveEvent -= this.Save;
 
                 this.Save();
