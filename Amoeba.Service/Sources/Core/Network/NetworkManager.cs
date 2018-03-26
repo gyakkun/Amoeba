@@ -1693,6 +1693,7 @@ namespace Amoeba.Service
 
                     this.SetConfig(new NetworkConfig(connectionCountLimit, bandwidthLimit));
                 }
+
                 this.SetMyLocation(_settings.Load<Location>("MyLocation", () => new Location(Array.Empty<string>())));
                 this.SetCloudLocations(_settings.Load<IEnumerable<Location>>("CloudLocations", () => Array.Empty<Location>()));
 
@@ -1783,8 +1784,8 @@ namespace Amoeba.Service
             {
                 public bool IsInitialized { get; set; }
 
-                public VolatileBloomFilter<Hash> PushedBlockRequestFilter { get; private set; } = new VolatileBloomFilter<Hash>(_maxBlockRequestCount * 2, 0.0001, (n) => n.GetHashCode(), new TimeSpan(0, 1, 0), new TimeSpan(0, 30, 0));
-                public VolatileBloomFilter<Hash> PushedBlockLinkFilter { get; private set; } = new VolatileBloomFilter<Hash>(_maxBlockLinkCount * 2, 0.0001, (n) => n.GetHashCode(), new TimeSpan(0, 1, 0), new TimeSpan(3, 0, 0));
+                public VolatileBloomFilter<Hash> PushedBlockRequestFilter { get; private set; } = new VolatileBloomFilter<Hash>(_maxBlockRequestCount * 2, 0.00001, (n) => n.GetHashCode(), new TimeSpan(0, 1, 0), new TimeSpan(0, 30, 0));
+                public VolatileBloomFilter<Hash> PushedBlockLinkFilter { get; private set; } = new VolatileBloomFilter<Hash>(_maxBlockLinkCount * 2 * 10, 0.00001, (n) => n.GetHashCode(), new TimeSpan(0, 10, 0), new TimeSpan(3, 0, 0));
 
                 public Stopwatch LocationResultStopwatch { get; private set; } = Stopwatch.StartNew();
                 public Stopwatch BlockResultStopwatch { get; private set; } = Stopwatch.StartNew();
@@ -1803,8 +1804,6 @@ namespace Amoeba.Service
                 {
                     this.PushedBlockRequestFilter.Update();
                     this.PushedBlockLinkFilter.Update();
-
-                    this.PushedBlockLinkFilter.Update();
                 }
             }
 
@@ -1814,7 +1813,7 @@ namespace Amoeba.Service
 
                 public Stopwatch Stopwatch { get; private set; } = new Stopwatch();
 
-                public VolatileBloomFilter<Hash> PulledBlockLinkFilter { get; private set; } = new VolatileBloomFilter<Hash>(_maxBlockLinkCount * 2, 0.0001, (n) => n.GetHashCode(), new TimeSpan(0, 1, 0), new TimeSpan(3, 0, 0));
+                public VolatileBloomFilter<Hash> PulledBlockLinkFilter { get; private set; } = new VolatileBloomFilter<Hash>(_maxBlockLinkCount * 2 * 10, 0.00001, (n) => n.GetHashCode(), new TimeSpan(0, 10, 0), new TimeSpan(3, 0, 0));
 
                 public VolatileHashSet<Location> PulledLocationSet { get; private set; } = new VolatileHashSet<Location>(new TimeSpan(0, 10, 0));
                 public VolatileHashSet<Hash> PulledBlockLinkSet { get; private set; } = new VolatileHashSet<Hash>(new TimeSpan(0, 30, 0));
