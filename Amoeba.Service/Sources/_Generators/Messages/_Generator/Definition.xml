@@ -54,7 +54,7 @@
 
     <Class Modifier="internal" Name="ProfilePacket">
         <Properties>
-            <Bytes Name="Id" Id="0" />
+            <Bytes Name="Id" Id="0" MaxLength="32" />
             <Message Name="Location" Id="1" Type="Location" />
         </Properties>
     </Class>

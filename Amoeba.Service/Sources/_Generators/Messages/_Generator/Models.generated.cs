@@ -823,11 +823,13 @@ namespace Amoeba.Service
         {
             ProfilePacket.Formatter = new CustomFormatter();
         }
+        public static readonly int MaxIdLength = 32;
         [JsonConstructor]
         public ProfilePacket(byte[] id, Location location)
         {
             if (id == null) throw new ArgumentNullException("id");
             if (location == null) throw new ArgumentNullException("location");
+            if (id.Length > MaxIdLength) throw new ArgumentOutOfRangeException("id");
             this.Id = id;
             this.Location = location;
             this.Initialize();
