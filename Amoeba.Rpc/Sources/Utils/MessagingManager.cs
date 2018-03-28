@@ -44,10 +44,12 @@ namespace Amoeba.Rpc
             _aliveTimer.Start(1000 * 30);
         }
 
+        /*
         public void Wait()
         {
-            _taskManager.WaitHandle.WaitOne();
+            _taskManager.Wait();
         }
+        */
 
         public void Stop()
         {

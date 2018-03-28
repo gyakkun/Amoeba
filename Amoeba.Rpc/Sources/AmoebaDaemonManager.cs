@@ -39,7 +39,10 @@ namespace Amoeba.Rpc
         public void Watch()
         {
             _messagingManager.Run();
-            _messagingManager.Wait();
+
+            _tokenSource.Token.WaitHandle.WaitOne();
+
+            _messagingManager.Stop();
 
             foreach (var responseTask in _tasks.Values)
             {
@@ -64,7 +67,7 @@ namespace Amoeba.Rpc
                 if (type == AmoebaFunctionType.Exit)
                 {
                     SendResponse(AmoebaFunctionResponseType.Result, id, (object)null);
-                    _messagingManager.Stop();
+                    _tokenSource.Cancel();
                 }
                 else if (type == AmoebaFunctionType.Cancel)
                 {

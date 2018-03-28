@@ -1004,330 +1004,341 @@ namespace Amoeba.Service
 
         private Stream Send(SessionInfo sessionInfo)
         {
-            if (!sessionInfo.Send.IsInitialized)
+            try
             {
-                sessionInfo.Send.IsInitialized = true;
-
-                Stream versionStream = new RecyclableMemoryStream(_bufferManager);
-                Varint.SetUInt64(versionStream, (uint)ProtocolVersion.Version1);
-
-                var packet = new ProfilePacket(_baseId, _myLocation);
-
-                var dataStream = packet.Export(_bufferManager);
-
-                Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " NetworkManager: Send Profile");
-
-                return new UniteStream(versionStream, dataStream);
-            }
-            else
-            {
-                if (sessionInfo.Send.LocationResultStopwatch.Elapsed.TotalMinutes > 3)
+                if (!sessionInfo.Send.IsInitialized)
                 {
-                    sessionInfo.Send.LocationResultStopwatch.Restart();
+                    sessionInfo.Send.IsInitialized = true;
 
-                    var random = RandomProvider.GetThreadRandom();
+                    Stream versionStream = new RecyclableMemoryStream(_bufferManager);
+                    Varint.SetUInt64(versionStream, (uint)ProtocolVersion.Version1);
 
-                    var tempLocations = new List<Location>();
-                    tempLocations.Add(_myLocation);
-                    tempLocations.AddRange(_cloudLocations);
+                    var packet = new ProfilePacket(_baseId, _myLocation);
 
-                    random.Shuffle(tempLocations);
+                    var dataStream = packet.Export(_bufferManager);
 
-                    var packet = new LocationsPacket(tempLocations.Take(_maxLocationCount).ToArray());
+                    Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " NetworkManager: Send Profile");
 
-                    Stream typeStream = new RecyclableMemoryStream(_bufferManager);
-                    Varint.SetUInt64(typeStream, (uint)SerializeId.Locations);
-
-                    _status.PushLocationCount.Add(packet.Locations.Count());
-
-                    Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " NetworkManager: Send LocationResult");
-
-                    return new UniteStream(typeStream, packet.Export(_bufferManager));
+                    return new UniteStream(versionStream, dataStream);
                 }
-                else if (sessionInfo.Send.PushBlockLinkQueue.Count > 0)
+                else
                 {
-                    BlocksLinkPacket packet;
-
-                    lock (sessionInfo.Send.PushBlockLinkQueue.LockObject)
+                    if (sessionInfo.Send.LocationResultStopwatch.Elapsed.TotalMinutes > 3)
                     {
-                        sessionInfo.Send.PushedBlockLinkFilter.AddRange(sessionInfo.Send.PushBlockLinkQueue);
+                        sessionInfo.Send.LocationResultStopwatch.Restart();
 
-                        packet = new BlocksLinkPacket(sessionInfo.Send.PushBlockLinkQueue.ToArray());
-                        sessionInfo.Send.PushBlockLinkQueue.Clear();
+                        var random = RandomProvider.GetThreadRandom();
+
+                        var tempLocations = new List<Location>();
+                        tempLocations.Add(_myLocation);
+                        tempLocations.AddRange(_cloudLocations);
+
+                        random.Shuffle(tempLocations);
+
+                        var packet = new LocationsPacket(tempLocations.Take(_maxLocationCount).ToArray());
+
+                        Stream typeStream = new RecyclableMemoryStream(_bufferManager);
+                        Varint.SetUInt64(typeStream, (uint)SerializeId.Locations);
+
+                        _status.PushLocationCount.Add(packet.Locations.Count());
+
+                        Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " NetworkManager: Send LocationResult");
+
+                        return new UniteStream(typeStream, packet.Export(_bufferManager));
                     }
-
-                    Stream typeStream = new RecyclableMemoryStream(_bufferManager);
-                    Varint.SetUInt64(typeStream, (uint)SerializeId.BlocksLink);
-
-                    _status.PushBlockLinkCount.Add(packet.Hashes.Count());
-
-                    Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " NetworkManager: Send BlockLink");
-
-                    return new UniteStream(typeStream, packet.Export(_bufferManager));
-                }
-                else if (sessionInfo.Send.PushBlockRequestQueue.Count > 0)
-                {
-                    BlocksRequestPacket packet;
-
-                    lock (sessionInfo.Send.PushBlockRequestQueue.LockObject)
+                    else if (sessionInfo.Send.PushBlockLinkQueue.Count > 0)
                     {
-                        sessionInfo.Send.PushedBlockRequestFilter.AddRange(sessionInfo.Send.PushBlockRequestQueue);
+                        BlocksLinkPacket packet;
 
-                        packet = new BlocksRequestPacket(sessionInfo.Send.PushBlockRequestQueue.ToArray());
-                        sessionInfo.Send.PushBlockRequestQueue.Clear();
-                    }
-
-                    Stream typeStream = new RecyclableMemoryStream(_bufferManager);
-                    Varint.SetUInt64(typeStream, (uint)SerializeId.BlocksRequest);
-
-                    _status.PushBlockRequestCount.Add(packet.Hashes.Count());
-
-                    Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " NetworkManager: Send BlockRequest");
-
-                    return new UniteStream(typeStream, packet.Export(_bufferManager));
-                }
-                else if (sessionInfo.Send.BlockResultStopwatch.Elapsed.TotalSeconds > 0.5 && sessionInfo.Send.PushBlockResultQueue.Count > 0)
-                {
-                    sessionInfo.Send.BlockResultStopwatch.Restart();
-
-                    Hash? hash = null;
-
-                    lock (sessionInfo.Send.PushBlockResultQueue.LockObject)
-                    {
-                        if (sessionInfo.Send.PushBlockResultQueue.Count > 0)
+                        lock (sessionInfo.Send.PushBlockLinkQueue.LockObject)
                         {
-                            hash = sessionInfo.Send.PushBlockResultQueue.Dequeue();
-                            sessionInfo.Receive.PulledBlockRequestSet.Remove(hash.Value);
+                            sessionInfo.Send.PushedBlockLinkFilter.AddRange(sessionInfo.Send.PushBlockLinkQueue);
+
+                            packet = new BlocksLinkPacket(sessionInfo.Send.PushBlockLinkQueue.ToArray());
+                            sessionInfo.Send.PushBlockLinkQueue.Clear();
                         }
+
+                        Stream typeStream = new RecyclableMemoryStream(_bufferManager);
+                        Varint.SetUInt64(typeStream, (uint)SerializeId.BlocksLink);
+
+                        _status.PushBlockLinkCount.Add(packet.Hashes.Count());
+
+                        Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " NetworkManager: Send BlockLink");
+
+                        return new UniteStream(typeStream, packet.Export(_bufferManager));
                     }
-
-                    if (hash != null)
+                    else if (sessionInfo.Send.PushBlockRequestQueue.Count > 0)
                     {
-                        Stream dataStream = null;
+                        BlocksRequestPacket packet;
+
+                        lock (sessionInfo.Send.PushBlockRequestQueue.LockObject)
                         {
-                            var buffer = new ArraySegment<byte>();
+                            sessionInfo.Send.PushedBlockRequestFilter.AddRange(sessionInfo.Send.PushBlockRequestQueue);
 
-                            try
+                            packet = new BlocksRequestPacket(sessionInfo.Send.PushBlockRequestQueue.ToArray());
+                            sessionInfo.Send.PushBlockRequestQueue.Clear();
+                        }
+
+                        Stream typeStream = new RecyclableMemoryStream(_bufferManager);
+                        Varint.SetUInt64(typeStream, (uint)SerializeId.BlocksRequest);
+
+                        _status.PushBlockRequestCount.Add(packet.Hashes.Count());
+
+                        Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " NetworkManager: Send BlockRequest");
+
+                        return new UniteStream(typeStream, packet.Export(_bufferManager));
+                    }
+                    else if (sessionInfo.Send.BlockResultStopwatch.Elapsed.TotalSeconds > 0.5 && sessionInfo.Send.PushBlockResultQueue.Count > 0)
+                    {
+                        sessionInfo.Send.BlockResultStopwatch.Restart();
+
+                        Hash? hash = null;
+
+                        lock (sessionInfo.Send.PushBlockResultQueue.LockObject)
+                        {
+                            if (sessionInfo.Send.PushBlockResultQueue.Count > 0)
                             {
-                                buffer = _cacheManager.GetBlock(hash.Value);
-
-                                dataStream = (new BlockResultPacket(hash.Value, buffer)).Export(_bufferManager);
+                                hash = sessionInfo.Send.PushBlockResultQueue.Dequeue();
+                                sessionInfo.Receive.PulledBlockRequestSet.Remove(hash.Value);
                             }
-                            catch (Exception)
-                            {
+                        }
 
-                            }
-                            finally
+                        if (hash != null)
+                        {
+                            Stream dataStream = null;
                             {
-                                if (buffer.Array != null)
+                                var buffer = new ArraySegment<byte>();
+
+                                try
                                 {
-                                    _bufferManager.ReturnBuffer(buffer.Array);
+                                    buffer = _cacheManager.GetBlock(hash.Value);
+
+                                    dataStream = (new BlockResultPacket(hash.Value, buffer)).Export(_bufferManager);
+                                }
+                                catch (Exception)
+                                {
+
+                                }
+                                finally
+                                {
+                                    if (buffer.Array != null)
+                                    {
+                                        _bufferManager.ReturnBuffer(buffer.Array);
+                                    }
                                 }
                             }
+
+                            if (dataStream != null)
+                            {
+                                Stream typeStream = new RecyclableMemoryStream(_bufferManager);
+                                Varint.SetUInt64(typeStream, (uint)SerializeId.BlockResult);
+
+                                _status.PushBlockResultCount.Increment();
+
+                                _diffusionBlockHashes.Remove(hash.Value);
+                                _uploadBlockHashes.Remove(hash.Value);
+
+                                Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " NetworkManager: Send BlockResult " + NetworkConverter.ToBase64UrlString(hash.Value.Value));
+
+                                return new UniteStream(typeStream, dataStream);
+                            }
+                        }
+                    }
+                    else if (sessionInfo.Send.PushBroadcastMetadataRequestQueue.Count > 0)
+                    {
+                        BroadcastMetadatasRequestPacket packet;
+
+                        lock (sessionInfo.Send.PushBroadcastMetadataRequestQueue.LockObject)
+                        {
+                            packet = new BroadcastMetadatasRequestPacket(sessionInfo.Send.PushBroadcastMetadataRequestQueue.ToArray());
+                            sessionInfo.Send.PushBroadcastMetadataRequestQueue.Clear();
                         }
 
-                        if (dataStream != null)
+                        Stream typeStream = new RecyclableMemoryStream(_bufferManager);
+                        Varint.SetUInt64(typeStream, (uint)SerializeId.BroadcastMetadatasRequest);
+
+                        _status.PushMessageRequestCount.Add(packet.Signatures.Count());
+
+                        Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " NetworkManager: Send BroadcastMetadataRequest");
+
+                        return new UniteStream(typeStream, packet.Export(_bufferManager));
+                    }
+                    else if (sessionInfo.Send.BroadcastMetadataResultStopwatch.Elapsed.TotalSeconds > 30)
+                    {
+                        sessionInfo.Send.BroadcastMetadataResultStopwatch.Restart();
+
+                        var random = RandomProvider.GetThreadRandom();
+
+                        var broadcastMetadatas = new List<BroadcastMetadata>();
+
+                        var signatures = new List<Signature>();
+
+                        lock (sessionInfo.Receive.PulledBroadcastMetadataRequestSet.LockObject)
                         {
+                            signatures.AddRange(sessionInfo.Receive.PulledBroadcastMetadataRequestSet);
+                        }
+
+                        random.Shuffle(signatures);
+
+                        foreach (var signature in signatures)
+                        {
+                            foreach (var metadata in _metadataManager.GetBroadcastMetadatas(signature).Randomize())
+                            {
+                                broadcastMetadatas.Add(metadata);
+
+                                if (broadcastMetadatas.Count >= _maxMetadataResultCount) goto End;
+                            }
+                        }
+
+                        End:;
+
+                        if (broadcastMetadatas.Count > 0)
+                        {
+                            var packet = new BroadcastMetadatasResultPacket(broadcastMetadatas);
+
                             Stream typeStream = new RecyclableMemoryStream(_bufferManager);
-                            Varint.SetUInt64(typeStream, (uint)SerializeId.BlockResult);
+                            Varint.SetUInt64(typeStream, (uint)SerializeId.BroadcastMetadatasResult);
 
-                            _status.PushBlockResultCount.Increment();
+                            _status.PushMessageResultCount.Add(packet.BroadcastMetadatas.Count());
 
-                            _diffusionBlockHashes.Remove(hash.Value);
-                            _uploadBlockHashes.Remove(hash.Value);
+                            Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " NetworkManager: Send MetadataResult");
 
-                            Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " NetworkManager: Send BlockResult " + NetworkConverter.ToBase64UrlString(hash.Value.Value));
-
-                            return new UniteStream(typeStream, dataStream);
+                            return new UniteStream(typeStream, packet.Export(_bufferManager));
                         }
                     }
-                }
-                else if (sessionInfo.Send.PushBroadcastMetadataRequestQueue.Count > 0)
-                {
-                    BroadcastMetadatasRequestPacket packet;
-
-                    lock (sessionInfo.Send.PushBroadcastMetadataRequestQueue.LockObject)
+                    else if (sessionInfo.Send.PushUnicastMetadataRequestQueue.Count > 0)
                     {
-                        packet = new BroadcastMetadatasRequestPacket(sessionInfo.Send.PushBroadcastMetadataRequestQueue.ToArray());
-                        sessionInfo.Send.PushBroadcastMetadataRequestQueue.Clear();
-                    }
+                        UnicastMetadatasRequestPacket packet;
 
-                    Stream typeStream = new RecyclableMemoryStream(_bufferManager);
-                    Varint.SetUInt64(typeStream, (uint)SerializeId.BroadcastMetadatasRequest);
-
-                    _status.PushMessageRequestCount.Add(packet.Signatures.Count());
-
-                    Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " NetworkManager: Send BroadcastMetadataRequest");
-
-                    return new UniteStream(typeStream, packet.Export(_bufferManager));
-                }
-                else if (sessionInfo.Send.BroadcastMetadataResultStopwatch.Elapsed.TotalSeconds > 30)
-                {
-                    sessionInfo.Send.BroadcastMetadataResultStopwatch.Restart();
-
-                    var random = RandomProvider.GetThreadRandom();
-
-                    var broadcastMetadatas = new List<BroadcastMetadata>();
-
-                    var signatures = new List<Signature>();
-
-                    lock (sessionInfo.Receive.PulledBroadcastMetadataRequestSet.LockObject)
-                    {
-                        signatures.AddRange(sessionInfo.Receive.PulledBroadcastMetadataRequestSet);
-                    }
-
-                    random.Shuffle(signatures);
-
-                    foreach (var signature in signatures)
-                    {
-                        foreach (var metadata in _metadataManager.GetBroadcastMetadatas(signature).Randomize())
+                        lock (sessionInfo.Send.PushUnicastMetadataRequestQueue.LockObject)
                         {
-                            broadcastMetadatas.Add(metadata);
-
-                            if (broadcastMetadatas.Count >= _maxMetadataResultCount) goto End;
+                            packet = new UnicastMetadatasRequestPacket(sessionInfo.Send.PushUnicastMetadataRequestQueue.ToArray());
+                            sessionInfo.Send.PushUnicastMetadataRequestQueue.Clear();
                         }
-                    }
-
-                    End:;
-
-                    if (broadcastMetadatas.Count > 0)
-                    {
-                        var packet = new BroadcastMetadatasResultPacket(broadcastMetadatas);
 
                         Stream typeStream = new RecyclableMemoryStream(_bufferManager);
-                        Varint.SetUInt64(typeStream, (uint)SerializeId.BroadcastMetadatasResult);
+                        Varint.SetUInt64(typeStream, (uint)SerializeId.UnicastMetadatasRequest);
 
-                        _status.PushMessageResultCount.Add(packet.BroadcastMetadatas.Count());
+                        _status.PushMessageRequestCount.Add(packet.Signatures.Count());
 
-                        Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " NetworkManager: Send MetadataResult");
+                        Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " NetworkManager: Send UnicastMetadataRequest");
 
                         return new UniteStream(typeStream, packet.Export(_bufferManager));
                     }
-                }
-                else if (sessionInfo.Send.PushUnicastMetadataRequestQueue.Count > 0)
-                {
-                    UnicastMetadatasRequestPacket packet;
-
-                    lock (sessionInfo.Send.PushUnicastMetadataRequestQueue.LockObject)
+                    else if (sessionInfo.Send.UnicastMetadataResultStopwatch.Elapsed.TotalSeconds > 30)
                     {
-                        packet = new UnicastMetadatasRequestPacket(sessionInfo.Send.PushUnicastMetadataRequestQueue.ToArray());
-                        sessionInfo.Send.PushUnicastMetadataRequestQueue.Clear();
-                    }
+                        sessionInfo.Send.UnicastMetadataResultStopwatch.Restart();
 
-                    Stream typeStream = new RecyclableMemoryStream(_bufferManager);
-                    Varint.SetUInt64(typeStream, (uint)SerializeId.UnicastMetadatasRequest);
+                        var random = RandomProvider.GetThreadRandom();
 
-                    _status.PushMessageRequestCount.Add(packet.Signatures.Count());
+                        var UnicastMetadatas = new List<UnicastMetadata>();
 
-                    Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " NetworkManager: Send UnicastMetadataRequest");
+                        var signatures = new List<Signature>();
 
-                    return new UniteStream(typeStream, packet.Export(_bufferManager));
-                }
-                else if (sessionInfo.Send.UnicastMetadataResultStopwatch.Elapsed.TotalSeconds > 30)
-                {
-                    sessionInfo.Send.UnicastMetadataResultStopwatch.Restart();
-
-                    var random = RandomProvider.GetThreadRandom();
-
-                    var UnicastMetadatas = new List<UnicastMetadata>();
-
-                    var signatures = new List<Signature>();
-
-                    lock (sessionInfo.Receive.PulledUnicastMetadataRequestSet.LockObject)
-                    {
-                        signatures.AddRange(sessionInfo.Receive.PulledUnicastMetadataRequestSet);
-                    }
-
-                    random.Shuffle(signatures);
-
-                    foreach (var signature in signatures)
-                    {
-                        foreach (var metadata in _metadataManager.GetUnicastMetadatas(signature).Randomize())
+                        lock (sessionInfo.Receive.PulledUnicastMetadataRequestSet.LockObject)
                         {
-                            UnicastMetadatas.Add(metadata);
+                            signatures.AddRange(sessionInfo.Receive.PulledUnicastMetadataRequestSet);
+                        }
 
-                            if (UnicastMetadatas.Count >= _maxMetadataResultCount) goto End;
+                        random.Shuffle(signatures);
+
+                        foreach (var signature in signatures)
+                        {
+                            foreach (var metadata in _metadataManager.GetUnicastMetadatas(signature).Randomize())
+                            {
+                                UnicastMetadatas.Add(metadata);
+
+                                if (UnicastMetadatas.Count >= _maxMetadataResultCount) goto End;
+                            }
+                        }
+
+                        End:;
+
+                        if (UnicastMetadatas.Count > 0)
+                        {
+                            var packet = new UnicastMetadatasResultPacket(UnicastMetadatas);
+
+                            Stream typeStream = new RecyclableMemoryStream(_bufferManager);
+                            Varint.SetUInt64(typeStream, (uint)SerializeId.UnicastMetadatasResult);
+
+                            _status.PushMessageResultCount.Add(packet.UnicastMetadatas.Count());
+
+                            Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " NetworkManager: Send MetadataResult");
+
+                            return new UniteStream(typeStream, packet.Export(_bufferManager));
                         }
                     }
-
-                    End:;
-
-                    if (UnicastMetadatas.Count > 0)
+                    else if (sessionInfo.Send.PushMulticastMetadataRequestQueue.Count > 0)
                     {
-                        var packet = new UnicastMetadatasResultPacket(UnicastMetadatas);
+                        MulticastMetadatasRequestPacket packet;
+
+                        lock (sessionInfo.Send.PushMulticastMetadataRequestQueue.LockObject)
+                        {
+                            packet = new MulticastMetadatasRequestPacket(sessionInfo.Send.PushMulticastMetadataRequestQueue.ToArray());
+                            sessionInfo.Send.PushMulticastMetadataRequestQueue.Clear();
+                        }
 
                         Stream typeStream = new RecyclableMemoryStream(_bufferManager);
-                        Varint.SetUInt64(typeStream, (uint)SerializeId.UnicastMetadatasResult);
+                        Varint.SetUInt64(typeStream, (uint)SerializeId.MulticastMetadatasRequest);
 
-                        _status.PushMessageResultCount.Add(packet.UnicastMetadatas.Count());
+                        _status.PushMessageRequestCount.Add(packet.Tags.Count());
 
-                        Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " NetworkManager: Send MetadataResult");
+                        Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " NetworkManager: Send MulticastMetadataRequest");
 
                         return new UniteStream(typeStream, packet.Export(_bufferManager));
                     }
-                }
-                else if (sessionInfo.Send.PushMulticastMetadataRequestQueue.Count > 0)
-                {
-                    MulticastMetadatasRequestPacket packet;
-
-                    lock (sessionInfo.Send.PushMulticastMetadataRequestQueue.LockObject)
+                    else if (sessionInfo.Send.MulticastMetadataResultStopwatch.Elapsed.TotalSeconds > 30)
                     {
-                        packet = new MulticastMetadatasRequestPacket(sessionInfo.Send.PushMulticastMetadataRequestQueue.ToArray());
-                        sessionInfo.Send.PushMulticastMetadataRequestQueue.Clear();
-                    }
+                        sessionInfo.Send.MulticastMetadataResultStopwatch.Restart();
 
-                    Stream typeStream = new RecyclableMemoryStream(_bufferManager);
-                    Varint.SetUInt64(typeStream, (uint)SerializeId.MulticastMetadatasRequest);
+                        var random = RandomProvider.GetThreadRandom();
 
-                    _status.PushMessageRequestCount.Add(packet.Tags.Count());
+                        var MulticastMetadatas = new List<MulticastMetadata>();
 
-                    Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " NetworkManager: Send MulticastMetadataRequest");
+                        var tags = new List<Tag>();
 
-                    return new UniteStream(typeStream, packet.Export(_bufferManager));
-                }
-                else if (sessionInfo.Send.MulticastMetadataResultStopwatch.Elapsed.TotalSeconds > 30)
-                {
-                    sessionInfo.Send.MulticastMetadataResultStopwatch.Restart();
-
-                    var random = RandomProvider.GetThreadRandom();
-
-                    var MulticastMetadatas = new List<MulticastMetadata>();
-
-                    var tags = new List<Tag>();
-
-                    lock (sessionInfo.Receive.PulledMulticastMetadataRequestSet.LockObject)
-                    {
-                        tags.AddRange(sessionInfo.Receive.PulledMulticastMetadataRequestSet);
-                    }
-
-                    random.Shuffle(tags);
-
-                    foreach (var tag in tags)
-                    {
-                        foreach (var metadata in _metadataManager.GetMulticastMetadatas(tag).Randomize())
+                        lock (sessionInfo.Receive.PulledMulticastMetadataRequestSet.LockObject)
                         {
-                            MulticastMetadatas.Add(metadata);
+                            tags.AddRange(sessionInfo.Receive.PulledMulticastMetadataRequestSet);
+                        }
 
-                            if (MulticastMetadatas.Count >= _maxMetadataResultCount) goto End;
+                        random.Shuffle(tags);
+
+                        foreach (var tag in tags)
+                        {
+                            foreach (var metadata in _metadataManager.GetMulticastMetadatas(tag).Randomize())
+                            {
+                                MulticastMetadatas.Add(metadata);
+
+                                if (MulticastMetadatas.Count >= _maxMetadataResultCount) goto End;
+                            }
+                        }
+
+                        End:;
+
+                        if (MulticastMetadatas.Count > 0)
+                        {
+                            var packet = new MulticastMetadatasResultPacket(MulticastMetadatas);
+
+                            Stream typeStream = new RecyclableMemoryStream(_bufferManager);
+                            Varint.SetUInt64(typeStream, (uint)SerializeId.MulticastMetadatasResult);
+
+                            _status.PushMessageResultCount.Add(packet.MulticastMetadatas.Count());
+
+                            Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " NetworkManager: Send MetadataResult");
+
+                            return new UniteStream(typeStream, packet.Export(_bufferManager));
                         }
                     }
-
-                    End:;
-
-                    if (MulticastMetadatas.Count > 0)
-                    {
-                        var packet = new MulticastMetadatasResultPacket(MulticastMetadatas);
-
-                        Stream typeStream = new RecyclableMemoryStream(_bufferManager);
-                        Varint.SetUInt64(typeStream, (uint)SerializeId.MulticastMetadatasResult);
-
-                        _status.PushMessageResultCount.Add(packet.MulticastMetadatas.Count());
-
-                        Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " NetworkManager: Send MetadataResult");
-
-                        return new UniteStream(typeStream, packet.Export(_bufferManager));
-                    }
                 }
+            }
+            catch (SendException e)
+            {
+                throw e;
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
             }
 
             return null;
@@ -1348,19 +1359,19 @@ namespace Amoeba.Service
                     using (var dataStream = new RangeStream(stream))
                     {
                         var profile = ProfilePacket.Import(dataStream, _bufferManager);
-                        if (profile.Id == null || profile.Location == null) throw new ArgumentException("NetworkManager: Broken Profile");
+                        if (profile.Id == null || profile.Location == null) throw new ReceiveException("NetworkManager: Broken Profile");
 
-                        if (Unsafe.Equals(_baseId, profile.Id)) throw new ArgumentException("NetworkManager: Circular Connect");
+                        if (Unsafe.Equals(_baseId, profile.Id)) throw new ReceiveException("NetworkManager: Circular Connect");
 
                         lock (_connections.LockObject)
                         {
                             var connectionIds = _connections.Select(n => n.Value.Id).Where(n => n != null).ToArray();
-                            if (connectionIds.Any(n => Unsafe.Equals(n, profile.Id))) throw new ArgumentException("NetworkManager: Conflict");
+                            if (connectionIds.Any(n => Unsafe.Equals(n, profile.Id))) throw new ReceiveException("NetworkManager: Conflict");
 
                             var distance = RouteTableMethods.Distance(_baseId, profile.Id);
                             var count = connectionIds.Select(id => RouteTableMethods.Distance(_baseId, id)).Count(n => n == distance);
 
-                            if (count > 32) throw new ArgumentException("NetworkManager: RouteTable Overflow");
+                            if (count > 32) throw new ReceiveException("NetworkManager: RouteTable Overflow");
                         }
 
                         sessionInfo.Id = profile.Id;
@@ -1373,173 +1384,174 @@ namespace Amoeba.Service
                 }
                 else
                 {
-                    try
+                    int id = (int)Varint.GetUInt64(stream);
+
+                    using (var dataStream = new RangeStream(stream))
                     {
-                        int id = (int)Varint.GetUInt64(stream);
-
-                        using (var dataStream = new RangeStream(stream))
+                        if (id == (int)SerializeId.Locations)
                         {
-                            if (id == (int)SerializeId.Locations)
+                            var packet = LocationsPacket.Import(dataStream, _bufferManager);
+
+                            if (sessionInfo.Receive.PulledLocationSet.Count + packet.Locations.Count()
+                                > _maxLocationCount * sessionInfo.Receive.PulledLocationSet.SurvivalTime.TotalMinutes / 3) return;
+
+                            sessionInfo.Receive.PulledLocationSet.UnionWith(packet.Locations);
+
+                            _status.PullLocationCount.Add(packet.Locations.Count());
+
+                            Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " NetworkManager: Receive LocationResult");
+                        }
+                        else if (id == (int)SerializeId.BlocksLink)
+                        {
+                            var packet = BlocksLinkPacket.Import(dataStream, _bufferManager);
+
+                            if (sessionInfo.Receive.PulledBlockLinkSet.Count + packet.Hashes.Count()
+                                > _maxBlockLinkCount * sessionInfo.Receive.PulledBlockLinkSet.SurvivalTime.TotalMinutes * 2) return;
+
+                            sessionInfo.Receive.PulledBlockLinkSet.UnionWith(packet.Hashes);
+                            sessionInfo.Receive.PulledBlockLinkFilter.AddRange(packet.Hashes);
+
+                            _status.PullBlockLinkCount.Add(packet.Hashes.Count());
+
+                            Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " NetworkManager: Receive BlocksLink");
+                        }
+                        else if (id == (int)SerializeId.BlocksRequest)
+                        {
+                            var packet = BlocksRequestPacket.Import(dataStream, _bufferManager);
+
+                            if (sessionInfo.Receive.PulledBlockRequestSet.Count + packet.Hashes.Count()
+                                > _maxBlockRequestCount * sessionInfo.Receive.PulledBlockRequestSet.SurvivalTime.TotalMinutes * 2) return;
+
+                            sessionInfo.Receive.PulledBlockRequestSet.UnionWith(packet.Hashes);
+
+                            _status.PullBlockRequestCount.Add(packet.Hashes.Count());
+
+                            Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " NetworkManager: Receive BlocksRequest");
+                        }
+                        else if (id == (int)SerializeId.BlockResult)
+                        {
+                            var packet = BlockResultPacket.Import(dataStream, _bufferManager);
+
+                            _status.PullBlockResultCount.Increment();
+
+                            try
                             {
-                                var packet = LocationsPacket.Import(dataStream, _bufferManager);
+                                _cacheManager.Set(packet.Hash, packet.Value);
 
-                                if (sessionInfo.Receive.PulledLocationSet.Count + packet.Locations.Count()
-                                    > _maxLocationCount * sessionInfo.Receive.PulledLocationSet.SurvivalTime.TotalMinutes / 3) return;
-
-                                sessionInfo.Receive.PulledLocationSet.UnionWith(packet.Locations);
-
-                                _status.PullLocationCount.Add(packet.Locations.Count());
-
-                                Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " NetworkManager: Receive LocationResult");
-                            }
-                            else if (id == (int)SerializeId.BlocksLink)
-                            {
-                                var packet = BlocksLinkPacket.Import(dataStream, _bufferManager);
-
-                                if (sessionInfo.Receive.PulledBlockLinkSet.Count + packet.Hashes.Count()
-                                    > _maxBlockLinkCount * sessionInfo.Receive.PulledBlockLinkSet.SurvivalTime.TotalMinutes * 2) return;
-
-                                sessionInfo.Receive.PulledBlockLinkSet.UnionWith(packet.Hashes);
-                                sessionInfo.Receive.PulledBlockLinkFilter.AddRange(packet.Hashes);
-
-                                _status.PullBlockLinkCount.Add(packet.Hashes.Count());
-
-                                Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " NetworkManager: Receive BlocksLink");
-                            }
-                            else if (id == (int)SerializeId.BlocksRequest)
-                            {
-                                var packet = BlocksRequestPacket.Import(dataStream, _bufferManager);
-
-                                if (sessionInfo.Receive.PulledBlockRequestSet.Count + packet.Hashes.Count()
-                                    > _maxBlockRequestCount * sessionInfo.Receive.PulledBlockRequestSet.SurvivalTime.TotalMinutes * 2) return;
-
-                                sessionInfo.Receive.PulledBlockRequestSet.UnionWith(packet.Hashes);
-
-                                _status.PullBlockRequestCount.Add(packet.Hashes.Count());
-
-                                Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " NetworkManager: Receive BlocksRequest");
-                            }
-                            else if (id == (int)SerializeId.BlockResult)
-                            {
-                                var packet = BlockResultPacket.Import(dataStream, _bufferManager);
-
-                                _status.PullBlockResultCount.Increment();
-
-                                try
+                                if (sessionInfo.Send.PushedBlockRequestFilter.Contains(packet.Hash))
                                 {
-                                    _cacheManager.Set(packet.Hash, packet.Value);
-
-                                    if (sessionInfo.Send.PushedBlockRequestFilter.Contains(packet.Hash))
-                                    {
-                                        var priority = (int)(sessionInfo.Send.PushedBlockRequestFilter.SurvivalTime.TotalMinutes - sessionInfo.Send.PushedBlockRequestFilter.GetElapsedTime(packet.Hash).TotalMinutes);
-                                        sessionInfo.Priority.Add(priority);
-                                    }
-                                    else
-                                    {
-                                        _diffusionBlockHashes.Add(packet.Hash);
-                                    }
+                                    var priority = (int)(sessionInfo.Send.PushedBlockRequestFilter.SurvivalTime.TotalMinutes - sessionInfo.Send.PushedBlockRequestFilter.GetElapsedTime(packet.Hash).TotalMinutes);
+                                    sessionInfo.Priority.Add(priority);
                                 }
-                                finally
+                                else
                                 {
-                                    if (packet.Value.Array != null)
-                                    {
-                                        _bufferManager.ReturnBuffer(packet.Value.Array);
-                                    }
+                                    _diffusionBlockHashes.Add(packet.Hash);
                                 }
-
-                                Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " NetworkManager: Receive BlockResult " + NetworkConverter.ToBase64UrlString(packet.Hash.Value));
                             }
-                            else if (id == (int)SerializeId.BroadcastMetadatasRequest)
+                            finally
                             {
-                                var packet = BroadcastMetadatasRequestPacket.Import(dataStream, _bufferManager);
-
-                                if (sessionInfo.Receive.PulledBroadcastMetadataRequestSet.Count + packet.Signatures.Count()
-                                    > _maxMetadataRequestCount * sessionInfo.Receive.PulledBroadcastMetadataRequestSet.SurvivalTime.TotalMinutes * 2) return;
-
-                                sessionInfo.Receive.PulledBroadcastMetadataRequestSet.UnionWith(packet.Signatures);
-
-                                _status.PullMessageRequestCount.Add(packet.Signatures.Count());
-
-                                Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " NetworkManager: Receive BroadcastMetadatasRequest");
-                            }
-                            else if (id == (int)SerializeId.BroadcastMetadatasResult)
-                            {
-                                var packet = BroadcastMetadatasResultPacket.Import(dataStream, _bufferManager);
-
-                                if (packet.BroadcastMetadatas.Count() > _maxMetadataResultCount) return;
-
-                                _status.PullMessageResultCount.Add(packet.BroadcastMetadatas.Count());
-
-                                foreach (var metadata in packet.BroadcastMetadatas)
+                                if (packet.Value.Array != null)
                                 {
-                                    _metadataManager.SetMetadata(metadata);
+                                    _bufferManager.ReturnBuffer(packet.Value.Array);
                                 }
-
-                                Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " NetworkManager: Receive BroadcastMetadatasResult");
                             }
-                            else if (id == (int)SerializeId.UnicastMetadatasRequest)
+
+                            Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " NetworkManager: Receive BlockResult " + NetworkConverter.ToBase64UrlString(packet.Hash.Value));
+                        }
+                        else if (id == (int)SerializeId.BroadcastMetadatasRequest)
+                        {
+                            var packet = BroadcastMetadatasRequestPacket.Import(dataStream, _bufferManager);
+
+                            if (sessionInfo.Receive.PulledBroadcastMetadataRequestSet.Count + packet.Signatures.Count()
+                                > _maxMetadataRequestCount * sessionInfo.Receive.PulledBroadcastMetadataRequestSet.SurvivalTime.TotalMinutes * 2) return;
+
+                            sessionInfo.Receive.PulledBroadcastMetadataRequestSet.UnionWith(packet.Signatures);
+
+                            _status.PullMessageRequestCount.Add(packet.Signatures.Count());
+
+                            Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " NetworkManager: Receive BroadcastMetadatasRequest");
+                        }
+                        else if (id == (int)SerializeId.BroadcastMetadatasResult)
+                        {
+                            var packet = BroadcastMetadatasResultPacket.Import(dataStream, _bufferManager);
+
+                            if (packet.BroadcastMetadatas.Count() > _maxMetadataResultCount) return;
+
+                            _status.PullMessageResultCount.Add(packet.BroadcastMetadatas.Count());
+
+                            foreach (var metadata in packet.BroadcastMetadatas)
                             {
-                                var packet = UnicastMetadatasRequestPacket.Import(dataStream, _bufferManager);
-
-                                if (sessionInfo.Receive.PulledUnicastMetadataRequestSet.Count + packet.Signatures.Count()
-                                    > _maxMetadataRequestCount * sessionInfo.Receive.PulledUnicastMetadataRequestSet.SurvivalTime.TotalMinutes * 2) return;
-
-                                sessionInfo.Receive.PulledUnicastMetadataRequestSet.UnionWith(packet.Signatures);
-
-                                _status.PullMessageRequestCount.Add(packet.Signatures.Count());
-
-                                Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " NetworkManager: Receive UnicastMetadatasRequest");
+                                _metadataManager.SetMetadata(metadata);
                             }
-                            else if (id == (int)SerializeId.UnicastMetadatasResult)
+
+                            Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " NetworkManager: Receive BroadcastMetadatasResult");
+                        }
+                        else if (id == (int)SerializeId.UnicastMetadatasRequest)
+                        {
+                            var packet = UnicastMetadatasRequestPacket.Import(dataStream, _bufferManager);
+
+                            if (sessionInfo.Receive.PulledUnicastMetadataRequestSet.Count + packet.Signatures.Count()
+                                > _maxMetadataRequestCount * sessionInfo.Receive.PulledUnicastMetadataRequestSet.SurvivalTime.TotalMinutes * 2) return;
+
+                            sessionInfo.Receive.PulledUnicastMetadataRequestSet.UnionWith(packet.Signatures);
+
+                            _status.PullMessageRequestCount.Add(packet.Signatures.Count());
+
+                            Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " NetworkManager: Receive UnicastMetadatasRequest");
+                        }
+                        else if (id == (int)SerializeId.UnicastMetadatasResult)
+                        {
+                            var packet = UnicastMetadatasResultPacket.Import(dataStream, _bufferManager);
+
+                            if (packet.UnicastMetadatas.Count() > _maxMetadataResultCount) return;
+
+                            _status.PullMessageResultCount.Add(packet.UnicastMetadatas.Count());
+
+                            foreach (var metadata in packet.UnicastMetadatas)
                             {
-                                var packet = UnicastMetadatasResultPacket.Import(dataStream, _bufferManager);
-
-                                if (packet.UnicastMetadatas.Count() > _maxMetadataResultCount) return;
-
-                                _status.PullMessageResultCount.Add(packet.UnicastMetadatas.Count());
-
-                                foreach (var metadata in packet.UnicastMetadatas)
-                                {
-                                    _metadataManager.SetMetadata(metadata);
-                                }
-
-                                Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " NetworkManager: Receive UnicastMetadatasResult");
+                                _metadataManager.SetMetadata(metadata);
                             }
-                            else if (id == (int)SerializeId.MulticastMetadatasRequest)
+
+                            Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " NetworkManager: Receive UnicastMetadatasResult");
+                        }
+                        else if (id == (int)SerializeId.MulticastMetadatasRequest)
+                        {
+                            var packet = MulticastMetadatasRequestPacket.Import(dataStream, _bufferManager);
+
+                            if (sessionInfo.Receive.PulledMulticastMetadataRequestSet.Count + packet.Tags.Count()
+                                > _maxMetadataRequestCount * sessionInfo.Receive.PulledMulticastMetadataRequestSet.SurvivalTime.TotalMinutes * 2) return;
+
+                            sessionInfo.Receive.PulledMulticastMetadataRequestSet.UnionWith(packet.Tags);
+
+                            _status.PullMessageRequestCount.Add(packet.Tags.Count());
+
+                            Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " NetworkManager: Receive MulticastMetadatasRequest");
+                        }
+                        else if (id == (int)SerializeId.MulticastMetadatasResult)
+                        {
+                            var packet = MulticastMetadatasResultPacket.Import(dataStream, _bufferManager);
+
+                            if (packet.MulticastMetadatas.Count() > _maxMetadataResultCount) return;
+
+                            _status.PullMessageResultCount.Add(packet.MulticastMetadatas.Count());
+
+                            foreach (var metadata in packet.MulticastMetadatas)
                             {
-                                var packet = MulticastMetadatasRequestPacket.Import(dataStream, _bufferManager);
-
-                                if (sessionInfo.Receive.PulledMulticastMetadataRequestSet.Count + packet.Tags.Count()
-                                    > _maxMetadataRequestCount * sessionInfo.Receive.PulledMulticastMetadataRequestSet.SurvivalTime.TotalMinutes * 2) return;
-
-                                sessionInfo.Receive.PulledMulticastMetadataRequestSet.UnionWith(packet.Tags);
-
-                                _status.PullMessageRequestCount.Add(packet.Tags.Count());
-
-                                Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " NetworkManager: Receive MulticastMetadatasRequest");
+                                _metadataManager.SetMetadata(metadata);
                             }
-                            else if (id == (int)SerializeId.MulticastMetadatasResult)
-                            {
-                                var packet = MulticastMetadatasResultPacket.Import(dataStream, _bufferManager);
 
-                                if (packet.MulticastMetadatas.Count() > _maxMetadataResultCount) return;
-
-                                _status.PullMessageResultCount.Add(packet.MulticastMetadatas.Count());
-
-                                foreach (var metadata in packet.MulticastMetadatas)
-                                {
-                                    _metadataManager.SetMetadata(metadata);
-                                }
-
-                                Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " NetworkManager: Receive MulticastMetadatasResult");
-                            }
+                            Debug.WriteLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " NetworkManager: Receive MulticastMetadatasResult");
                         }
                     }
-                    catch (Exception e)
-                    {
-                        Log.Debug(e);
-                    }
                 }
+            }
+            catch (ReceiveException e)
+            {
+                throw e;
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
             }
             finally
             {
@@ -1784,8 +1796,8 @@ namespace Amoeba.Service
             {
                 public bool IsInitialized { get; set; }
 
-                public VolatileBloomFilter<Hash> PushedBlockRequestFilter { get; private set; } = new VolatileBloomFilter<Hash>(_maxBlockRequestCount * 2, 0.00001, (n) => n.GetHashCode(), new TimeSpan(0, 1, 0), new TimeSpan(0, 30, 0));
-                public VolatileBloomFilter<Hash> PushedBlockLinkFilter { get; private set; } = new VolatileBloomFilter<Hash>(_maxBlockLinkCount * 2 * 10, 0.00001, (n) => n.GetHashCode(), new TimeSpan(0, 10, 0), new TimeSpan(3, 0, 0));
+                public VolatileBloomFilter<Hash> PushedBlockRequestFilter { get; private set; } = new VolatileBloomFilter<Hash>(_maxBlockRequestCount * 2 * 3, 0.0001, (n) => n.GetHashCode(), new TimeSpan(0, 3, 0), new TimeSpan(0, 30, 0));
+                public VolatileBloomFilter<Hash> PushedBlockLinkFilter { get; private set; } = new VolatileBloomFilter<Hash>(_maxBlockLinkCount * 2 * 30, 0.0001, (n) => n.GetHashCode(), new TimeSpan(0, 30, 0), new TimeSpan(3, 0, 0));
 
                 public Stopwatch LocationResultStopwatch { get; private set; } = Stopwatch.StartNew();
                 public Stopwatch BlockResultStopwatch { get; private set; } = Stopwatch.StartNew();
@@ -1813,7 +1825,7 @@ namespace Amoeba.Service
 
                 public Stopwatch Stopwatch { get; private set; } = new Stopwatch();
 
-                public VolatileBloomFilter<Hash> PulledBlockLinkFilter { get; private set; } = new VolatileBloomFilter<Hash>(_maxBlockLinkCount * 2 * 10, 0.00001, (n) => n.GetHashCode(), new TimeSpan(0, 10, 0), new TimeSpan(3, 0, 0));
+                public VolatileBloomFilter<Hash> PulledBlockLinkFilter { get; private set; } = new VolatileBloomFilter<Hash>(_maxBlockLinkCount * 2 * 30, 0.0001, (n) => n.GetHashCode(), new TimeSpan(0, 30, 0), new TimeSpan(3, 0, 0));
 
                 public VolatileHashSet<Location> PulledLocationSet { get; private set; } = new VolatileHashSet<Location>(new TimeSpan(0, 10, 0));
                 public VolatileHashSet<Hash> PulledBlockLinkSet { get; private set; } = new VolatileHashSet<Hash>(new TimeSpan(0, 30, 0));
@@ -1876,6 +1888,20 @@ namespace Amoeba.Service
                     _connectionLockManager = null;
                 }
             }
+        }
+
+        class SendException : NetworkManagerException
+        {
+            public SendException() : base() { }
+            public SendException(string message) : base(message) { }
+            public SendException(string message, Exception innerException) : base(message, innerException) { }
+        }
+
+        class ReceiveException : NetworkManagerException
+        {
+            public ReceiveException() : base() { }
+            public ReceiveException(string message) : base(message) { }
+            public ReceiveException(string message, Exception innerException) : base(message, innerException) { }
         }
     }
 
