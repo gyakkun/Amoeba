@@ -218,92 +218,99 @@ namespace Amoeba.Interface
 
                 var result = this.FindMatch(offset);
 
-                if (result != null)
+                try
                 {
-                    if (result.Type == "State")
+                    if (result != null)
                     {
-                        double size = (double)new FontSizeConverter().ConvertFromString(SettingsManager.Instance.ViewSetting.Fonts.Chat_Message.FontSize + "pt");
-
-                        var image = new Image() { Height = (size - 3), Width = (size - 3), Margin = new Thickness(1.5, 1.5, 0, 0) };
-                        if (result.Value == "!") image.Source = AmoebaEnvironment.Images.YelloBall;
-                        else if (result.Value == "#") image.Source = AmoebaEnvironment.Images.GreenBall;
-
-                        var element = new CustomObjectElement(result.Value, image);
-
-                        element.ClickEvent += (string text) =>
+                        if (result.Type == "State")
                         {
-                            this.OnSelectEvent(new CustomElementRange(offset, offset + result.Value.Length));
-                        };
+                            double size = (double)new FontSizeConverter().ConvertFromString(SettingsManager.Instance.ViewSetting.Fonts.Chat_Message.FontSize + "pt");
 
-                        return element;
-                    }
-                    else if (result.Type == "Signature")
-                    {
-                        Brush brush;
+                            var image = new Image() { Height = (size - 3), Width = (size - 3), Margin = new Thickness(1.5, 1.5, 0, 0) };
+                            if (result.Value == "!") image.Source = AmoebaEnvironment.Images.YelloBall;
+                            else if (result.Value == "#") image.Source = AmoebaEnvironment.Images.GreenBall;
 
-                        if (_trustSignatures.Contains(Signature.Parse(result.Value)))
-                        {
-                            brush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(SettingsManager.Instance.ViewSetting.Colors.Message_Trust));
-                        }
-                        else
-                        {
-                            brush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(SettingsManager.Instance.ViewSetting.Colors.Message_Untrust));
-                        }
+                            var element = new CustomObjectElement(result.Value, image);
 
-                        var element = new CustomTextElement(result.Value);
-                        element.Foreground = brush;
-
-                        element.ClickEvent += (string text) =>
-                        {
-                            this.OnSelectEvent(new CustomElementRange(offset, offset + result.Value.Length));
-                        };
-
-                        return element;
-                    }
-                    else if (result.Type == "Uri")
-                    {
-                        string uri = result.Value;
-
-                        CustomObjectElement element = null;
-
-                        if (uri.StartsWith("http:") | uri.StartsWith("https:"))
-                        {
-                            var textBlock = new TextBlock();
-                            textBlock.Text = uri.Substring(0, Math.Min(64, uri.Length)) + ((uri.Length > 64) ? "..." : "");
-                            textBlock.ToolTip = HttpUtility.UrlDecode(uri);
-
-                            element = new CustomObjectElement(uri, textBlock);
-                        }
-                        else if (uri.StartsWith("Tag:"))
-                        {
-                            var tag = AmoebaConverter.FromTagString(uri);
-
-                            var textBlock = new TextBlock();
-                            textBlock.Text = uri.Substring(0, Math.Min(64, uri.Length)) + ((uri.Length > 64) ? "..." : "");
-
-                            element = new CustomObjectElement(uri, textBlock);
-                        }
-                        else if (uri.StartsWith("Seed:"))
-                        {
-                            var seed = AmoebaConverter.FromSeedString(uri);
-
-                            var textBlock = new TextBlock();
-                            textBlock.Text = uri.Substring(0, Math.Min(64, uri.Length)) + ((uri.Length > 64) ? "..." : "");
-
-                            element = new CustomObjectElement(uri, textBlock);
-                        }
-
-                        if (element != null)
-                        {
                             element.ClickEvent += (string text) =>
                             {
                                 this.OnSelectEvent(new CustomElementRange(offset, offset + result.Value.Length));
-                                this.OnClickEvent(text);
                             };
 
                             return element;
                         }
+                        else if (result.Type == "Signature")
+                        {
+                            Brush brush;
+
+                            if (_trustSignatures.Contains(Signature.Parse(result.Value)))
+                            {
+                                brush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(SettingsManager.Instance.ViewSetting.Colors.Message_Trust));
+                            }
+                            else
+                            {
+                                brush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(SettingsManager.Instance.ViewSetting.Colors.Message_Untrust));
+                            }
+
+                            var element = new CustomTextElement(result.Value);
+                            element.Foreground = brush;
+
+                            element.ClickEvent += (string text) =>
+                            {
+                                this.OnSelectEvent(new CustomElementRange(offset, offset + result.Value.Length));
+                            };
+
+                            return element;
+                        }
+                        else if (result.Type == "Uri")
+                        {
+                            string uri = result.Value;
+
+                            CustomObjectElement element = null;
+
+                            if (uri.StartsWith("http:") | uri.StartsWith("https:"))
+                            {
+                                var textBlock = new TextBlock();
+                                textBlock.Text = uri.Substring(0, Math.Min(64, uri.Length)) + ((uri.Length > 64) ? "..." : "");
+                                textBlock.ToolTip = HttpUtility.UrlDecode(uri);
+
+                                element = new CustomObjectElement(uri, textBlock);
+                            }
+                            else if (uri.StartsWith("Tag:"))
+                            {
+                                var tag = AmoebaConverter.FromTagString(uri);
+
+                                var textBlock = new TextBlock();
+                                textBlock.Text = uri.Substring(0, Math.Min(64, uri.Length)) + ((uri.Length > 64) ? "..." : "");
+
+                                element = new CustomObjectElement(uri, textBlock);
+                            }
+                            else if (uri.StartsWith("Seed:"))
+                            {
+                                var seed = AmoebaConverter.FromSeedString(uri);
+
+                                var textBlock = new TextBlock();
+                                textBlock.Text = uri.Substring(0, Math.Min(64, uri.Length)) + ((uri.Length > 64) ? "..." : "");
+
+                                element = new CustomObjectElement(uri, textBlock);
+                            }
+
+                            if (element != null)
+                            {
+                                element.ClickEvent += (string text) =>
+                                {
+                                    this.OnSelectEvent(new CustomElementRange(offset, offset + result.Value.Length));
+                                    this.OnClickEvent(text);
+                                };
+
+                                return element;
+                            }
+                        }
                     }
+                }
+                catch (Exception e)
+                {
+                    Log.Error(e);
                 }
 
                 return null;

@@ -99,7 +99,7 @@ namespace Amoeba.Messages
                 if (rank > 256) throw new FormatException();
 
                 var p_algorithm = (HashAlgorithm)r.GetUInt64();
-                var p_value = r.GetBytes();
+                var p_value = r.GetBytes(MaxValueLength);
 
                 return new Hash(p_algorithm, p_value);
             }

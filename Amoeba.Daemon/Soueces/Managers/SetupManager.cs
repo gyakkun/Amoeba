@@ -4,6 +4,7 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
+using System.Runtime;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
@@ -17,6 +18,8 @@ namespace Amoeba.Daemon
 {
     sealed class SetupManager : ManagerBase
     {
+        WatchTimer _timer;
+
         private readonly object _lockObject = new object();
         private volatile bool _isDisposed;
 
@@ -100,6 +103,13 @@ namespace Amoeba.Daemon
 
             // ログファイルを設定する。
             this.Setting_Log(config);
+
+            _timer = new WatchTimer(() =>
+            {
+                GCSettings.LargeObjectHeapCompactionMode = GCLargeObjectHeapCompactionMode.CompactOnce;
+                GC.Collect();
+            });
+            _timer.Start(new TimeSpan(0, 30, 0));
 
             // サービス開始。
             try
@@ -321,7 +331,8 @@ namespace Amoeba.Daemon
 
             if (isDisposing)
             {
-
+                _timer.Stop();
+                _timer.Dispose();
             }
         }
     }

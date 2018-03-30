@@ -1338,7 +1338,7 @@ namespace Amoeba.Service
             }
             catch (Exception e)
             {
-                Log.Error(e);
+                //Log.Error(e);
             }
 
             return null;
@@ -1551,7 +1551,7 @@ namespace Amoeba.Service
             }
             catch (Exception e)
             {
-                Log.Error(e);
+                //Log.Error(e);
             }
             finally
             {

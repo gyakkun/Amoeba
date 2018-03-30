@@ -140,7 +140,7 @@ namespace Amoeba.Service
 
                         {
                             Write_Class_Constructor_CheckNull(w, string.Format("{0}[i]", GetLocalName(pd.Name)), pd.State.ElementProperty);
-                            Write_Class_Constructor_CheckElementLength(w, string.Format("{0}[i]", GetLocalName(pd.Name)), pd.State.ElementProperty);
+                            Write_Class_Constructor_CheckLength(w, string.Format("{0}[i]", GetLocalName(pd.Name)), pd.State.ElementProperty);
                         }
 
                         w.PopIndent();
@@ -184,44 +184,37 @@ namespace Amoeba.Service
 
             private static void Write_Class_Constructor_Define_MaxLength(Writer w, PropertyDef pd)
             {
-                if (pd.SerializeType == SerializeType.Bytes || pd.SerializeType == SerializeType.String)
-                {
-                    if (pd.State.MaxLength == null) return;
-                    w.WriteLine("public static readonly int Max{0}Length = {1};", pd.Name, pd.State.MaxLength);
-                }
-                else if (pd.SerializeType == SerializeType.Array)
-                {
-                    if (pd.State.MaxLength == null) return;
-                    w.WriteLine("public static readonly int Max{0}Count = {1};", pd.Name, pd.State.MaxLength);
-                }
+                if (pd.State.LimitLabel == null) return;
+                w.WriteLine("public static readonly int {0} = {1};", pd.State.LimitLabel, pd.State.Limit);
             }
 
+            /*
             private static void Write_Class_Constructor_CheckLength(Writer w, string name, PropertyDef pd)
             {
                 if (pd.SerializeType == SerializeType.Bytes || pd.SerializeType == SerializeType.String)
                 {
-                    if (pd.State.MaxLength == null) return;
+                    if (pd.State.Limit == null) return;
 
-                    if(pd.State.IsNullable)
+                    if (pd.State.IsNullable)
                     {
-                        w.WriteLine("if ({0} != null && {0}.Length > Max{1}Length) throw new ArgumentOutOfRangeException(\"{0}\");", name, pd.Name);
+                        w.WriteLine("if ({0} != null && {0}.Length > {1}) throw new ArgumentOutOfRangeException(\"{0}\");", name, pd.State.LimitLabel);
                     }
                     else
                     {
-                        w.WriteLine("if ({0}.Length > Max{1}Length) throw new ArgumentOutOfRangeException(\"{0}\");", name, pd.Name);
+                        w.WriteLine("if ({0}.Length > {1}) throw new ArgumentOutOfRangeException(\"{0}\");", name, pd.State.LimitLabel);
                     }
                 }
                 else if (pd.SerializeType == SerializeType.Array)
                 {
-                    if (pd.State.MaxLength == null) return;
+                    if (pd.State.Limit == null) return;
                                         
-                    if(pd.State.IsNullable)
+                    if (pd.State.IsNullable)
                     {
-                        w.WriteLine("if ({0} != null && {0}.Count > Max{1}Count) throw new ArgumentOutOfRangeException(\"{0}\");", name, pd.Name);
+                        w.WriteLine("if ({0} != null && {0}.Count > {1}) throw new ArgumentOutOfRangeException(\"{0}\");", name, pd.State.LimitLabel);
                     }
                     else
                     {
-                        w.WriteLine("if ({0}.Count > Max{1}Count) throw new ArgumentOutOfRangeException(\"{0}\");", name, pd.Name);
+                        w.WriteLine("if ({0}.Count > {1}) throw new ArgumentOutOfRangeException(\"{0}\");", name, pd.State.LimitLabel);
                     }
                 }
             }
@@ -230,16 +223,53 @@ namespace Amoeba.Service
             {
                 if (pd.SerializeType == SerializeType.Bytes || pd.SerializeType == SerializeType.String)
                 {
-                    if (pd.State.MaxLength == null) return;
+                    if (pd.State.Limit == null) return;
 
-                    if(pd.State.IsNullable)
+                    if (pd.State.IsNullable)
                     {
-                        w.WriteLine("if ({0} != null && {0}.Length > {1}) throw new ArgumentOutOfRangeException(\"{0}\");", name, pd.State.MaxLength);
+                        w.WriteLine("if ({0} != null && {0}.Length > {1}) throw new ArgumentOutOfRangeException(\"{0}\");", name, pd.State.Limit);
                     }
                     else
                     {
-                        w.WriteLine("if ({0}.Length > {1}) throw new ArgumentOutOfRangeException(\"{0}\");", name, pd.State.MaxLength);
+                        w.WriteLine("if ({0}.Length > {1}) throw new ArgumentOutOfRangeException(\"{0}\");", name, pd.State.Limit);
                     }
+                }
+            }
+            */
+
+            private static void Write_Class_Constructor_CheckLength(Writer w, string name, PropertyDef pd)
+            {
+                if (pd.State.Limit == null) return;
+
+                string target = null;
+
+                if (pd.SerializeType == SerializeType.Bytes)
+                {
+                    if (pd.State.IsRecycled)
+                    {
+                        target = "Count";
+                    }
+                    else 
+                    {
+                        target = "Length";
+                    }
+                }
+                else if (pd.SerializeType == SerializeType.String)
+                {
+                    target = "Length";
+                }
+                else if (pd.SerializeType == SerializeType.Array)
+                {
+                    target = "Count";
+                }
+
+                if (pd.State.IsNullable)
+                {
+                    w.WriteLine("if ({0} != null && {0}.{1} > {2}) throw new ArgumentOutOfRangeException(\"{0}\");", name, target, pd.State.LimitLabel);
+                }
+                else
+                {
+                    w.WriteLine("if ({0}.{1} > {2}) throw new ArgumentOutOfRangeException(\"{0}\");", name, target, pd.State.LimitLabel);
                 }
             }
 
@@ -732,16 +762,16 @@ namespace Amoeba.Service
                 {
                     if (pd.State.IsRecycled)
                     {
-                        w.WriteLine("{0} = r.GetRecycleBytesSegment();", name);
+                        w.WriteLine("{0} = r.GetRecycleBytesSegment({1});", name, pd.State.LimitLabel);
                     }
                     else
                     {
-                        w.WriteLine("{0} = r.GetBytes();", name);
+                        w.WriteLine("{0} = r.GetBytes({1});", name, pd.State.LimitLabel);
                     }
                 }
                 else if (pd.SerializeType == SerializeType.String)
                 {
-                    w.WriteLine("{0} = r.GetString();", name);
+                    w.WriteLine("{0} = r.GetString({1});", name, pd.State.LimitLabel);
                 }
                 else if (pd.SerializeType == SerializeType.DateTime)
                 {
@@ -760,7 +790,7 @@ namespace Amoeba.Service
                     string lengthString = "length";
 
                     w.WriteLine("var {0} = (long)r.GetUInt64();", lengthString);
-                    w.WriteLine("{0} = new {1}[Math.Min({2}, {3})];", name, pd.State.ElementProperty.Type, lengthString, pd.State.MaxLength);
+                    w.WriteLine("{0} = new {1}[Math.Min({2}, {3})];", name, pd.State.ElementProperty.Type, lengthString, pd.State.LimitLabel);
 
                     w.WriteLine("for (int {0} = 0; {0} < {1}.Length; {0}++)", indexString, name);
                     w.WriteLine("{");
@@ -935,7 +965,7 @@ namespace Amoeba.Service
 
                 bool isSigned = bool.Parse(reader.GetAttribute("IsSigned") ?? "false");
                 bool isRecycled = bool.Parse(reader.GetAttribute("IsRecycled") ?? "false");
-                string maxLength = reader.GetAttribute("MaxLength") ?? null;
+                string limit = reader.GetAttribute("Limit") ?? null;
                 bool isNullable = bool.Parse(reader.GetAttribute("IsNullable") ?? "false");
                 PropertyDef elementProrerty = null;
 
@@ -1021,9 +1051,29 @@ namespace Amoeba.Service
                 result.State.IsSigned = isSigned;
                 result.State.IsRecycled = isRecycled;
                 result.State.IsNullable = isNullable;
-                result.State.MaxLength = maxLength;
+                result.State.Limit = limit;
                 result.State.ElementProperty = elementProrerty;
 
+                if (rank == 0)
+                {
+                    if (serializeType == SerializeType.Bytes || serializeType == SerializeType.String)
+                    {
+                        result.State.LimitLabel = string.Format("Max{0}Length", name);
+                    }
+                    else if (serializeType == SerializeType.Array)
+                    {
+                        result.State.LimitLabel = string.Format("Max{0}Count", name);
+                    }
+                    else
+                    {
+                        result.State.LimitLabel = null;
+                    }
+                }
+                else
+                {
+                    result.State.LimitLabel = limit;
+                }
+                
                 return result;
             }
         }

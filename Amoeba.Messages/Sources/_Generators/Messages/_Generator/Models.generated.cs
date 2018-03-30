@@ -19,10 +19,14 @@ namespace Amoeba.Messages
         {
             ConnectionFilter.Formatter = new CustomFormatter();
         }
+        public static readonly int MaxSchemeLength = 256;
+        public static readonly int MaxProxyUriLength = 256;
         [JsonConstructor]
         public ConnectionFilter(string scheme, ConnectionType type, string proxyUri)
         {
             if (scheme == null) throw new ArgumentNullException("scheme");
+            if (scheme.Length > MaxSchemeLength) throw new ArgumentOutOfRangeException("scheme");
+            if (proxyUri != null && proxyUri.Length > MaxProxyUriLength) throw new ArgumentOutOfRangeException("proxyUri");
             this.Scheme = scheme;
             this.Type = type;
             this.ProxyUri = proxyUri;
@@ -116,7 +120,7 @@ namespace Amoeba.Messages
                     {
                         case 0: //Scheme
                             {
-                                p_scheme = r.GetString();
+                                p_scheme = r.GetString(MaxSchemeLength);
                                 break;
                             }
                         case 1: //Type
@@ -126,7 +130,7 @@ namespace Amoeba.Messages
                             }
                         case 2: //ProxyUri
                             {
-                                p_proxyUri = r.GetString();
+                                p_proxyUri = r.GetString(MaxProxyUriLength);
                                 break;
                             }
                     }
@@ -222,10 +226,10 @@ namespace Amoeba.Messages
                         case 0: //Uris
                             {
                                 var length = (long)r.GetUInt64();
-                                p_uris = new string[Math.Min(length, 32)];
+                                p_uris = new string[Math.Min(length, MaxUrisCount)];
                                 for (int i = 0; i < p_uris.Length; i++)
                                 {
-                                    p_uris[i] = r.GetString();
+                                    p_uris[i] = r.GetString(256);
                                 }
                                 break;
                             }
@@ -432,12 +436,12 @@ namespace Amoeba.Messages
                     {
                         case 0: //Name
                             {
-                                p_name = r.GetString();
+                                p_name = r.GetString(MaxNameLength);
                                 break;
                             }
                         case 1: //Id
                             {
-                                p_id = r.GetBytes();
+                                p_id = r.GetBytes(MaxIdLength);
                                 break;
                             }
                     }
@@ -675,7 +679,7 @@ namespace Amoeba.Messages
                     {
                         case 0: //Comment
                             {
-                                p_comment = r.GetString();
+                                p_comment = r.GetString(MaxCommentLength);
                                 break;
                             }
                         case 1: //ExchangePublicKey
@@ -687,7 +691,7 @@ namespace Amoeba.Messages
                         case 2: //TrustSignatures
                             {
                                 var length = (long)r.GetUInt64();
-                                p_trustSignatures = new Signature[Math.Min(length, 1024)];
+                                p_trustSignatures = new Signature[Math.Min(length, MaxTrustSignaturesCount)];
                                 for (int i = 0; i < p_trustSignatures.Length; i++)
                                 {
                                     var element_size = (long)r.GetUInt64();
@@ -698,7 +702,7 @@ namespace Amoeba.Messages
                         case 3: //DeleteSignatures
                             {
                                 var length = (long)r.GetUInt64();
-                                p_deleteSignatures = new Signature[Math.Min(length, 1024)];
+                                p_deleteSignatures = new Signature[Math.Min(length, MaxDeleteSignaturesCount)];
                                 for (int i = 0; i < p_deleteSignatures.Length; i++)
                                 {
                                     var element_size = (long)r.GetUInt64();
@@ -709,7 +713,7 @@ namespace Amoeba.Messages
                         case 4: //Tags
                             {
                                 var length = (long)r.GetUInt64();
-                                p_tags = new Tag[Math.Min(length, 1024)];
+                                p_tags = new Tag[Math.Min(length, MaxTagsCount)];
                                 for (int i = 0; i < p_tags.Length; i++)
                                 {
                                     var element_size = (long)r.GetUInt64();
@@ -799,7 +803,7 @@ namespace Amoeba.Messages
                     {
                         case 0: //Comment
                             {
-                                p_comment = r.GetString();
+                                p_comment = r.GetString(MaxCommentLength);
                                 break;
                             }
                     }
@@ -897,7 +901,7 @@ namespace Amoeba.Messages
                         case 0: //Boxes
                             {
                                 var length = (long)r.GetUInt64();
-                                p_boxes = new Box[Math.Min(length, 1024 * 8)];
+                                p_boxes = new Box[Math.Min(length, MaxBoxesCount)];
                                 for (int i = 0; i < p_boxes.Length; i++)
                                 {
                                     var element_size = (long)r.GetUInt64();
@@ -1059,13 +1063,13 @@ namespace Amoeba.Messages
                     {
                         case 0: //Name
                             {
-                                p_name = r.GetString();
+                                p_name = r.GetString(MaxNameLength);
                                 break;
                             }
                         case 1: //Seeds
                             {
                                 var length = (long)r.GetUInt64();
-                                p_seeds = new Seed[Math.Min(length, 1024 * 64)];
+                                p_seeds = new Seed[Math.Min(length, MaxSeedsCount)];
                                 for (int i = 0; i < p_seeds.Length; i++)
                                 {
                                     var element_size = (long)r.GetUInt64();
@@ -1076,7 +1080,7 @@ namespace Amoeba.Messages
                         case 2: //Boxes
                             {
                                 var length = (long)r.GetUInt64();
-                                p_boxes = new Box[Math.Min(length, 1024 * 8)];
+                                p_boxes = new Box[Math.Min(length, MaxBoxesCount)];
                                 for (int i = 0; i < p_boxes.Length; i++)
                                 {
                                     var element_size = (long)r.GetUInt64();
@@ -1218,7 +1222,7 @@ namespace Amoeba.Messages
                     {
                         case 0: //Name
                             {
-                                p_name = r.GetString();
+                                p_name = r.GetString(MaxNameLength);
                                 break;
                             }
                         case 1: //Length

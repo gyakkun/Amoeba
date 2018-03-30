@@ -145,7 +145,7 @@ namespace Amoeba.Service
                         case 2: //Hashes
                             {
                                 var length = (long)r.GetUInt64();
-                                p_hashes = new Hash[Math.Min(length, 1024 * 1024)];
+                                p_hashes = new Hash[Math.Min(length, MaxHashesCount)];
                                 for (int i = 0; i < p_hashes.Length; i++)
                                 {
                                     var element_size = (long)r.GetUInt64();
@@ -248,7 +248,7 @@ namespace Amoeba.Service
                         case 0: //Groups
                             {
                                 var length = (long)r.GetUInt64();
-                                p_groups = new Group[Math.Min(length, 1024 * 1024)];
+                                p_groups = new Group[Math.Min(length, MaxGroupsCount)];
                                 for (int i = 0; i < p_groups.Length; i++)
                                 {
                                     var element_size = (long)r.GetUInt64();
@@ -393,7 +393,7 @@ namespace Amoeba.Service
                     {
                         case 0: //Type
                             {
-                                p_type = r.GetString();
+                                p_type = r.GetString(MaxTypeLength);
                                 break;
                             }
                         case 1: //CreationTime
@@ -593,7 +593,7 @@ namespace Amoeba.Service
                     {
                         case 0: //Type
                             {
-                                p_type = r.GetString();
+                                p_type = r.GetString(MaxTypeLength);
                                 break;
                             }
                         case 1: //Tag
@@ -784,7 +784,7 @@ namespace Amoeba.Service
                     {
                         case 0: //Type
                             {
-                                p_type = r.GetString();
+                                p_type = r.GetString(MaxTypeLength);
                                 break;
                             }
                         case 1: //Signature
@@ -910,7 +910,7 @@ namespace Amoeba.Service
                     {
                         case 0: //Id
                             {
-                                p_id = r.GetBytes();
+                                p_id = r.GetBytes(MaxIdLength);
                                 break;
                             }
                         case 1: //Location
@@ -1014,7 +1014,7 @@ namespace Amoeba.Service
                         case 0: //Locations
                             {
                                 var length = (long)r.GetUInt64();
-                                p_locations = new Location[Math.Min(length, 1024 * 8)];
+                                p_locations = new Location[Math.Min(length, MaxLocationsCount)];
                                 for (int i = 0; i < p_locations.Length; i++)
                                 {
                                     var element_size = (long)r.GetUInt64();
@@ -1117,7 +1117,7 @@ namespace Amoeba.Service
                         case 0: //Hashes
                             {
                                 var length = (long)r.GetUInt64();
-                                p_hashes = new Hash[Math.Min(length, 1024 * 8)];
+                                p_hashes = new Hash[Math.Min(length, MaxHashesCount)];
                                 for (int i = 0; i < p_hashes.Length; i++)
                                 {
                                     var element_size = (long)r.GetUInt64();
@@ -1220,7 +1220,7 @@ namespace Amoeba.Service
                         case 0: //Hashes
                             {
                                 var length = (long)r.GetUInt64();
-                                p_hashes = new Hash[Math.Min(length, 1024 * 8)];
+                                p_hashes = new Hash[Math.Min(length, MaxHashesCount)];
                                 for (int i = 0; i < p_hashes.Length; i++)
                                 {
                                     var element_size = (long)r.GetUInt64();
@@ -1241,11 +1241,13 @@ namespace Amoeba.Service
         {
             BlockResultPacket.Formatter = new CustomFormatter();
         }
+        public static readonly int MaxValueLength = 1024 * 1024 * 4;
         [JsonConstructor]
         public BlockResultPacket(Hash hash, ArraySegment<byte> value)
         {
             if (hash == null) throw new ArgumentNullException("hash");
             if (value == null) throw new ArgumentNullException("value");
+            if (value.Count > MaxValueLength) throw new ArgumentOutOfRangeException("value");
             this.Hash = hash;
             this.Value = value;
             this.Initialize();
@@ -1333,7 +1335,7 @@ namespace Amoeba.Service
                             }
                         case 1: //Value
                             {
-                                p_value = r.GetRecycleBytesSegment();
+                                p_value = r.GetRecycleBytesSegment(MaxValueLength);
                                 break;
                             }
                     }
@@ -1431,7 +1433,7 @@ namespace Amoeba.Service
                         case 0: //Signatures
                             {
                                 var length = (long)r.GetUInt64();
-                                p_signatures = new Signature[Math.Min(length, 1024 * 8)];
+                                p_signatures = new Signature[Math.Min(length, MaxSignaturesCount)];
                                 for (int i = 0; i < p_signatures.Length; i++)
                                 {
                                     var element_size = (long)r.GetUInt64();
@@ -1534,7 +1536,7 @@ namespace Amoeba.Service
                         case 0: //BroadcastMetadatas
                             {
                                 var length = (long)r.GetUInt64();
-                                p_broadcastMetadatas = new BroadcastMetadata[Math.Min(length, 1024 * 8)];
+                                p_broadcastMetadatas = new BroadcastMetadata[Math.Min(length, MaxBroadcastMetadatasCount)];
                                 for (int i = 0; i < p_broadcastMetadatas.Length; i++)
                                 {
                                     var element_size = (long)r.GetUInt64();
@@ -1637,7 +1639,7 @@ namespace Amoeba.Service
                         case 0: //Tags
                             {
                                 var length = (long)r.GetUInt64();
-                                p_tags = new Tag[Math.Min(length, 1024 * 8)];
+                                p_tags = new Tag[Math.Min(length, MaxTagsCount)];
                                 for (int i = 0; i < p_tags.Length; i++)
                                 {
                                     var element_size = (long)r.GetUInt64();
@@ -1740,7 +1742,7 @@ namespace Amoeba.Service
                         case 0: //MulticastMetadatas
                             {
                                 var length = (long)r.GetUInt64();
-                                p_multicastMetadatas = new MulticastMetadata[Math.Min(length, 1024 * 8)];
+                                p_multicastMetadatas = new MulticastMetadata[Math.Min(length, MaxMulticastMetadatasCount)];
                                 for (int i = 0; i < p_multicastMetadatas.Length; i++)
                                 {
                                     var element_size = (long)r.GetUInt64();
@@ -1843,7 +1845,7 @@ namespace Amoeba.Service
                         case 0: //Signatures
                             {
                                 var length = (long)r.GetUInt64();
-                                p_signatures = new Signature[Math.Min(length, 1024 * 8)];
+                                p_signatures = new Signature[Math.Min(length, MaxSignaturesCount)];
                                 for (int i = 0; i < p_signatures.Length; i++)
                                 {
                                     var element_size = (long)r.GetUInt64();
@@ -1946,7 +1948,7 @@ namespace Amoeba.Service
                         case 0: //UnicastMetadatas
                             {
                                 var length = (long)r.GetUInt64();
-                                p_unicastMetadatas = new UnicastMetadata[Math.Min(length, 1024 * 8)];
+                                p_unicastMetadatas = new UnicastMetadata[Math.Min(length, MaxUnicastMetadatasCount)];
                                 for (int i = 0; i < p_unicastMetadatas.Length; i++)
                                 {
                                     var element_size = (long)r.GetUInt64();
