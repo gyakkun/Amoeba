@@ -11,7 +11,7 @@
     <OldToolsVersion>2.0</OldToolsVersion>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
-    <AssemblyVersion>2018.4.1.333</AssemblyVersion>
+    <AssemblyVersion>2018.4.1.334</AssemblyVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="System.Threading.Thread" Version="4.3.0" />
