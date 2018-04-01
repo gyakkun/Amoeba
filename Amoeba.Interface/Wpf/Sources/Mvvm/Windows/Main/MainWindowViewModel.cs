@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Threading;
@@ -144,9 +145,45 @@ namespace Amoeba.Interface
 
                 _settings = new Settings(configPath);
                 int version = _settings.Load("Version", () => 0);
-
+                bool isInitialized = _settings.Load("IsInitialized", () => false);
                 this.WindowSettings.Value = _settings.Load(nameof(this.WindowSettings), () => new WindowSettings());
                 this.DynamicOptions.SetProperties(_settings.Load(nameof(this.DynamicOptions), () => Array.Empty<DynamicOptions.DynamicPropertyInfo>()));
+
+                if (!isInitialized)
+                {
+                    var cloudUri = @"https://alliance-network.cloud/amoeba/locations.php";
+
+                    if (_dialogService.ShowDialog($"Are you sure you want to connect to \"{cloudUri}\"?", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.Yes) == MessageBoxResult.Yes)
+                    {
+                        try
+                        {
+                            using (var httpClient = new HttpClient())
+                            using (var response = httpClient.GetAsync(cloudUri).Result)
+                            using (var stream = response.Content.ReadAsStreamAsync().Result)
+                            {
+                                var list = new List<Location>();
+
+                                foreach (var line in JsonUtils.Load<IEnumerable<string>>(stream))
+                                {
+                                    try
+                                    {
+                                        list.Add(AmoebaConverter.FromLocationString(line));
+                                    }
+                                    catch (Exception)
+                                    {
+
+                                    }
+                                }
+
+                                _amoebaInterfaceManager.SetCloudLocations(list);
+                            }
+                        }
+                        catch (Exception)
+                        {
+
+                        }
+                    }
+                }
             }
 
             {
@@ -635,6 +672,7 @@ namespace Amoeba.Interface
             App.Current.Dispatcher.Invoke(() =>
             {
                 _settings.Save("Version", 0);
+                _settings.Save("IsInitialized", true);
                 _settings.Save(nameof(this.WindowSettings), this.WindowSettings.Value);
                 _settings.Save(nameof(this.DynamicOptions), this.DynamicOptions.GetProperties(), true);
             });
