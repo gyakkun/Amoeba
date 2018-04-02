@@ -310,13 +310,24 @@ namespace Amoeba.Service
         {
             for (; ; )
             {
-                if (token.WaitHandle.WaitOne(1000)) return;
+                if (token.WaitHandle.WaitOne(300)) return;
 
                 DownloadItemInfo item = null;
 
                 lock (_lockObject)
                 {
-                    item = CollectionUtils.Unite(_volatileDownloadItemInfoManager, _downloadItemInfoManager)
+                    var tempList = new List<DownloadItemInfo>();
+
+                    if (RandomProvider.GetThreadRandom().Next(0, 2) == 0)
+                    {
+                        tempList.AddRange(_volatileDownloadItemInfoManager.ToArray());
+                    }
+                    else
+                    {
+                        tempList.AddRange(_downloadItemInfoManager.ToArray());
+                    }
+
+                    item = tempList
                         .Where(n => !_workingItems.Contains(n.Metadata))
                         .Where(n => n.State == DownloadState.Decoding || n.State == DownloadState.ParityDecoding)
                         .OrderBy(n => (n.Depth == n.Metadata.Depth) ? 0 : 1)

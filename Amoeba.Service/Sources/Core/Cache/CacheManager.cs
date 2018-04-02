@@ -36,7 +36,7 @@ namespace Amoeba.Service
 
         private volatile bool _isDisposed;
 
-        private readonly int _threadCount = 1;
+        private readonly int _threadCount = 2;
 
         public CacheManager(string configPath, string blocksPath, BufferManager bufferManager)
         {
@@ -671,12 +671,11 @@ namespace Amoeba.Service
 
                     while (groupList.Count > 0)
                     {
-                        var index = new Index(groupList);
-                        groupList.Clear();
-
                         // Index
-                        using (var stream = index.Export(_bufferManager))
+                        using (var stream = (new Index(groupList)).Export(_bufferManager))
                         {
+                            groupList.Clear();
+
                             if (stream.Length <= blockLength)
                             {
                                 Hash hash;
