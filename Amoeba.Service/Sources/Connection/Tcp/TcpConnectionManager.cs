@@ -324,7 +324,6 @@ namespace Amoeba.Service
 
                 var garbages = new List<IDisposable>();
 
-
                 try
                 {
                     var config = this.Config;
@@ -380,186 +379,193 @@ namespace Amoeba.Service
 
             private void WatchListenerThread()
             {
-                for (; ; )
+                try
                 {
-                    var config = this.Config;
-
-                    string ipv4Uri = null;
-                    string ipv6Uri = null;
-
-                    if (config.Type.HasFlag(TcpConnectionType.Ipv4) && config.Ipv4Port != 0)
+                    for (; ; )
                     {
-                        UpnpClient upnpClient = null;
+                        var config = this.Config;
 
-                        try
+                        string ipv4Uri = null;
+                        string ipv6Uri = null;
+
+                        if (config.Type.HasFlag(TcpConnectionType.Ipv4) && config.Ipv4Port != 0)
                         {
+                            UpnpClient upnpClient = null;
+
+                            try
                             {
-                                var ipAddress = GetMyGlobalIpAddresses().FirstOrDefault(n => n.AddressFamily == AddressFamily.InterNetwork);
-
-                                if (ipAddress != null)
                                 {
-                                    ipv4Uri = string.Format("tcp:{0}:{1}", ipAddress.ToString(), config.Ipv4Port);
-                                }
-                            }
+                                    var ipAddress = GetMyGlobalIpAddresses().FirstOrDefault(n => n.AddressFamily == AddressFamily.InterNetwork);
 
-                            if (ipv4Uri == null)
-                            {
-                                upnpClient = new UpnpClient();
-                                upnpClient.Connect(new TimeSpan(0, 0, 30));
-
-                                if (upnpClient.IsConnected)
-                                {
-                                    var ipAddress = IPAddress.Parse(upnpClient.GetExternalIpAddress(new TimeSpan(0, 0, 10)));
-
-                                    if (ipAddress != null && IsGlobalIpAddress(ipAddress))
+                                    if (ipAddress != null)
                                     {
                                         ipv4Uri = string.Format("tcp:{0}:{1}", ipAddress.ToString(), config.Ipv4Port);
                                     }
                                 }
-                            }
 
-                            if (_ipv4TcpListener == null || _watchIpv4Port != config.Ipv4Port)
+                                if (ipv4Uri == null)
+                                {
+                                    upnpClient = new UpnpClient();
+                                    upnpClient.Connect(new TimeSpan(0, 0, 30));
+
+                                    if (upnpClient.IsConnected)
+                                    {
+                                        var ipAddress = IPAddress.Parse(upnpClient.GetExternalIpAddress(new TimeSpan(0, 0, 10)));
+
+                                        if (ipAddress != null && IsGlobalIpAddress(ipAddress))
+                                        {
+                                            ipv4Uri = string.Format("tcp:{0}:{1}", ipAddress.ToString(), config.Ipv4Port);
+                                        }
+                                    }
+                                }
+
+                                if (_ipv4TcpListener == null || _watchIpv4Port != config.Ipv4Port)
+                                {
+                                    try
+                                    {
+                                        if (_ipv4TcpListener != null)
+                                        {
+                                            _ipv4TcpListener.Server.Dispose();
+                                            _ipv4TcpListener.Stop();
+
+                                            _ipv4TcpListener = null;
+                                        }
+
+                                        _ipv4TcpListener = new TcpListener(IPAddress.Any, config.Ipv4Port);
+                                        _ipv4TcpListener.Start(3);
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        Log.Error(e);
+                                    }
+
+                                    // Open port
+                                    if (upnpClient != null && upnpClient.IsConnected)
+                                    {
+                                        if (_watchIpv4Port != -1)
+                                        {
+                                            upnpClient.ClosePort(UpnpProtocolType.Tcp, _watchIpv4Port, new TimeSpan(0, 0, 10));
+                                        }
+
+                                        upnpClient.OpenPort(UpnpProtocolType.Tcp, config.Ipv4Port, config.Ipv4Port, "Amoeba", new TimeSpan(0, 0, 10));
+                                    }
+
+                                    _watchIpv4Port = config.Ipv4Port;
+                                }
+                            }
+                            finally
+                            {
+                                if (upnpClient != null)
+                                {
+                                    upnpClient.Dispose();
+                                    upnpClient = null;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (_ipv4TcpListener != null)
                             {
                                 try
                                 {
-                                    if (_ipv4TcpListener != null)
-                                    {
-                                        _ipv4TcpListener.Server.Dispose();
-                                        _ipv4TcpListener.Stop();
+                                    _ipv4TcpListener.Server.Dispose();
+                                    _ipv4TcpListener.Stop();
 
-                                        _ipv4TcpListener = null;
-                                    }
-
-                                    _ipv4TcpListener = new TcpListener(IPAddress.Any, config.Ipv4Port);
-                                    _ipv4TcpListener.Start(3);
+                                    _ipv4TcpListener = null;
                                 }
                                 catch (Exception e)
                                 {
                                     Log.Error(e);
                                 }
 
-                                // Open port
-                                if (upnpClient != null && upnpClient.IsConnected)
+                                // Close port
+                                try
                                 {
-                                    if (_watchIpv4Port != -1)
+                                    using (var client = new UpnpClient())
                                     {
-                                        upnpClient.ClosePort(UpnpProtocolType.Tcp, _watchIpv4Port, new TimeSpan(0, 0, 10));
+                                        client.Connect(new TimeSpan(0, 0, 10));
+
+                                        client.ClosePort(UpnpProtocolType.Tcp, _watchIpv4Port, new TimeSpan(0, 0, 10));
+                                    }
+                                }
+                                catch (Exception)
+                                {
+
+                                }
+
+                                _watchIpv4Port = -1;
+                            }
+                        }
+
+                        if (config.Type.HasFlag(TcpConnectionType.Ipv6) && config.Ipv6Port != 0)
+                        {
+                            {
+                                var ipAddress = GetMyGlobalIpAddresses().FirstOrDefault(n => n.AddressFamily == AddressFamily.InterNetworkV6);
+
+                                if (ipAddress != null)
+                                {
+                                    ipv6Uri = string.Format("tcp:[{0}]:{1}", ipAddress.ToString(), config.Ipv6Port);
+                                }
+                            }
+
+                            if (_ipv6TcpListener == null || _watchIpv6Port != config.Ipv6Port)
+                            {
+                                try
+                                {
+                                    if (_ipv6TcpListener != null)
+                                    {
+                                        _ipv6TcpListener.Server.Dispose();
+                                        _ipv6TcpListener.Stop();
+
+                                        _ipv6TcpListener = null;
                                     }
 
-                                    upnpClient.OpenPort(UpnpProtocolType.Tcp, config.Ipv4Port, config.Ipv4Port, "Amoeba", new TimeSpan(0, 0, 10));
+                                    _ipv6TcpListener = new TcpListener(IPAddress.IPv6Any, config.Ipv6Port);
+                                    _ipv6TcpListener.Start(3);
                                 }
-
-                                _watchIpv4Port = config.Ipv4Port;
-                            }
-                        }
-                        finally
-                        {
-                            if (upnpClient != null)
-                            {
-                                upnpClient.Dispose();
-                                upnpClient = null;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (_ipv4TcpListener != null)
-                        {
-                            try
-                            {
-                                _ipv4TcpListener.Server.Dispose();
-                                _ipv4TcpListener.Stop();
-
-                                _ipv4TcpListener = null;
-                            }
-                            catch (Exception e)
-                            {
-                                Log.Error(e);
-                            }
-
-                            // Close port
-                            try
-                            {
-                                using (var client = new UpnpClient())
+                                catch (Exception e)
                                 {
-                                    client.Connect(new TimeSpan(0, 0, 10));
-
-                                    client.ClosePort(UpnpProtocolType.Tcp, _watchIpv4Port, new TimeSpan(0, 0, 10));
+                                    Log.Error(e);
                                 }
-                            }
-                            catch (Exception)
-                            {
 
-                            }
-
-                            _watchIpv4Port = -1;
-                        }
-                    }
-
-                    if (config.Type.HasFlag(TcpConnectionType.Ipv6) && config.Ipv6Port != 0)
-                    {
-                        {
-                            var ipAddress = GetMyGlobalIpAddresses().FirstOrDefault(n => n.AddressFamily == AddressFamily.InterNetworkV6);
-
-                            if (ipAddress != null)
-                            {
-                                ipv6Uri = string.Format("tcp:[{0}]:{1}", ipAddress.ToString(), config.Ipv6Port);
+                                _watchIpv6Port = config.Ipv6Port;
                             }
                         }
-
-                        if (_ipv6TcpListener == null || _watchIpv6Port != config.Ipv6Port)
+                        else
                         {
-                            try
+                            if (_ipv6TcpListener != null)
                             {
-                                if (_ipv6TcpListener != null)
+                                try
                                 {
                                     _ipv6TcpListener.Server.Dispose();
                                     _ipv6TcpListener.Stop();
 
                                     _ipv6TcpListener = null;
                                 }
+                                catch (Exception e)
+                                {
+                                    Log.Error(e);
+                                }
 
-                                _ipv6TcpListener = new TcpListener(IPAddress.IPv6Any, config.Ipv6Port);
-                                _ipv6TcpListener.Start(3);
+                                _watchIpv6Port = -1;
                             }
-                            catch (Exception e)
-                            {
-                                Log.Error(e);
-                            }
-
-                            _watchIpv6Port = config.Ipv6Port;
                         }
-                    }
-                    else
-                    {
-                        if (_ipv6TcpListener != null)
+
+                        lock (_lockObject)
                         {
-                            try
-                            {
-                                _ipv6TcpListener.Server.Dispose();
-                                _ipv6TcpListener.Stop();
+                            if (this.Config != config) continue;
 
-                                _ipv6TcpListener = null;
-                            }
-                            catch (Exception e)
-                            {
-                                Log.Error(e);
-                            }
-
-                            _watchIpv6Port = -1;
+                            _locationUris.Clear();
+                            if (ipv4Uri != null) _locationUris.Add(ipv4Uri);
+                            if (ipv6Uri != null) _locationUris.Add(ipv6Uri);
                         }
+
+                        return;
                     }
-
-                    lock (_lockObject)
-                    {
-                        if (this.Config != config) continue;
-
-                        _locationUris.Clear();
-                        if (ipv4Uri != null) _locationUris.Add(ipv4Uri);
-                        if (ipv6Uri != null) _locationUris.Add(ipv6Uri);
-                    }
-
-                    return;
+                }
+                catch (Exception e)
+                {
+                    Log.Error(e);
                 }
             }
 

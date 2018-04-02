@@ -23,7 +23,7 @@ namespace Amoeba.Interface
             {
                 Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
 
-                Version = new Version(5, 1, 6);
+                Version = new Version(5, 1, 8);
                 Paths = new PathsEnvironment();
                 Icons = new IconsEnvironment();
                 Images = new ImagesEnvironment();
