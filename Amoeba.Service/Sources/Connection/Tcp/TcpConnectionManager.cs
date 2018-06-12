@@ -124,6 +124,11 @@ namespace Amoeba.Service
                     {
                         return false;
                     }
+                    if (CollectionUtils.Compare(ipAddress.GetAddressBytes(), IPAddress.Parse("169.254.0.0").GetAddressBytes()) >= 0
+                        && CollectionUtils.Compare(ipAddress.GetAddressBytes(), IPAddress.Parse("169.254.255.255").GetAddressBytes()) <= 0)
+                    {
+                        return false;
+                    }
                 }
                 if (ipAddress.AddressFamily == AddressFamily.InterNetworkV6)
                 {
