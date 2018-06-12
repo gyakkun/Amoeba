@@ -19,7 +19,7 @@
 
     </application>
   </compatibility>
-  <dependency>
+  <!--<dependency>
     <dependentAssembly>
       <assemblyIdentity
           type="win32"
@@ -30,5 +30,5 @@
           language="*"
         />
     </dependentAssembly>
-  </dependency>
+  </dependency>-->
 </assembly>
