@@ -43,7 +43,7 @@
 
     <Property Name="DownloadState_Downloading" Value="下载" />
     <Property Name="DownloadState_ParityDecoding" Value="奇偶校验" />
-    <Property Name="DownloadState_Decoding" Value="校验" />
+    <Property Name="DownloadState_Decoding" Value="正在解包" />
     <Property Name="DownloadState_Completed" Value="完成" />
     <Property Name="DownloadState_Error" Value="错误" />
 
@@ -93,8 +93,8 @@
     <Property Name="RelationWindow_Tag" Value="标签" />
     <Property Name="RelationWindow_Name" Value="名称" />
     <Property Name="RelationWindow_Id" Value="ID" />
-    <Property Name="RelationWindow_Comment" Value="评论" />
-    <Property Name="RelationWindow_Dependencies" Value="依赖关系" />
+    <Property Name="RelationWindow_Comment" Value="个性签名" />
+    <Property Name="RelationWindow_Dependencies" Value="关系依赖树" />
     <Property Name="RelationWindow_Copy" Value="复制" />
     <Property Name="RelationWindow_Close" Value="关闭" />
 
@@ -104,7 +104,7 @@
     <Property Name="OptionsWindow_TrustSignatures" Value="信任的签名" />
     <Property Name="OptionsWindow_UntrustSignatures" Value="不信任的签名" />
     <Property Name="OptionsWindow_Tags" Value="标签" />
-    <Property Name="OptionsWindow_Comment" Value="评论" />
+    <Property Name="OptionsWindow_Comment" Value="个性签名" />
     <Property Name="OptionsWindow_Connection" Value="连接" />
     <Property Name="OptionsWindow_Tcp" Value="TCP" />
     <Property Name="OptionsWindow_I2p" Value="I2P" />
@@ -131,7 +131,7 @@
     <Property Name="AccountOptionsControl_TagsSettings" Value="标签设置" />
     <Property Name="AccountOptionsControl_Name" Value="名称" />
     <Property Name="AccountOptionsControl_Id" Value="ID" />
-    <Property Name="AccountOptionsControl_CommentSettings" Value="评论设置" />
+    <Property Name="AccountOptionsControl_CommentSettings" Value="个性签名设置" />
     <Property Name="AccountOptionsControl_New" Value="生成" />
     <Property Name="AccountOptionsControl_Import" Value="导入" />
     <Property Name="AccountOptionsControl_Export" Value="导出" />
